@@ -1,0 +1,4 @@
+author: "Varoxus"
+delete-after: True
+changes:
+  - rscadd: "re-added mage version of the conjure tool spell."

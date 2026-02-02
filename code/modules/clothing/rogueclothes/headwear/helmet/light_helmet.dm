@@ -1,14 +1,14 @@
-/obj/item/clothing/head/roguetown/paddedcap
-	name = "padded cap"
-	desc = "A modest arming cap."
+/obj/item/clothing/head/roguetown/armingcap
+	name = "arming cap"
+	desc = "A modest arming cap. It will stop a light blow."
 	icon_state = "armingcap"
 	item_state = "armingcap"
 	sleevetype = null
 	sleeved = null
 	body_parts_covered = HEAD|HAIR|EARS
-	slot_flags = ITEM_SLOT_MASK|ITEM_SLOT_NECK|ITEM_SLOT_HEAD
+	slot_flags = ITEM_SLOT_MASK|ITEM_SLOT_HEAD //Meant to be worn under helmets pmuch
 	armor = ARMOR_PADDED_BAD
-	prevent_crits = list(BCLASS_CUT)
+	prevent_crits = PREVENT_CRITS_NONE
 	blocksound = SOFTHIT
 	max_integrity = ARMOR_INT_HELMET_CLOTH
 	color = "#463C2B"
@@ -16,6 +16,19 @@
 	salvage_result = /obj/item/natural/fibers
 	salvage_amount = 2 // Major materials loss
 	sellprice = 6
+
+/obj/item/clothing/head/roguetown/armingcap/padded/ComponentInitialize()
+	AddComponent(/datum/component/armour_filtering/positive, TRAIT_FENCERDEXTERITY)
+	AddComponent(/datum/component/armour_filtering/positive, TRAIT_HONORBOUND)
+
+/obj/item/clothing/head/roguetown/armingcap/padded
+	name = "padded arming cap"
+	desc = "A padded up arming cap. It might even stop a mace!"
+	icon_state = "paddedarmingcap"
+	item_state = "paddedarmingcap"
+	armor = ARMOR_PADDED
+	prevent_crits = list(BCLASS_BLUNT, BCLASS_SMASH)
+	max_integrity = ARMOR_INT_HELMET_CLOTH + 60
 
 /obj/item/clothing/head/roguetown/helmet/leather
 	slot_flags = ITEM_SLOT_HEAD|ITEM_SLOT_HIP
@@ -25,7 +38,7 @@
 	icon_state = "leatherhelm"
 	armor = ARMOR_LEATHER
 	sellprice = 10
-	prevent_crits = list(BCLASS_BLUNT, BCLASS_TWIST)
+	prevent_crits = PREVENT_CRITS_NONE
 	anvilrepair = null
 	smeltresult = null
 	sewrepair = TRUE
@@ -33,6 +46,53 @@
 	max_integrity = ARMOR_INT_HELMET_LEATHER
 	salvage_result = /obj/item/natural/hide/cured
 	sellprice = 10
+
+/obj/item/clothing/head/roguetown/helmet/leather/chapeau
+	name = "Chapeau a Naled"
+	desc = "A leather cap, armored with layers of especially crafted armored coins each baring wards against supernatural forces. The heavy closeable, face-obscuring flaps are both practical, to protect from sand and dust and frigid nights--and to ensure the Otavan aids were not violating Naledi customs with their uncovered faces.</br>They are heavily associated with the Poet-Historian Aalis Petit and her writings and songs about the campaign into Naledi and through her, adventurous bards of Otava. "
+	icon_state = "chapnaled"
+	var/open_wear = TRUE
+	flags_inv = HIDEHAIR
+	body_parts_covered = HEAD|HAIR|EARS
+
+/obj/item/clothing/head/roguetown/helmet/leather/chapeau/attack_right(mob/user)
+	switch(open_wear)
+		if(FALSE)
+			icon_state = "chapnaledalt"
+			item_state = "chapnaledalt"
+			open_wear = TRUE
+			flags_inv = HIDESNOUT|HIDEHAIR
+			body_parts_covered_dynamic = HEAD|HAIR|FACE
+		if(TRUE)
+			icon_state = "chapnaled"
+			item_state = "chapnaled"
+			open_wear = FALSE
+			flags_inv = HIDEHAIR
+			body_parts_covered_dynamic = HEAD|HAIR|EARS
+	update_icon()
+	if(user)
+		if(ishuman(user))
+			var/mob/living/carbon/H = user
+			H.update_inv_head()
+
+/obj/item/clothing/head/roguetown/helmet/leather/chapeau/AltRightClick(mob/user)
+	if(!istype(loc, /mob/living/carbon))
+		return
+	var/mob/living/carbon/H = user
+	if(icon_state == "[initial(icon_state)]_snout")
+		icon_state = initial(icon_state)
+		H.update_inv_head()
+		update_icon()
+		return
+
+	var/icon/J = new('icons/roguetown/clothing/onmob/head.dmi')
+	var/list/istates = J.IconStates()
+	for(var/icon_s in istates)
+		if(findtext(icon_s, "[icon_state]_snout"))
+			icon_state += "_snout"
+			H.update_inv_head()
+			update_icon()
+			return
 
 /obj/item/clothing/head/roguetown/helmet/leather/volfhelm
 	slot_flags = ITEM_SLOT_HEAD|ITEM_SLOT_HIP
@@ -66,7 +126,7 @@
 	max_integrity = ARMOR_INT_HELMET_HARDLEATHER
 	sellprice = 15
 	body_parts_covered = HEAD|EARS|HAIR|NOSE
-	prevent_crits = list(BCLASS_CUT, BCLASS_BLUNT, BCLASS_TWIST)
+	prevent_crits = PREVENT_CRITS_NONE
 	armor = ARMOR_LEATHER_GOOD
 	slot_flags = ITEM_SLOT_HEAD|ITEM_SLOT_HIP
 	anvilrepair = null
@@ -81,7 +141,7 @@
 	desc = "An oddly shaped hat made of tightly-sewn leather, commonly worn by spellswords."
 	icon_state = "spellcasterhat"
 	item_state = "spellcasterhat"
-	prevent_crits = list(BCLASS_CUT, BCLASS_BLUNT, BCLASS_TWIST)
+	prevent_crits = PREVENT_CRITS_NONE
 	armor = ARMOR_SPELLSINGER
 	mob_overlay_icon = 'icons/roguetown/clothing/onmob/64x64/head.dmi'
 	bloody_icon = 'icons/effects/blood64.dmi'
@@ -105,7 +165,7 @@
 	dynamic_hair_suffix = ""
 	max_integrity = ARMOR_INT_HELMET_LEATHER
 	body_parts_covered = HEAD|HAIR|EARS
-	prevent_crits = list(BCLASS_CUT, BCLASS_BLUNT, BCLASS_TWIST)
+	prevent_crits = PREVENT_CRITS_NONE
 	armor = ARMOR_SPELLSINGER // spellsinger hat stats
 	sewrepair = TRUE
 	resistance_flags = FIRE_PROOF
@@ -118,8 +178,8 @@
 /obj/item/clothing/head/roguetown/grenzelhofthat/attack_right(mob/user)
 	..()
 	if(!picked)
-		var/choice = input(user, "Choose a color.", "Grenzelhoft colors") as anything in colorlist
-		var/playerchoice = colorlist[choice]
+		var/choice = input(user, "Choose a color.", "Grenzelhoft colors") as anything in COLOR_MAP
+		var/playerchoice = COLOR_MAP[choice]
 		picked = TRUE
 		detail_color = playerchoice
 		detail_tag = "_detail"
@@ -145,13 +205,18 @@
 		add_overlay(pic2)
 
 //................ Briar Thorns ............... //	- Dendor Briar
-/obj/item/clothing/head/roguetown/padded/briarthorns
+/obj/item/clothing/head/roguetown/briarthorns
 	name = "briar thorns"
 	desc = "The pain of wearing it might distract you from the whispers of a mad God overpowering your sanity..."
 	icon_state = "briarthorns"
+	max_integrity = 150
+	body_parts_covered = HEAD|HAIR|EARS
+	armor = ARMOR_CLOTHING
+	salvage_result = /obj/item/natural/fibers
+	salvage_amount = 1
 	sellprice = 3
 
-/obj/item/clothing/head/roguetown/padded/briarthorns/pickup(mob/living/user)
+/obj/item/clothing/head/roguetown/briarthorns/pickup(mob/living/user)
 	. = ..()
 	to_chat(user, span_warning ("The thorns prick me."))
 	user.adjustBruteLoss(4)
@@ -170,3 +235,6 @@
 	body_parts_covered = HEAD|HAIR|EARS|NOSE|EYES
 	resistance_flags = FIRE_PROOF
 	sellprice = 10 
+
+/obj/item/clothing/head/roguetown/mentorhat/ComponentInitialize()
+	AddComponent(/datum/component/armour_filtering/positive, TRAIT_HONORBOUND)

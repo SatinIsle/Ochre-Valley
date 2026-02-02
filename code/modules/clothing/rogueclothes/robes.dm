@@ -34,7 +34,8 @@
 /obj/item/clothing/suit/roguetown/shirt/robe/abyssor //thanks to cre for abyssor clothing sprites
 	slot_flags = ITEM_SLOT_ARMOR|ITEM_SLOT_SHIRT|ITEM_SLOT_CLOAK
 	name = "depths robe"
-	desc = ""
+	desc = "A long robe formed of many layers of thin, light fabric; designed not to become over-heavy \
+	while waterlogged."
 	body_parts_covered = CHEST|GROIN|ARMS|LEGS|VITALS
 	icon_state = "abyssorrobe"
 	icon = 'icons/roguetown/clothing/armor.dmi'
@@ -117,6 +118,7 @@
 	desc = "Holy vestments sanctified by divine hands. Caution is advised if not a faithful."
 	icon_state = "priestrobe"
 	slot_flags = ITEM_SLOT_ARMOR|ITEM_SLOT_SHIRT
+	resistance_flags = FIRE_PROOF // astratan
 	armor = ARMOR_PADDED	//Equal to gamby
 	color = null
 	sellprice = 25
@@ -151,7 +153,6 @@
 	sleeved = 'icons/roguetown/clothing/onmob/helpers/sleeves_shirts.dmi'
 	armor = ARMOR_PADDED_GOOD	//Equal to a padded gambeson, like before.
 	max_integrity = ARMOR_INT_CHEST_LIGHT_MASTER
-	prevent_crits = list(BCLASS_CUT, BCLASS_BLUNT, BCLASS_CHOP)	 //Ensures that this inherits the padded gambeson's resistances, too.
 	slot_flags = ITEM_SLOT_ARMOR|ITEM_SLOT_SHIRT
 	sellprice = 15
 
@@ -298,7 +299,6 @@
 /obj/item/clothing/suit/roguetown/shirt/robe/hierophant
 	name = "hierophant's kandys"
 	desc = "A thin piece of fabric worn under a robe to stop chafing and keep ones dignity if a harsh blow of wind comes through. Despite the light fabric, it offers decent protection."
-	prevent_crits = list(BCLASS_CUT, BCLASS_BLUNT, BCLASS_CHOP)
 	armor = ARMOR_PADDED_GOOD
 	icon_state = "desertgown"
 	item_state = "desertgown"
@@ -308,7 +308,6 @@
 /obj/item/clothing/suit/roguetown/shirt/robe/pointfex
 	name = "pointfex's qaba"
 	desc = "A slimmed down, tighter fitting robe made of fine silks and fabrics. Somehow you feel more mobile in it than in the nude. Despite the light fabric, it offers decent protection."
-	prevent_crits = list(BCLASS_CUT, BCLASS_BLUNT, BCLASS_CHOP)
 	armor = ARMOR_PADDED_GOOD
 	icon_state = "monkcloth"
 	item_state = "monkcloth"

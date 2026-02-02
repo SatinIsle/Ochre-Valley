@@ -59,7 +59,7 @@
 
 /obj/item/clothing/under/roguetown/webs
 	name = "webbing"
-	desc = "a fine webbing made from spidersilk, popular fashion within the underdark"
+	desc = "A fine webbing made from spidersilk, popular fashion within the Underdark."
 	gender = PLURAL
 	icon_state = "webs"
 	item_state = "webs"
@@ -82,3 +82,6 @@
 
 /obj/item/clothing/under/roguetown/loincloth/pink
 	color = "#b98ae3"
+
+/obj/item/clothing/under/roguetown/loincloth/deprived
+	color = "#464040"

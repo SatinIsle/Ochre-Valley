@@ -18,15 +18,16 @@
 #define COVERAGE_NASAL			( HEAD | HAIR | NOSE )
 #define COVERAGE_SKULL			( HEAD | HAIR )
 
-#define COVERAGE_VEST			( CHEST | VITALS )
-#define COVERAGE_SHIRT			( CHEST | VITALS | ARMS )
-#define COVERAGE_TORSO			( CHEST | GROIN | VITALS )
-#define COVERAGE_ALL_BUT_ARMS	( CHEST | GROIN | VITALS | LEGS )
-#define COVERAGE_ALL_BUT_LEGS	( CHEST | GROIN | VITALS | ARMS )
-#define COVERAGE_FULL			( CHEST | GROIN | VITALS | LEGS | ARMS )
+#define COVERAGE_VEST				( CHEST | VITALS )
+#define COVERAGE_SHIRT				( CHEST | VITALS | ARMS )
+#define COVERAGE_TORSO				( CHEST | GROIN | VITALS )
+#define COVERAGE_ALL_BUT_ARMS		( CHEST | GROIN | VITALS | LEGS | FEET)
+#define COVERAGE_ALL_BUT_LEGS		( CHEST | GROIN | VITALS | ARMS | HANDS)
+#define COVERAGE_ALL_BUT_HANDFEET	( CHEST | GROIN | VITALS | LEGS | ARMS)
+#define COVERAGE_FULL				( CHEST | GROIN | VITALS | LEGS | ARMS | HANDS | FEET)
 
 #define COVERAGE_PANTS			( GROIN | LEGS )
-#define COVERAGE_FULL_LEG		( LEGS | FEET )
+#define COVERAGE_ALL_BUT_HANDFEET_LEG		( LEGS | FEET )
 
 /*
 Balloon Alert / Floating Text defines
@@ -208,6 +209,8 @@ Balloon Alert / Floating Text defines
 
 #define ALL_PATRONS  list(/datum/patron/divine/undivided, /datum/patron/divine/astrata, /datum/patron/divine/noc, /datum/patron/divine/dendor, /datum/patron/divine/abyssor, /datum/patron/divine/ravox, /datum/patron/divine/necra, /datum/patron/divine/xylix, /datum/patron/divine/pestra, /datum/patron/divine/malum, /datum/patron/divine/eora, /datum/patron/old_god, /datum/patron/inhumen/zizo, /datum/patron/inhumen/graggar, /datum/patron/inhumen/matthios, /datum/patron/inhumen/baotha)
 
+#define ALL_SLAYER_PATRONS list(/datum/patron/divine/malum, /datum/patron/divine/ravox)
+
 #define PLATEHIT "plate"
 #define CHAINHIT "chain"
 #define SOFTHIT "soft"
@@ -282,8 +285,8 @@ GLOBAL_LIST_EMPTY(round_join_times)
 #define CTAG_ASSASSIN		"CAT_ASSASSIN"		// Assassin classes - Tied to the assassin antag for specialization
 #define CTAG_CHALLENGE 		"CAT_CHALLENGE"  	// Challenge class - Meant to be free for everyone
 #define CTAG_VAGABOND		"CAT_VAGABOND"		// Vagabond class - start with nothing and work your way up
-#define CTAG_INQUISITION	"CAT_INQUISITION"	// For Orthodoxist subclasses
-#define CTAG_PURITAN		"CAT_PURITAN"		// For Inquisitor subclasses
+#define CTAG_ORTHODOXIST	"CAT_ORTHODOXIST"	// For Orthodoxist subclasses
+#define CTAG_INQUSITOR		"CAT_INQUISITOR"	// For Inquisitor subclasses
 #define CTAG_ABSOLVER		"CAT_ABSOLVER"		// For Absolver (sub)class
 #define CTAG_COURTAGENT		"CAT_COURTAGENT"	// Court agent classes
 #define CTAG_WRETCH			"CAT_WRETCH"		// Wretch classes untethered from adventurer
@@ -291,6 +294,8 @@ GLOBAL_LIST_EMPTY(round_join_times)
 #define CTAG_LSKELETON		"CAT_LSKELETON"		// Lich Fortified Skeleton classes
 #define CTAG_NSKELETON		"CAT_NSKELETON"		// Necromancer Greater Skeleton classes
 #define CTAG_LICKER_WRETCH  "CAT_LICKER_WRETCH" // Licker wretch. Nuff said.
+#define CTAG_GNOLL			"CAT_GNOLL"			// Wretch-esque gnolls, graggar's chosen.
+#define CTAG_GNOLL_IMPURE	"CAT_GNOLL_IMPURE"	// Reward for beating enough gnolls.
 
 #define CTAG_WARDEN			"CAT_WARDEN"		// Warden class - Handles warden class selector.
 #define CTAG_WATCH			"CAT_WATCH"			// Watch class - Handles Town Watch class selector
@@ -311,19 +316,16 @@ GLOBAL_LIST_EMPTY(round_join_times)
 #define CTAG_MARSHAL		"CAT_MARSHAL"		// Marshal class
 #define CTAG_SENESCHAL		"CAT_SENESCHAL"		// Seneschal's aesthetic choices. 
 #define CTAG_SERVANT		"CAT_SERVANT"		// Servant's aesthetic choices.
-#define CTAG_CAPTAIN		"CAT_CAPTAIN"		// Handles Captain class selector
 #define CTAG_WAPPRENTICE	"CTAG_WAPPRENTICE"	// Mage Apprentice Classes - Handles Mage Apprentices class selector
 #define CTAG_GUILDSMASTER 	"CAT_GUILDSMASTER"	// Guildsmaster class - Handles Guildsmaster class selector 
 #define CTAG_GUILDSMEN 		"CAT_GUILDSMEN"		// Guildsmen class - Handles Guildsmen class selector
-#define CTAG_NIGHTMAIDEN	"CAT_NIGHTMAIDEN"	// Bathhouse Attendant's aesthetic choices.
+#define CTAG_BATHWORKER		"CAT_BATHWORKER"	// Bathhouse Attendant's aesthetic choices.
 
 // List of mono-class categories. Only here for standardisation sake, but can be added on if desired.
-#define CTAG_DUNGEONEER		"CAT_DUNGEONEER"
-
 #define CTAG_BISHOP			"CAT_BISHOP"
 #define CTAG_MARTYR			"CAT_MARTYR"
 #define CTAG_ACOLYTE		"CAT_ACOLYTE"
-#define CTAG_CHURCHLING		"CAT_CHURCHLING"
+#define CTAG_SEXTON			"CAT_SEXTON"
 #define CTAG_DRUID			"CAT_DRUID"
 
 #define CTAG_STEWARD		"CAT_STEWARD"

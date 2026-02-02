@@ -25,7 +25,12 @@
 		src.STASPD = 13
 
 		AddSpell(new /obj/effect/proc_holder/spell/self/saigahoofs)
-		real_name = "saiga doe" //So we don't get a random name
+		//Caustic Edit - Name is based on the gender instead!
+		if(gender == "male")
+			real_name = "saiga buck"
+		else
+			real_name = "saiga doe" //So we don't get a random name
+		//Caustic Edit End
 
 // SAIGA SPECIES DATUM //
 /datum/species/shapesaiga
@@ -44,7 +49,7 @@
 	)
 	inherent_biotypes = MOB_HUMANOID
 	armor = 5
-	no_equip = list(SLOT_SHIRT, SLOT_HEAD, SLOT_WEAR_MASK, SLOT_ARMOR, SLOT_GLOVES, SLOT_SHOES, SLOT_PANTS, SLOT_CLOAK, SLOT_BELT, SLOT_BACK_R, SLOT_BACK_L, SLOT_S_STORE)
+	no_equip = list(SLOT_SHIRT, SLOT_HEAD, SLOT_WEAR_MASK, SLOT_ARMOR, SLOT_GLOVES, SLOT_SHOES, SLOT_PANTS, SLOT_CLOAK, SLOT_BELT, SLOT_S_STORE)
 	nojumpsuit = 1
 	sexes = 1
 	offset_features = list(OFFSET_HANDS = list(0,2), OFFSET_HANDS_F = list(0,2))
@@ -71,7 +76,12 @@
 /datum/species/shapesaiga/regenerate_icons(mob/living/carbon/human/H)
 	H.icon = 'icons/roguetown/mob/monster/saiga.dmi'
 	H.base_intents = list(INTENT_HELP, INTENT_DISARM, INTENT_GRAB)
-	H.icon_state = "saiga"
+	//Caustic Edit - Tweak the Saiga to account for gender!
+	if(H.gender == "male")
+		H.icon_state = "buck"
+	else
+		H.icon_state = "saiga"
+	//Caustic Edit End
 	H.update_damage_overlays()
 	return TRUE
 
@@ -92,7 +102,7 @@
 	body_parts_covered = FULL_BODY
 	body_parts_inherent = FULL_BODY
 	armor = ARMOR_LEATHER //Saiga should be tankier
-	prevent_crits = list(BCLASS_CUT, BCLASS_BLUNT, BCLASS_TWIST, BCLASS_STAB)
+	prevent_crits = PREVENT_CRITS_NONE
 	blocksound = SOFTHIT
 	blade_dulling = DULLING_BASHCHOP
 	sewrepair = FALSE

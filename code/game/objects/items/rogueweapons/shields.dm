@@ -24,6 +24,7 @@
 	max_integrity = 100
 	anvilrepair = /datum/skill/craft/carpentry
 	COOLDOWN_DECLARE(shield_bang)
+	special = /datum/special_intent/limbguard
 	sellprice = 10
 
 
@@ -103,6 +104,13 @@
 	dropshrink = 0.8
 	anvilrepair = /datum/skill/craft/carpentry
 	coverage = 30
+
+/obj/item/rogueweapon/shield/wood/deprived
+	name = "ghastly shield"
+	desc = "A frail looking amalgamation of planks. Yet somehow, the very wood itself seem to be filling you with resolve."
+	icon_state = "deprived"
+	coverage = 40
+	max_integrity = 200
 
 /obj/item/rogueweapon/shield/attack_right(mob/user)
 	if(overlays.len)
@@ -307,6 +315,8 @@
 	desc = "A bulky shield of spike-like lengths molten together. The motifs evoke anything but safety and protection."
 	icon_state = "spidershield"
 	coverage = 55
+	smeltresult = /obj/item/ingot/drow
+	smelt_bar_num = 1
 
 /obj/item/rogueweapon/shield/buckler
 	name = "buckler shield"
@@ -327,6 +337,12 @@
 	grid_width = 32
 	grid_height = 64
 	anvilrepair = /datum/skill/craft/weaponsmithing
+
+/obj/item/rogueweapon/shield/buckler/equipped(mob/user, slot, initial)
+	. = ..()
+	if(HAS_TRAIT(user, TRAIT_GNARLYDIGITS))
+		to_chat(user, span_danger("Woe! the handle of the [src] is too small for me to hold onto!"))
+		forceMove(user.loc)
 
 /obj/item/rogueweapon/shield/buckler/examine(mob/living/user)
 	. = ..()
@@ -365,10 +381,10 @@
 	max_integrity = 85
 	smeltresult = /obj/item/ingot/purifiedaalloy
 
-// unique, better buckler for knight captain
-/obj/item/rogueweapon/shield/buckler/knightcaptain
+// unique, better buckler for champion
+/obj/item/rogueweapon/shield/buckler/banneret
 	name = "'Aegis'"
-	desc = "A special buckler made out of blacksteel for the Knight Captain, adorned with a crest. An inscription along the top reads,\"RUAT CAELUM\""
+	desc = "A special buckler made out of blacksteel for the Knight Banneret, adorned with a crest. An inscription along the top reads,\"RUAT CAELUM\""
 	icon_state = "capbuckler"
 	icon = 'icons/roguetown/weapons/special/captain.dmi'
 	max_integrity = 150
@@ -380,6 +396,7 @@
 	name = "heater shield"
 	desc = "A sturdy wood and leather shield. Made to not be too encumbering while still providing good protection."
 	icon_state = "heatersh"
+	slot_flags = ITEM_SLOT_HIP | ITEM_SLOT_BACK
 	force = 15
 	throwforce = 10
 	dropshrink = 0.8

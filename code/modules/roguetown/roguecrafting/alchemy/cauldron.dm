@@ -213,5 +213,5 @@
 /obj/machinery/light/rogue/cauldron/folding/Initialize()
 	. = ..()
 	burn_out()
-	create_reagents(60, DRAINABLE | AMOUNT_VISIBLE | REFILLABLE) //small
+	create_reagents(200, DRAINABLE | AMOUNT_VISIBLE | REFILLABLE) //Caustic Edit - Tweak to make the Cauldron bigger! 60 -> 200
 	update_icon()

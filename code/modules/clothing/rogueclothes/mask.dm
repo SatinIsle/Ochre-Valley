@@ -17,6 +17,14 @@
 	experimental_onhip = FALSE
 	var/overarmor = TRUE
 
+/obj/item/clothing/mask/rogue/attack_right(mob/user)
+	. = ..()
+
+	if(!adjustable && initial(flags_inv) & HIDEFACE)
+		flags_inv ^= HIDEFACE
+		to_chat(user, span_notice("I adjust mask to [flags_inv & HIDEFACE ? "conceal" : "reveal"] identity."))
+		user.update_inv_wear_mask()
+
 /obj/item/clothing/mask/rogue/AltRightClick(mob/user)
 	if(!istype(loc, /mob/living/carbon))
 		return
@@ -116,6 +124,7 @@
 	resistance_flags = FIRE_PROOF
 	body_parts_covered = EYES
 	anvilrepair = /datum/skill/craft/armorsmithing
+	adjustable = CAN_CADJUST
 	var/active_item = FALSE
 
 /obj/item/clothing/mask/rogue/spectacles/golden/equipped(mob/user, slot)
@@ -146,6 +155,9 @@
 		REMOVE_TRAIT(user, TRAIT_ENGINEERING_GOGGLES, "[type]")
 		user.mind.RemoveSpell(new /obj/effect/proc_holder/spell/invoked/engineeranalyze)
 		to_chat(user, span_notice("Time to stop working"))
+
+/obj/item/clothing/mask/rogue/spectacles/golden/ComponentInitialize()
+	AddComponent(/datum/component/adjustable_clothing, NECK, null, null, 'sound/foley/equip/rummaging-03.ogg', null, (UPD_HEAD|UPD_MASK))	//Standard mask
 
 /obj/item/clothing/mask/rogue/spectacles/Initialize()
 	..()
@@ -226,6 +238,7 @@
 	smeltresult = /obj/item/ingot/steel	
 	var/worn = FALSE
 	slot_flags = ITEM_SLOT_MASK
+	stack_fovs = FALSE
 	
 /obj/item/clothing/mask/rogue/facemask/steel/confessor/equipped(mob/living/carbon/human/user, slot)
 	. = ..()
@@ -295,13 +308,13 @@
 	max_integrity = 100
 	resistance_flags = FIRE_PROOF
 	armor = ARMOR_PLATE
-	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_CHOP, BCLASS_BLUNT)
 	flags_inv = HIDEFACE|HIDESNOUT
 	body_parts_covered = FACE
 	block2add = FOV_BEHIND
 	slot_flags = ITEM_SLOT_MASK|ITEM_SLOT_HIP
 	anvilrepair = /datum/skill/craft/armorsmithing
 	smeltresult = /obj/item/ingot/iron
+	stack_fovs = TRUE
 
 /obj/item/clothing/mask/rogue/facemask
 	name = "iron mask"
@@ -312,7 +325,6 @@
 	drop_sound = 'sound/foley/dropsound/armor_drop.ogg'
 	resistance_flags = FIRE_PROOF
 	armor = ARMOR_PLATE
-	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_CHOP, BCLASS_BLUNT)
 	flags_inv = HIDEFACE|HIDESNOUT
 	body_parts_covered = FACE
 	block2add = FOV_BEHIND
@@ -320,11 +332,17 @@
 	experimental_onhip = TRUE
 	anvilrepair = /datum/skill/craft/armorsmithing
 	smeltresult = /obj/item/ingot/iron
+	stack_fovs = TRUE
+
+/obj/item/clothing/mask/rogue/facemask/ComponentInitialize()
+	AddComponent(/datum/component/armour_filtering/positive, TRAIT_FENCERDEXTERITY)
 
 /obj/item/clothing/mask/rogue/facemask/shadowfacemask
 	name = "anthraxi war mask"
 	desc = "A metal mask resembling a spider's face. Such a visage haunts many an older dark elf's nitemares - while the younger generation simply scoffs at such relics."
 	icon_state = "shadowfacemask"
+	smeltresult = /obj/item/ingot/drow
+	smelt_bar_num = 1
 
 /obj/item/clothing/mask/rogue/facemask/aalloy
 	name = "decrepit mask"
@@ -332,8 +350,10 @@
 	icon_state = "ancientmask"
 	max_integrity = 75
 	color = "#bb9696"
+	chunkcolor = "#532e25"
 	smeltresult = /obj/item/ingot/aaslag
 	anvilrepair = null
+	prevent_crits = PREVENT_CRITS_NONE
 
 /obj/item/clothing/mask/rogue/facemask/copper
 	name = "copper mask"
@@ -441,11 +461,13 @@
 	name = "oni mask"
 	desc = "A wood mask carved in the visage of demons said to stalk the mountains of Kazengun."
 	icon_state = "oni"
+	stack_fovs = FALSE
 
 /obj/item/clothing/mask/rogue/facemask/yoruku_kitsune
 	name = "kitsune mask"
 	desc = "A wood mask carved in the visage of the fox spirits said to ply their tricks in the forests of Kazengun."
 	icon_state = "kitsune"
+	stack_fovs = FALSE
 
 /obj/item/clothing/mask/rogue/facemask/steel/kazengun
 	name = "soldier's half-mask"
@@ -541,25 +563,12 @@
 	max_integrity = 100
 	armor = ARMOR_PLATE
 	flags_inv = HIDEFACE|HIDESNOUT
-	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_CHOP, BCLASS_BLUNT)
 	sellprice = 25
 
-/obj/item/clothing/mask/rogue/lordmask/naledi/equipped(mob/user, slot)
-	. = ..()
-	if(ishuman(user))
-		var/mob/living/carbon/human/H = user
-		if(H.merctype == 14)	//Naledi
-			H.remove_status_effect(/datum/status_effect/debuff/lost_naledi_mask)
-			H.remove_stress(/datum/stressevent/naledimasklost)
-
-/obj/item/clothing/mask/rogue/lordmask/naledi/dropped(mob/user)
-	. = ..()
-	if(ishuman(user))
-		var/mob/living/carbon/human/H = user
-		if(H.merctype == 14)	//Naledi
-			if(!istiefling(user)) //Funny exception
-				H.apply_status_effect(/datum/status_effect/debuff/lost_naledi_mask)
-				H.add_stress(/datum/stressevent/naledimasklost)
+/* //Caustic Edit - Removing the Naledi Debuff
+/obj/item/clothing/mask/rogue/lordmask/naledi/ComponentInitialize()
+	AddComponent(/datum/component/armour_filtering/positive, TRAIT_NALEDI, "naledi_mask")
+*/ //Caustic Edit End
 
 /obj/item/clothing/mask/rogue/lordmask/naledi/sojourner
 	name = "sojourner's mask"
@@ -569,7 +578,6 @@
 	max_integrity = 150
 	armor = ARMOR_PLATE
 	flags_inv = HIDEFACE|HIDESNOUT
-	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_CHOP, BCLASS_BLUNT)
 	sellprice = 25
 
 /obj/item/clothing/mask/rogue/exoticsilkmask
@@ -612,3 +620,12 @@
 	detail_tag = "_detail"
 	detail_color = COLOR_SILVER
 	sewrepair = TRUE
+
+/obj/item/clothing/mask/rogue/courtphysician
+	name = "head physician's mask"
+	desc = "This one is made with actual bone! Don't ask whose."
+	icon = 'icons/roguetown/clothing/special/courtphys.dmi'
+	mob_overlay_icon = 'icons/roguetown/clothing/special/onmob/courtphys.dmi'
+	icon_state = "docmask"
+	item_state = "docmask"
+	salvage_result = /obj/item/natural/bone

@@ -25,7 +25,7 @@
 	W.stored_mob = src
 	W.cmode_music = 'sound/music/cmode/garrison/combat_warden.ogg'
 	playsound(W.loc, pick('sound/combat/gib (1).ogg','sound/combat/gib (2).ogg'), 200, FALSE, 3)
-	//W.spawn_gibs(FALSE)
+	//W.spawn_gibs(FALSE) //Caustic Edit - Turned off the gibs on Wildshaping
 	src.forceMove(W)
 
 	W.after_creation()
@@ -165,6 +165,7 @@
 	// CC Edit End
 
 
+	playsound(W.loc, 'sound/body/shapeshift-end.ogg', 100, FALSE, 3)
 	//Compares the list of spells we had before transformation with those we do now. If there are any that don't match, we remove them
 	for(var/obj/effect/proc_holder/spell/self/originspell in WA.stored_spells)
 		for(var/obj/effect/proc_holder/spell/self/wildspell in W.mind.spell_list)

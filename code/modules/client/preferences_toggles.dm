@@ -148,6 +148,16 @@
 		else
 			to_chat(src, "You will now see the language icon in front of a language.")
 
+/client/verb/toggle_redflash()
+	set category = "Options"
+	set name = "Toggle Red Screen Flash"
+	if(prefs)
+		prefs.no_redflash = !prefs.no_redflash
+		prefs.save_preferences()
+		//Caustic Edit
+		to_chat(src, "You [prefs.no_redflash ? "will not" : "will"] see the red flashing effect.")
+		//Caustic Edit End
+
 /client/verb/toggle_lobby_music()
 	set name = "Toggle Lobby Music"
 	set category = "Options"
@@ -198,6 +208,14 @@
 		prefs.floating_text_toggles ^= XP_TEXT
 		prefs.save_preferences()
 	to_chat(src, "You will[prefs.floating_text_toggles & XP_TEXT ? "" : " not"] see XP pop ups.")
+
+/client/verb/toggle_hitzonetext() // Whether the user can see a text popup for where they got hit.
+	set category = "Options"
+	set name = "Toggle Hitzone Text"
+	if(prefs)
+		prefs.floating_text_toggles ^= HITZONE_TEXT
+		prefs.save_preferences()
+	to_chat(src, "You will[prefs.floating_text_toggles & HITZONE_TEXT ? "" : " not"] see floating text for where you were hit.")
 
 /client/verb/toggle_floatingtext() // Whether the user can see the balloon pop ups at all.
 	set category = "Options"

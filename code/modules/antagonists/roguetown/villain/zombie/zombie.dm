@@ -419,7 +419,10 @@
 
 
 	if (converted || infected_wake)
-		zombie.flash_fullscreen("redflash3")
+		//Caustic Edit
+		if(zombie.show_redflash())
+			zombie.flash_fullscreen("redflash3")
+		//Caustic Edit End
 		zombie.emote("scream") // Warning for nearby players
 		zombie.Knockdown(1)
 

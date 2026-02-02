@@ -8,8 +8,7 @@
 		TRAIT_RADIMMUNE,
 		TRAIT_NASTY_EATER, 
 		TRAIT_LEECHIMMUNE,
-		TRAIT_CRITICAL_RESISTANCE,
-		TRAIT_HEAVYARMOR)//WE are STRONG! Crit Resist and Heavy Armor training!
+		TRAIT_HEAVYARMOR)//WE are STRONG! Crit Resist and Heavy Armor training! - Ok buddy, please for the love of god stop shouting in the code comments, and PLEASE never put crit resist on an early mob again
 	no_equip = list(SLOT_SHIRT, SLOT_WEAR_MASK, SLOT_GLOVES, SLOT_SHOES, SLOT_PANTS, SLOT_S_STORE)
 	nojumpsuit = 1
 	sexes = 1

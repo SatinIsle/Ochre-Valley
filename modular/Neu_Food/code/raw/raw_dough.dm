@@ -145,6 +145,8 @@
 	slices_num = 2
 	slice_batch = TRUE
 	slice_path = /obj/item/reagent_containers/food/snacks/rogue/butterdoughslice
+	cooked_type = /obj/item/reagent_containers/food/snacks/rogue/muffin
+	cooked_smell = /datum/pollutant/food/muffin
 	w_class = WEIGHT_CLASS_NORMAL
 	slice_sound = TRUE
 
@@ -227,19 +229,21 @@
 		else
 			to_chat(user, span_warning("You need to put [src] on a table to roll it out!"))
 	if(I.get_sharpness())
-		if(!isdwarf(user))
+		// Caustic Cove Edit - Make Prezzels not dwarven-only!
+		/*if(!isdwarf(user))
 			to_chat(user, span_warning("You lack knowledge of dwarven pastries!"))
 			return
+		else*/
+		if(isturf(loc)&& (found_table)) //This bit was 1 more tab out as well, but it has been removed for this edit.
+			playsound(get_turf(user), 'sound/foley/dropsound/food_drop.ogg', 40, TRUE, -1)
+			to_chat(user, span_notice("Cutting the dough in strips and making a prezzel..."))
+			if(do_after(user,short_cooktime, target = src))
+				add_sleep_experience(user, /datum/skill/craft/cooking, user.STAINT)
+				new /obj/item/reagent_containers/food/snacks/rogue/foodbase/prezzel_raw(loc)
+				qdel(src)
 		else
-			if(isturf(loc)&& (found_table))
-				playsound(get_turf(user), 'sound/foley/dropsound/food_drop.ogg', 40, TRUE, -1)
-				to_chat(user, span_notice("Cutting the dough in strips and making a prezzel..."))
-				if(do_after(user,short_cooktime, target = src))
-					add_sleep_experience(user, /datum/skill/craft/cooking, user.STAINT)
-					new /obj/item/reagent_containers/food/snacks/rogue/foodbase/prezzel_raw(loc)
-					qdel(src)
-			else
-				to_chat(user, span_warning("You need to put [src] on a table to cut it!"))
+			to_chat(user, span_warning("You need to put [src] on a table to cut it!"))
+		//Caustic Edit end
 	else
 		..()
 
@@ -269,6 +273,10 @@
 		prepare_handpie(I, user, /obj/item/reagent_containers/food/snacks/rogue/foodbase/handpieraw/berry)
 	else if(istype(I, /obj/item/reagent_containers/food/snacks/grown/apple))
 		prepare_handpie(I, user, /obj/item/reagent_containers/food/snacks/rogue/foodbase/handpieraw/apple)
+	else if(istype(I, /obj/item/reagent_containers/food/snacks/rogue/veg/potato_sliced))
+		prepare_handpie(I, user, /obj/item/reagent_containers/food/snacks/rogue/foodbase/handpieraw/potato)
+	else if(istype(I, /obj/item/reagent_containers/food/snacks/grown/cabbage/rogue))//This produces 3 instead of 2 so it'd be obvious go to.
+		prepare_handpie(I, user, /obj/item/reagent_containers/food/snacks/rogue/foodbase/handpieraw/cabbage)
 	else
 		return ..()
 
@@ -281,4 +289,3 @@
 		user.put_in_hands(handpie)
 		qdel(I)
 		qdel(src)
-	

@@ -143,6 +143,10 @@
 	if (target == null)
 		return
 
+	if(HAS_TRAIT(target, TRAIT_ANTISCRYING))
+		to_chat(user, span_warning("They are not within the gaze of the Orb."))
+		return
+
 	if(!prob(success_chance))
 		on_failure(user, target, failure_severity)
 		if(break_on_fail)
@@ -187,7 +191,9 @@
 	S.ManualFollow(target)
 	last_scry = world.time
 	user.visible_message(span_danger("[user] stares into [src], [user.p_their()] eyes rolling back into [user.p_their()] head."))
+	target.throw_alert("scryingeye", /atom/movable/screen/alert/scryingeye, override = TRUE)
 	addtimer(CALLBACK(S, TYPE_PROC_REF(/mob/dead/observer, reenter_corpse)), 8 SECONDS)
+	addtimer(CALLBACK(target, TYPE_PROC_REF(/mob/, clear_alert), "scryingeye", TRUE), 8 SECONDS)
 	if(!target.stat)
 		if(target.STAPER >= 15)
 			if(target.mind)
@@ -196,14 +202,16 @@
 					return
 				to_chat(target, span_warning("I can clearly see the face of an unknown [user.gender == FEMALE ? "woman" : "man"] staring at me!"))
 				return
-
-		if(target.STAPER >= 11)
-			to_chat(target, span_warning("I feel a pair of unknown eyes on me."))
+		to_chat(target, span_warning("I feel a pair of unknown eyes on me."))
+		target.playsound_local(target, 'sound/magic/scryed_on.ogg', 75, TRUE)
 	return
 
 /obj/item/scrying/proc/failure_break(mob/living/user)
 	visible_message("\The [src] shatters!")
-	user.flash_fullscreen("redflash1")
+	//Caustic Edit
+	if (user.show_redflash())
+		user.flash_fullscreen("redflash1")
+	//Caustic Edit End
 	new /obj/item/magic/obsidian(get_turf(src))
 	playsound(src, "shatter", 70, TRUE)
 	qdel(src)
@@ -324,7 +332,10 @@
 		user.apply_damage(25, BURN, user.get_bodypart(BODY_ZONE_L_ARM))
 	else
 		user.apply_damage(25, BURN, user.get_bodypart(BODY_ZONE_R_ARM))
-	user.flash_fullscreen("redflash1")
+	//Caustic Edit
+	if (user.show_redflash())
+		user.flash_fullscreen("redflash1")
+	//Caustic Edit End
 	user.emote("scream")
 
 /////////////////////////////////////////Crystal ball ghsot vision///////////////////

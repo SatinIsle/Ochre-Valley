@@ -11,6 +11,7 @@
 		STATKEY_SPD = 2,
 		STATKEY_LCK = 1
 	)
+	age_mod = /datum/class_age_mod/witch
 	subclass_spellpoints = 9 // CC Edit
 	subclass_skills = list(
 		/datum/skill/misc/reading = SKILL_LEVEL_EXPERT,
@@ -58,9 +59,6 @@
 		shirt = /obj/item/clothing/suit/roguetown/shirt/undershirt/lowcut
 		pants = /obj/item/clothing/under/roguetown/skirt/red
 	if(H.age == AGE_OLD)
-		H.change_stat(STATKEY_SPD, -1)
-		H.change_stat(STATKEY_INT, 1)
-		H.change_stat(STATKEY_LCK, 1)
 		// CC Edit Start
 		H.adjust_skillrank_up_to(/datum/skill/magic/arcane, SKILL_LEVEL_APPRENTICE, TRUE) // Oh wicked hag of the bog, some extra magic cause youre pog
 		H.mind?.adjust_spellpoints(3)

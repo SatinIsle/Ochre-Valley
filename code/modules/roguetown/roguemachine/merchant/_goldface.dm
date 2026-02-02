@@ -85,7 +85,7 @@
 		"Raw Materials",
 		"Seeds",
 		"Tools",
-		"Weapons (Foreign)",
+		// "Weapons (Foreign)", //Caustic Edit - Commenting this out so it's moved to the Smithy one!
 	)
 	categories_gamer = list()
 
@@ -106,6 +106,7 @@
 		"Weapons (Ranged)",
 		"Weapons (Iron and Shields)",
 		"Weapons (Steel)",
+		"Weapons (Foreign)", //Caustic Edit - Moved the Exotic Weapons to the Smithy Silverface
 	)
 	categories_gamer = list()
 

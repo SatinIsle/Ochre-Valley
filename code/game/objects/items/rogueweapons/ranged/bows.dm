@@ -5,12 +5,19 @@
 	chargedrain = 2
 	charging_slowdown = 3
 
-/datum/intent/shoot/bow/can_charge()
-	if(mastermob)
-		if(mastermob.get_num_arms(FALSE) < 2)
-			return FALSE
-		if(mastermob.get_inactive_held_item())
-			return FALSE
+/datum/intent/shoot/bow/can_charge(atom/clicked_object)
+	if(mastermob?.get_num_arms(FALSE) < 2 || mastermob.get_inactive_held_item())
+		to_chat(mastermob, span_warning("I need a free hand to draw [masteritem]!"))
+		return FALSE
+
+	if(istype(clicked_object, /obj/item/quiver) && istype(mastermob?.get_active_held_item(), /obj/item/gun/ballistic))
+		return FALSE
+
+	if(mastermob.next_move > world.time)
+		if(mastermob.client.last_cooldown_warn + 10 < world.time)
+			to_chat(mastermob, span_warning("I'm not ready to do that yet!"))
+			mastermob.client.last_cooldown_warn = world.time
+		return FALSE
 	return TRUE
 
 /datum/intent/shoot/bow/prewarning()
@@ -42,11 +49,18 @@
 	chargedrain = 2
 	charging_slowdown = 3
 
-/datum/intent/arc/bow/can_charge()
+/datum/intent/arc/bow/can_charge(atom/clicked_object)
 	if(mastermob)
-		if(mastermob.get_num_arms(FALSE) < 2)
+		var/cooldown = (mastermob.active_hand_index == 1) ? mastermob.next_lmove : mastermob.next_rmove
+		if(cooldown > world.time)
+			if(mastermob.client.last_cooldown_warn + 10 < world.time)
+				to_chat(mastermob, span_warning("I'm not ready to do that yet!"))
+				mastermob.client.last_cooldown_warn = world.time
 			return FALSE
-		if(mastermob.get_inactive_held_item())
+		if(mastermob.get_num_arms(FALSE) < 2 || mastermob.get_inactive_held_item())
+			to_chat(mastermob, span_warning("I need a free hand to draw [masteritem]!"))
+			return FALSE
+		if(istype(clicked_object, /obj/item/quiver) && istype(mastermob?.get_active_held_item(), /obj/item/gun/ballistic))
 			return FALSE
 	return TRUE
 
@@ -103,6 +117,10 @@
 	load_sound = 'sound/foley/nockarrow.ogg'
 	obj_flags = UNIQUE_RENAME
 	var/heavy_bow = FALSE //used for adding a STR check to the charge time of a bow
+
+/obj/item/gun/ballistic/revolver/grenadelauncher/bow/get_mechanics_examine(mob/user)
+	. += span_info("Bows increase in damage and accuracy the higher your <b>PERCEPTION</b>.")
+	. += span_info("Bows with a heavy draw, such as longbows, have an increased draw time for characters with low <b>STRENGTH</b>.")
 
 /obj/item/gun/ballistic/revolver/grenadelauncher/bow/Initialize()
 	. = ..()
@@ -210,9 +228,8 @@
 			update_icon()
 
 /obj/item/gun/ballistic/revolver/grenadelauncher/bow/process_fire(atom/target, mob/living/user, message = TRUE, params = null, zone_override = "", bonus_spread = 0)
-	if(user.get_num_arms(FALSE) < 2)
-		return FALSE
-	if(user.get_inactive_held_item())
+	if(user.get_inactive_held_item() || user.get_num_arms(FALSE) < 2)
+		to_chat(user, span_warning("I need a free hand to fire \the [src]!"))
 		return FALSE
 	if(user.client)
 		if(user.client.chargedprog >= 100)
@@ -234,7 +251,7 @@
 		else
 			BB.damage = BB.damage
 		BB.damage *= damfactor * (user.STAPER > 10 ? user.STAPER / 10 : 1)
-	. = ..()
+	return ..()
 
 /obj/item/gun/ballistic/revolver/grenadelauncher/bow/update_icon()
 	..()

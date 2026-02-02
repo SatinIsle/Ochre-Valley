@@ -16,8 +16,8 @@
 	maximum_antags = 2
 
 	weight = 18
-	max_occurrences = 2
-
+	max_occurrences = 0 //Caustic Cove Edit - Disable Dreamwalker spawns entirely. While this is 0, it can never spawn. Weight set to 0 is 'Extremely Unlikely' according to base round_event_control that defines this.
+	
 	earliest_start = 0 SECONDS
 
 	typepath = /datum/round_event/antagonist/solo/dreamwalker

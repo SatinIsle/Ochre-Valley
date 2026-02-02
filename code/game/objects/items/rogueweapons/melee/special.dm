@@ -121,7 +121,7 @@
 	. = ..()
 	if(get_dist(user, target) > 7)
 		return
-	
+
 	user.changeNext_move(CLICK_CD_MELEE)
 
 	if(ishuman(user))
@@ -378,7 +378,7 @@
 	name = "psydonic knuckles"
 	desc = "A simple piece of harm molded in a holy mixture of steel and silver, finished with three stumps - Psydon's crown - to crush the heretics' garments and armor into smithereens."
 	icon_state = "psyknuckle"
-	force = 17
+	force = 27 //Smaller silver blunt weapons should have a +2-3 damage bonus, compared to their steel counterparts.
 	wdefense = 5
 	is_silver = TRUE
 	smeltresult = /obj/item/ingot/silverblessed
@@ -432,6 +432,7 @@
 	smeltresult = /obj/item/ingot/steel
 	grid_width = 64
 	grid_height = 32
+	special = /datum/special_intent/upper_cut
 	sellprice = 30
 
 /obj/item/rogueweapon/knuckles/getonmobprop(tag)
@@ -487,8 +488,8 @@
 /obj/item/rogueweapon/knuckles/eora
 	name = "close caress"
 	desc = "Some times call for a more intimate approach."
-	force = 24
 	icon_state = "eoraknuckle"
+	force = 28 // lower this to 27 if its too much
 	sellprice = 25
 
 ///Peasantry / Militia Weapon Pack///
@@ -501,7 +502,7 @@
 	name = "militia goedendag"
 	desc = "Clubs - and their spiked descendants - are older than most languages and civilizations. Tyme hasn't made them any less deadly, however. "
 	icon_state = "peasantwarclub"
-	icon = 'icons/roguetown/weapons/64.dmi'
+	icon = 'icons/roguetown/weapons/blunt64.dmi'
 	smeltresult = /obj/item/rogueore/coal
 	sharpness = IS_SHARP
 	walking_stick = TRUE
@@ -576,12 +577,11 @@
 /obj/item/rogueweapon/spear/militia
 	force = 18
 	force_wielded = 30
-	possible_item_intents = list(SPEAR_THRUST, SPEAR_BASH)
+	possible_item_intents = list(SPEAR_THRUST_1H, SPEAR_CUT_1H)
 	gripped_intents = list(SPEAR_THRUST, SPEAR_CUT, SPEAR_BASH)
 	name = "militia spear"
 	desc = "Pitchforks and hoes traditionally till the soil. In tymes of peril, however, it isn't uncommon for a militiaman to pound them into polearms."
 	icon_state = "peasantwarspear"
-	icon = 'icons/roguetown/weapons/64.dmi'
 	minstr = 8
 	max_blade_int = 120
 	max_integrity = 200
@@ -593,7 +593,7 @@
 	light_outer_range = 5
 	light_on = FALSE
 	light_color = "#db892b"
-	var/is_loaded = FALSE 
+	var/is_loaded = FALSE
 	var/list/hay_types = list(/obj/structure/fluff/nest, /obj/structure/composter, /obj/structure/flora/roguegrass, /obj/item/reagent_containers/food/snacks/grown/wheat)
 	sellprice = 20
 
@@ -709,7 +709,7 @@
 					user.regenerate_icons()
 
 
-	
+
 /datum/component/ignitable/proc/on_examine(datum/source, mob/user, list/examine_list)
 	return
 
@@ -721,7 +721,7 @@
 	name = "scythe"
 	desc = "The bane of fields, the trimmer of grass, the harvester of wheat, and - depending on who you ask - the shepherd of souls to the afterlyfe."
 	icon_state = "peasantscythe"
-	icon = 'icons/roguetown/weapons/64.dmi'
+	icon = 'icons/roguetown/weapons/polearms64.dmi'
 	pixel_y = -16
 	pixel_x = -16
 	inhand_x_dimension = 64
@@ -774,6 +774,14 @@
 	wbalance = WBALANCE_NORMAL
 	sellprice = 20
 
+/obj/item/rogueweapon/pick/militia/getonmobprop(tag)
+	. = ..()
+	if(tag)
+		switch(tag)
+			if("gen")
+				return list("shrink" = 0.6,"sx" = -11,"sy" = -10,"nx" = 13,"ny" = -9,"wx" = -7,"wy" = -9,"ex" = 7,"ey" = -11,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0,"nturn" = 90,"sturn" = -90,"wturn" = -90,"eturn" = 90,"nflip" = 0,"sflip" = 8,"wflip" = 8,"eflip" = 0)
+
+
 /obj/item/rogueweapon/pick/militia/steel
 	force = 25
 	force_wielded = 30
@@ -789,6 +797,14 @@
 	wdefense_wbonus = 5
 	wbalance = WBALANCE_HEAVY
 	sellprice = 30
+
+/obj/item/rogueweapon/pick/militia/steel/getonmobprop(tag)
+	. = ..()
+	if(tag)
+		switch(tag)
+			if("gen")
+				return list("shrink" = 0.6,"sx" = -11,"sy" = -10,"nx" = 13,"ny" = -9,"wx" = -7,"wy" = -9,"ex" = 7,"ey" = -11,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0,"nturn" = 90,"sturn" = -90,"wturn" = -90,"eturn" = 90,"nflip" = 0,"sflip" = 8,"wflip" = 8,"eflip" = 0)
+
 
 /obj/item/rogueweapon/sword/falchion/militia
 	name = "maciejowski"
@@ -1120,3 +1136,84 @@
 	src.container = container
 
 	S.forceMove(container)
+
+// Standard of the keep.
+// Big ol' flag that they keep to give bonuses, used by the manorguard standard bearer.
+/obj/item/rogueweapon/spear/keep_standard
+	name = "ducal standard"
+	desc = "The local lord's banner, fashioned to a blacksteel pike and turned into a deadly instrument of war. \
+	The man who wields this is said to bring great fortune to his house, and those who keep him safe. \
+	<small>Runes glow near the head of the pike. A sure sign of the arcyne.</small>"
+	force = 15
+	force_wielded = 30
+	throwforce = 40 // It'll be funny. Trust.
+	possible_item_intents = list(SPEAR_BASH)
+	gripped_intents = list(/datum/intent/spear/thrust/ducal_standard, /datum/intent/spear/bash/ranged, /datum/intent/mace/smash/eaglebeak) // GET THEM OFF OF ME!!! OOOUGH!!!
+	icon = 'icons/roguetown/weapons/polearms64.dmi'
+	icon_state = "standard"
+	max_blade_int = 200
+	max_integrity = 250
+	smeltresult = /obj/item/ingot/blacksteel
+	resistance_flags = FIRE_PROOF
+	var/active_item = FALSE
+
+/obj/item/rogueweapon/spear/keep_standard/equipped(mob/living/user)
+	. = ..()
+	if(active_item)
+		return
+	active_item = TRUE
+	if(user.job == "Man at Arms")
+		to_chat(user, span_suppradio("The standard's runes pulse, accepting me as its <b>master</b>."))
+		user.change_stat(STATKEY_LCK, 3)
+		user.change_stat(STATKEY_PER, 2)
+		user.add_stress(/datum/stressevent/keep_standard)
+		ADD_TRAIT(user, TRAIT_IGNOREDAMAGESLOWDOWN, TRAIT_GENERIC)
+		if(HAS_TRAIT(user, TRAIT_STANDARD_BEARER))
+			to_chat(user, span_suppradio("<small>It remains ready for your word. You need only ask.</small>"))
+			user.verbs |= /mob/proc/standard_position
+			user.verbs |= /mob/proc/standard_rally
+	else
+		to_chat(user, span_suicide("The standard's runes pulse, rejecting me as its <b>master</b>."))
+
+/obj/item/rogueweapon/spear/keep_standard/dropped(mob/living/user)
+	..()
+	if(!active_item)
+		return
+	active_item = FALSE
+	if(user.job == "Man at Arms")
+		to_chat(user, span_monkeyhive("The standard's runes pulse, rhythmically, as if sad to see you release your control."))
+		user.change_stat(STATKEY_LCK, -3)
+		user.change_stat(STATKEY_PER, -2)
+		user.remove_stress(/datum/stressevent/keep_standard)
+		REMOVE_TRAIT(user, TRAIT_IGNOREDAMAGESLOWDOWN, TRAIT_GENERIC)
+		if(HAS_TRAIT(user, TRAIT_STANDARD_BEARER))
+			to_chat(user, span_monkeyhive("<small>You feel ill. Was that a mistake?</small>"))
+			user.verbs -= /mob/proc/standard_position
+			user.verbs -= /mob/proc/standard_rally
+	else
+		to_chat(user, span_suicide("The standard's runes pulse, as if sighing in relief once I let go."))
+
+//Shameless copy of how clothes handle it.
+/obj/item/rogueweapon/spear/keep_standard/update_icon()
+	cut_overlays()
+	if(get_detail_tag())
+		var/mutable_appearance/pic = mutable_appearance(icon(icon, "[icon_state][detail_tag]"))
+		pic.appearance_flags = RESET_COLOR
+		if(get_detail_color())
+			pic.color = get_detail_color()
+		add_overlay(pic)
+
+/obj/item/rogueweapon/spear/keep_standard/Initialize()
+	. = ..()
+	if(GLOB.lordprimary)
+		lordcolor(GLOB.lordprimary, GLOB.lordsecondary)
+	GLOB.lordcolor += src
+
+/obj/item/rogueweapon/spear/keep_standard/lordcolor(primary, secondary)
+	detail_tag = "_det"
+	detail_color = primary
+	update_icon()
+
+/obj/item/rogueweapon/spear/keep_standard/Destroy()
+	GLOB.lordcolor -= src
+	return ..()

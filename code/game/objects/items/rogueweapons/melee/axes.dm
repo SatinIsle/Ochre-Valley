@@ -33,6 +33,11 @@
 	damfactor = 1.2 //36 on battleaxe
 	penfactor = 40
 
+/datum/intent/axe/chop/battle/halberd
+	damfactor = 1.3
+	swingdelay = 12
+	penfactor = 20
+
 /datum/intent/axe/cut/battle
 	penfactor = 25
 
@@ -155,7 +160,7 @@
 			if("gen")
 				return list("shrink" = 0.7,"sx" = -9,"sy" = -8,"nx" = 9,"ny" = -7,"wx" = -7,"wy" = -8,"ex" = 3,"ey" = -8,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0,"nturn" = 90,"sturn" = -90,"wturn" = -90,"eturn" = 90,"nflip" = 0,"sflip" = 8,"wflip" = 8,"eflip" = 0)
 			if("wielded")
-				return list("shrink" = 0.7,"sx" = 3,"sy" = -5,"nx" = -6,"ny" = -3,"wx" = 3,"wy" = -4,"ex" = 4,"ey" = -3,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0,"nturn" = -44,"sturn" = 45,"wturn" = 47,"eturn" = 33,"nflip" = 8,"sflip" = 0,"wflip" = 0,"eflip" = 0)
+				return list("shrink" = 0.7,"sx" = 1,"sy" = -5,"nx" = -6,"ny" = -3,"wx" = 3,"wy" = -4,"ex" = 4,"ey" = -3,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0,"nturn" = -44,"sturn" = 45,"wturn" = 47,"eturn" = 33,"nflip" = 8,"sflip" = 0,"wflip" = 0,"eflip" = 8)
 			if("onbelt")
 				return list("shrink" = 0.3,"sx" = -2,"sy" = -5,"nx" = 4,"ny" = -5,"wx" = 0,"wy" = -5,"ex" = 2,"ey" = -5,"nturn" = 0,"sturn" = 0,"wturn" = 0,"eturn" = 0,"nflip" = 0,"sflip" = 0,"wflip" = 0,"eflip" = 0,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0)
 	return ..()
@@ -167,7 +172,7 @@
 	name = "oath"
 	desc = "A hefty, steel-forged axe marred by the touch of countless Wardens. Despite it's weathered etchings and worn grip, the blade has been honed to a razor's edge and you can see your reflection in the finely polished metal."
 	icon_state = "oath"
-	icon = 'icons/roguetown/weapons/64.dmi'
+	icon = 'icons/roguetown/weapons/axes64.dmi'
 	max_blade_int = 500
 	dropshrink = 0.75
 	wlength = WLENGTH_LONG
@@ -261,6 +266,8 @@
 	icon_state = "abyssoraxe"
 	icon = 'icons/roguetown/weapons/axes32.dmi'
 	max_integrity = 400 // higher int than usual
+	possible_item_intents = list(/datum/intent/axe/cut,/datum/intent/axe/chop, /datum/intent/mace/warhammer/pick, /datum/intent/axe/bash)
+	gripped_intents = list(/datum/intent/axe/cut,/datum/intent/axe/chop, /datum/intent/sword/peel, /datum/intent/axe/bash)
 	sellprice = 100 //Wow what the fuck this is cool! Lots of integrity!
 
 //Pickaxe-axe ; Technically both a tool and a weapon, but it goes here due to weapon function. Subtype of woodcutter axe, mostly a weapon.
@@ -298,6 +305,9 @@
 	max_integrity = 100 // Half of the norm
 	icon_state = "chatchet"
 	smeltresult = /obj/item/ingot/copper
+	throwforce = 20 //You ever had an axe thrown at you? 
+	throw_speed = 3 
+	armor_penetration = 20
 	sellprice = 14
 
 /obj/item/rogueweapon/stoneaxe/handaxe
@@ -311,6 +321,10 @@
 	smeltresult = /obj/item/ingot/iron
 	gripped_intents = null
 	wdefense = 2
+	throwforce = 25 //You ever had an axe thrown at you? 
+	throw_speed = 3 
+	armor_penetration = 25
+	
 	sellprice = 18
 
 /obj/item/rogueweapon/stoneaxe/woodcut/bronze
@@ -354,7 +368,7 @@
 
 /obj/item/rogueweapon/stoneaxe/woodcut/steel/woodcutter
 	name = "woodcutter's axe"
-	icon = 'icons/roguetown/weapons/64.dmi'
+	icon = 'icons/roguetown/weapons/axes64.dmi'
 	icon_state = "woodcutter"
 	desc = "A long-handled axe with a carved grip, made of high quality wood. Perfect for those in the lumber trade."
 	max_integrity = 300		//100 higher than normal; basically it's main difference.
@@ -419,7 +433,7 @@
 	name = "silver war axe"
 	desc = "A hefty battle axe, fashioned from pure silver. Even with a one-handed grasp, an efforted swing carries enough momentum to cleave through maille-and-flesh alike."
 	icon_state = "silveraxe"
-	force = 20
+	force = 25 //Forgot this is forced to only be one-handed. My bad.
 	force_wielded = 25
 	possible_item_intents = list(/datum/intent/axe/cut/battle, /datum/intent/axe/chop/battle, /datum/intent/axe/bash, /datum/intent/sword/peel)
 	minstr = 11
@@ -466,22 +480,6 @@
 		added_def = 1,\
 	)
 
-/obj/item/rogueweapon/stoneaxe/battle/psyaxe/old
-	name = "enduring war axe"
-	desc = "An ornate battle axe, its silver tarnished by neglect. Even a dim light can pierce the dark."
-	icon_state = "psyaxe"
-	force = 25
-	force_wielded = 30
-	minstr = 9
-	wdefense = 4
-	is_silver = FALSE
-	smeltresult = /obj/item/ingot/steel
-	color = COLOR_FLOORTILE_GRAY
-	sellprice = 40 //Lore wise has traces of silver.
-
-/obj/item/rogueweapon/stoneaxe/battle/psyaxe/old/ComponentInitialize()
-	return
-
 /obj/item/rogueweapon/stoneaxe/battle/steppesman
 	name = "aavnic valaška"
 	desc = "A steel axe of Aavnic make that combines a deadly weapon with a walking stick - hence its pointed end. It has a flat head that fits the hand comfortably, and it's usable for chopping and smashing. You could probably stab someone if you tried really hard."
@@ -507,7 +505,7 @@
 	name = "greataxe"
 	desc = "A iron great axe, a long-handled axe with a single blade made for ruining someone's day beyond any measure.."
 	icon_state = "igreataxe"
-	icon = 'icons/roguetown/weapons/64.dmi'
+	icon = 'icons/roguetown/weapons/axes64.dmi'
 	pixel_y = -16
 	pixel_x = -16
 	inhand_x_dimension = 64
@@ -544,21 +542,27 @@
 	name = "steel greataxe"
 	desc = "A steel great axe, a long-handled axe with a single blade made for ruining someone's day beyond any measure.."
 	icon_state = "sgreataxe"
-	icon = 'icons/roguetown/weapons/64.dmi'
 	minstr = 11
 	max_blade_int = 250
 	smeltresult = /obj/item/ingot/steel
 	sellprice = 75 //Hyuge STEEL axe!
 
+/obj/item/rogueweapon/greataxe/steel/knight
+	possible_item_intents = list(/datum/intent/axe/cut, /datum/intent/axe/chop, /datum/intent/mace/strike)
+	gripped_intents = list(/datum/intent/axe/cut/battle/greataxe, /datum/intent/axe/chop/battle/greataxe,  /datum/intent/mace/strike, /datum/intent/mace/rangedthrust)
+	name = "steel poleaxe"
+	desc = "A poleaxe, bearing axhead afront and beaked claw on the other. The natural evolution of the halberd it is the ultimate weapon to defeat any foe a knight could face."
+	icon_state = "steelpoleaxe"
+	max_blade_int = 300
+
 /obj/item/rogueweapon/greataxe/silver
 	force = 15
 	force_wielded = 25
 	possible_item_intents = list(/datum/intent/axe/cut, /datum/intent/axe/chop, /datum/intent/mace/strike) //When possible, add the longsword's 'alternate grip' mechanic to let people flip this around into a Mace-scaling weapon with swapped damage.
-	gripped_intents = list(/datum/intent/axe/cut/battle/greataxe, /datum/intent/axe/chop/battle/greataxe, /datum/intent/mace/rangedthrust, /datum/intent/mace/strike) //Axe-equivalent to the Godendag or Grand Mace.
+	gripped_intents = list(/datum/intent/axe/cut/battle/greataxe, /datum/intent/axe/chop/battle/greataxe, /datum/intent/mace/strike, /datum/intent/mace/rangedthrust) //Axe-equivalent to the Godendag or Grand Mace.
 	name = "silver poleaxe"
 	desc = "A poleaxe, fitted with a reinforced shaft and a beaked axhead of pure silver. It may not stop the darkness; but it will halt its march, long enough, to shepherd away the defenseless. </br>'O'er the Horizon, the stars and spirals I see; and below it, the horrors that've been felled by me. Through the darkness, I see my home and its beautiful light; and it will continue to shimmer, as long as I fight. Forever I stand, forever I'll hold - 'til the Horizon grows still, and my spirit trails home..'"
 	icon_state = "silverpolearm"
-	icon = 'icons/roguetown/weapons/64.dmi'
 	minstr = 12
 	max_blade_int = 350
 	is_silver = TRUE
@@ -584,7 +588,6 @@
 	name = "psydonic poleaxe"
 	desc = "A poleaxe, fitted with a reinforced shaft and a beaked axhead of alloyed silver. As the fragility of swords've become more apparent, the Psydonic Orders - following the disastrous Massacre of Blastenghyll - have shifted their focus towards arming their paladins with longer-lasting greatweapons."
 	icon_state = "silverpolearm"
-	icon = 'icons/roguetown/weapons/64.dmi'
 	minstr = 12
 	max_blade_int = 350
 	is_silver = TRUE
@@ -621,7 +624,6 @@
 	name = "double-headed steel greataxe"
 	desc = "A steel great axe with a wicked double-bladed head. Perfect for cutting either men or trees into stumps.."
 	icon_state = "doublegreataxe"
-	icon = 'icons/roguetown/weapons/64.dmi'
 	max_blade_int = 175
 	minstr = 12
 	sellprice = 125
@@ -633,7 +635,6 @@
 	force = 20
 	force_wielded = 40
 	max_blade_int = 250
-	icon = 'icons/roguetown/weapons/64.dmi'
 	sellprice = 100 //Heretical...
 
 /obj/item/rogueweapon/greataxe/steel/doublehead/graggar/Initialize()

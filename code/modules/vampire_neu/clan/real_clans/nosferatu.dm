@@ -9,9 +9,9 @@
 	lord_verbs = list(
 		/mob/living/carbon/human/proc/punish_spawn
 	)
-	lord_traits = list(TRAIT_HEAVYARMOR, TRAIT_INFINITE_ENERGY)
 	lord_title = "Nosferatu"
-
+	lord_traits = list(TRAIT_HEAVYARMOR, TRAIT_INFINITE_ENERGY, TRAIT_STRENGTH_UNCAPPED)
+	vitae_bonus = 500
 
 /datum/clan/nosferatu
 	name = "Nosferatu"
@@ -21,8 +21,7 @@
 	leader = /datum/clan_leader/nosferatu
 	clane_covens = list(
 		/datum/coven/potence,
-		/datum/coven/obfuscate,
-		/datum/coven/bloodheal
+		/datum/coven/obfuscate
 	)
 	blood_preference = BLOOD_PREFERENCE_RATS | BLOOD_PREFERENCE_DEAD | BLOOD_PREFERENCE_KIN
 	clane_traits = list(

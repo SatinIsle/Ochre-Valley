@@ -13,6 +13,12 @@
 	cost = 50
 	contains = list(/obj/item/reagent_containers/powder/herozium)
 
+// Caustic Edit
+/datum/supply_pack/rogue/drugs/suidust
+	name = "Sui Dust"
+	cost = 20
+	contains = list(/obj/item/alch/transisdust)
+// Caustic Edit End
 
 /datum/supply_pack/rogue/drugs/moondust
 	name = "Moon Dust"
@@ -67,17 +73,22 @@
 /datum/supply_pack/rogue/drugs/zigbox
 	name = "Zigbox (Empty)"
 	cost = 5
-	contains = list(/obj/item/quiver/zigs)
+	contains = list(/obj/item/storage/belt/rogue/pouch/zigarrete)
 
 /datum/supply_pack/rogue/drugs/zigbox_pipezig
 	name = "Zigbox (Pipeweed)"
 	cost = 25
-	contains = list(/obj/item/quiver/zigs/nicotine)
+	contains = list(/obj/item/storage/belt/rogue/pouch/zigarrete/nicotine)
 
 /datum/supply_pack/rogue/drugs/zigbox_swampzig
 	name = "Zigbox (Swampweed)"
 	cost = 55
-	contains = list(/obj/item/quiver/zigs/cannabis)
+	contains = list(/obj/item/storage/belt/rogue/pouch/zigarrete/cannabis)
+
+/datum/supply_pack/rogue/drugs/zigdolier
+	name = "Zigdolier (Empty)"
+	cost = 35
+	contains = list(/obj/item/storage/belt/rogue/leather/zig_bandolier)
 
 /datum/supply_pack/rogue/drugs/fermented_crab
 	name = "Fermented Crab"

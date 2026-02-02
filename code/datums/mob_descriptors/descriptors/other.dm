@@ -20,7 +20,7 @@
 /datum/mob_descriptor/penis
 	name = "penis"
 	slot = MOB_DESCRIPTOR_SLOT_PENIS
-	verbage = "has"
+	verbage = "%HAVE%"
 	show_obscured = TRUE
 
 /datum/mob_descriptor/penis/can_describe(mob/living/described)
@@ -80,7 +80,7 @@
 /datum/mob_descriptor/testicles
 	name = "balls"
 	slot = MOB_DESCRIPTOR_SLOT_TESTICLES
-	verbage = "has"
+	verbage = "%HAVE%"
 	show_obscured = TRUE
 
 /datum/mob_descriptor/testicles/can_describe(mob/living/described)
@@ -94,9 +94,11 @@
 		return FALSE
 	if(!get_location_accessible(H, BODY_ZONE_PRECISE_GROIN))
 		return FALSE
-	var/obj/item/organ/penis/penis = H.getorganslot(ORGAN_SLOT_PENIS)
-	if(penis && penis.sheath_type == SHEATH_TYPE_SLIT) //If our penis hides in a slit, dont describe testicles
-		return FALSE
+	//Caustic Edit - Allow external balls even with a slit if someone likes it!
+	//var/obj/item/organ/penis/penis = H.getorganslot(ORGAN_SLOT_PENIS)
+	//if(penis && penis.sheath_type == SHEATH_TYPE_SLIT) //If our penis hides in a slit, dont describe testicles
+		//return FALSE
+	//Caustic Edit End
 	return TRUE
 
 /datum/mob_descriptor/testicles/get_description(mob/living/described)
@@ -110,7 +112,7 @@
 /datum/mob_descriptor/vagina
 	name = "vagina"
 	slot = MOB_DESCRIPTOR_SLOT_VAGINA
-	verbage = "has"
+	verbage = "%HAVE%"
 	show_obscured = TRUE
 
 /datum/mob_descriptor/vagina/can_describe(mob/living/described)
@@ -158,7 +160,7 @@
 /datum/mob_descriptor/breasts
 	name = "breasts"
 	slot = MOB_DESCRIPTOR_SLOT_BREASTS
-	verbage = "has"
+	verbage = "%HAVE%"
 	show_obscured = TRUE
 
 /datum/mob_descriptor/breasts/can_describe(mob/living/described)

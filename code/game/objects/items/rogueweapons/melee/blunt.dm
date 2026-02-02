@@ -96,6 +96,7 @@
 	minstr = 7
 	wdefense = 2
 	wbalance = WBALANCE_HEAVY
+	max_integrity = 350
 	icon_angle_wielded = 50
 	special = /datum/special_intent/ground_smash
 	sellprice = 20 //Maces are just what they are. Balls of metal. Maybe pricier, maybe not. They're pretty 1:1 in terms of price per material.
@@ -105,11 +106,11 @@
 	if(tag)
 		switch(tag)
 			if("gen")
-				return list("shrink" = 0.6,"sx" = -11,"sy" = -8,"nx" = 12,"ny" = -8,"wx" = -5,"wy" = -8,"ex" = 6,"ey" = -8,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0,"nturn" = 90,"sturn" = -90,"wturn" = -90,"eturn" = 90,"nflip" = 0,"sflip" = 8,"wflip" = 8,"eflip" = 0)
+				return list("shrink" = 0.5,"sx" = -11,"sy" = -8,"nx" = 12,"ny" = -8,"wx" = -5,"wy" = -8,"ex" = 6,"ey" = -8,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0,"nturn" = 90,"sturn" = -90,"wturn" = -90,"eturn" = 90,"nflip" = 0,"sflip" = 8,"wflip" = 8,"eflip" = 0)
 			if("wielded")
-				return list("shrink" = 0.7,"sx" = 5,"sy" = -4,"nx" = -5,"ny" = -4,"wx" = -5,"wy" = -3,"ex" = 7,"ey" = -4,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0,"nturn" = -45,"sturn" = 45,"wturn" = -45,"eturn" = 45,"nflip" = 8,"sflip" = 0,"wflip" = 8,"eflip" = 0)
+				return list("shrink" = 0.6,"sx" = 5,"sy" = -4,"nx" = -5,"ny" = -4,"wx" = -5,"wy" = -3,"ex" = 7,"ey" = -4,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0,"nturn" = -45,"sturn" = 45,"wturn" = -45,"eturn" = 45,"nflip" = 8,"sflip" = 0,"wflip" = 8,"eflip" = 0)
 			if("onbelt")
-				return list("shrink" = 0.5,"sx" = -2,"sy" = -5,"nx" = 4,"ny" = -5,"wx" = 0,"wy" = -5,"ex" = 2,"ey" = -5,"nturn" = 0,"sturn" = 0,"wturn" = 0,"eturn" = 0,"nflip" = 0,"sflip" = 0,"wflip" = 0,"eflip" = 0,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0)
+				return list("shrink" = 0.45,"sx" = -2,"sy" = -5,"nx" = 4,"ny" = -5,"wx" = 0,"wy" = -5,"ex" = 2,"ey" = -5,"nturn" = 0,"sturn" = 0,"wturn" = 0,"eturn" = 0,"nflip" = 0,"sflip" = 0,"wflip" = 0,"eflip" = 0,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0)
 
 /obj/item/rogueweapon/mace/bronze
 	force = 23
@@ -117,10 +118,8 @@
 	name = "bronze mace"
 	icon_state = "bronzemace"
 	desc = "An antiquital staff, crested with a studded sphere of bronze. Bludgeons were the first implements made for the explicit purpose of killing another; fittingly, this was the second."
-	wbalance = WBALANCE_HEAVY
 	smeltresult = /obj/item/ingot/bronze
 	max_integrity = 250
-	wdefense = 2
 	sellprice = 25
 
 /obj/item/rogueweapon/mace/alloy
@@ -154,7 +153,6 @@
 	name = "steel mace"
 	desc = "This steel mace is objectively superior to an iron one."
 	icon_state = "smace"
-	wbalance = WBALANCE_HEAVY
 	smeltresult = /obj/item/ingot/steel
 	wdefense = 3
 	smelt_bar_num = 2
@@ -173,7 +171,6 @@
 	name = "silver-plated mace"
 	desc = "A long and heavy flanged mace, forged from pure silver covering a dense blacksteel core. For a lord, it's the perfect symbol of authority; a decorative piece for the courts. For a paladin, however, there's no better implement for shattering avantyne-maille into a putrid pile of debris."
 	icon_state = "silvermace"
-	wbalance = WBALANCE_HEAVY
 	smeltresult = /obj/item/ingot/silver
 	minstr = 10
 	wdefense = 5
@@ -220,6 +217,18 @@
 /datum/intent/mace/smash/wood
 	hitsound = list('sound/combat/hits/blunt/woodblunt (1).ogg', 'sound/combat/hits/blunt/woodblunt (2).ogg')
 	penfactor = BLUNT_DEFAULT_PENFACTOR
+
+/obj/item/rogueweapon/mace/woodclub/deprived
+	name = "warped club"
+	desc = "It's a piece of wood marred by age and strife alike."
+	icon_state = "deprived"
+	force = 20
+	force_wielded = 22
+	wbalance = WBALANCE_HEAVY
+
+/obj/item/rogueweapon/mace/woodclub/deprived/New()
+	..()
+	icon_state = "deprived"
 
 /datum/intent/mace/smash/wood/ranged
 	reach = 2
@@ -296,6 +305,7 @@
 	force_wielded = 25
 	wbalance = WBALANCE_NORMAL
 	icon_state = "opsyflangedmace"
+	smeltresult = /obj/item/ingot/steel
 	sellprice = 100 //Old, little less pricy
 
 /obj/item/rogueweapon/mace/cudgel/psy/old/ComponentInitialize()
@@ -412,10 +422,10 @@
 	force_wielded = 30
 	possible_item_intents = list(/datum/intent/mace/strike)
 	gripped_intents = list(/datum/intent/mace/strike, /datum/intent/mace/smash, /datum/intent/mace/rangedthrust, /datum/intent/effect/daze)
-	name = "Goedendag"
+	name = "goedendag"
 	desc = "Good morning."
 	icon_state = "goedendag"
-	icon = 'icons/roguetown/weapons/64.dmi'
+	icon = 'icons/roguetown/weapons/blunt64.dmi'
 	sharpness = IS_BLUNT
 	//dropshrink = 0.75
 	wlength = WLENGTH_LONG
@@ -466,6 +476,7 @@
 	smelt_bar_num = 2
 	wdefense_wbonus = 5
 	special = null
+	max_integrity = 300
 	sellprice = 40 //Nice.
 
 /obj/item/rogueweapon/mace/goden/steel/paalloy
@@ -495,7 +506,7 @@
 	icon_state = "kanabo"
 	slot_flags = ITEM_SLOT_BACK
 	gripped_intents = list(/datum/intent/mace/strike, /datum/intent/mace/smash, /datum/intent/stab, /datum/intent/effect/daze)
-	max_integrity = 225 // it's strong wood, but it's still wood.
+	max_integrity = 250 // it's strong wood, but it's still wood.
 	sellprice = 14 //"Strong wood"
 
 /obj/item/rogueweapon/mace/goden/steel/ravox
@@ -503,7 +514,7 @@
 	desc = "The tenets of ravoxian duels are enscribed upon the head of this maul."
 	icon_state = "ravoxhammer"
 	gripped_intents = list(/datum/intent/mace/strike, /datum/intent/mace/smash, /datum/intent/effect/daze) // It loses the Goden stab so I give it daze
-	max_integrity = 350 // I am reluctant to give a steel goden more force as it breaks weapon so durability it is.
+	max_integrity = 400 // I am reluctant to give a steel goden more force as it breaks weapon so durability it is.
 	sellprice = 150 //Rare, job-spawn only item. Very valuable from the scarcity alone.
 
 /obj/item/rogueweapon/mace/goden/psymace
@@ -531,22 +542,6 @@
 		added_def = 1,\
 	)
 
-/obj/item/rogueweapon/mace/goden/psymace/old
-	name = "enduring mace"
-	desc = "An ornate mace, its silver tarnished by neglect. Even without HIS holy blessing, its weight ENDURES."
-	icon_state = "psymace"
-	force = 15
-	force_wielded = 30
-	minstr = 10
-	wdefense = 3
-	is_silver = FALSE
-	smeltresult = /obj/item/ingot/steel
-	color = COLOR_FLOORTILE_GRAY
-	sellprice = 122 //OLD!
-
-/obj/item/rogueweapon/mace/goden/psymace/old/ComponentInitialize()
-	return
-
 /obj/item/rogueweapon/mace/spiked
 	icon_state = "spiked_club"
 
@@ -563,6 +558,7 @@
 	wbalance = WBALANCE_HEAVY
 	smeltresult = /obj/item/ingot/iron
 	wdefense = 3
+	max_integrity = 200
 	sellprice = 20
 
 /obj/item/rogueweapon/mace/warhammer/alloy
@@ -570,7 +566,7 @@
 	desc = "A macehead of frayed bronze, spiked and perched atop a thin shaft. To see such a knightly implement abandoned to decay and neglect; that wounds the heart greater than any well-poised strike."
 	icon_state = "awarhammer"
 	force = 17
-	max_integrity = 180
+	max_integrity = 150
 	blade_dulling = DULLING_SHAFT_CONJURED
 	color = "#bb9696"
 	smeltresult = /obj/item/ingot/aaslag
@@ -666,14 +662,13 @@
 	name = "maul"
 	desc = "Who would need something this large? It looks like it was made for tearing down walls, rather than men."
 	icon_state = "sledge"
-	icon = 'icons/roguetown/weapons/64.dmi'
+	icon = 'icons/roguetown/weapons/blunt64.dmi'
 	wlength = WLENGTH_LONG
 	swingsound = BLUNTWOOSH_HUGE
 	slot_flags = null//No.
 	smelt_bar_num = 2
 	minstr = 14
-	wdefense = 2
-	wdefense_wbonus = 1 //3
+	wdefense = 3
 	demolition_mod = 1.25 //Oh, yes...
 	pixel_y = -16
 	pixel_x = -16
@@ -683,7 +678,6 @@
 	bigboy = TRUE
 	gripsprite = TRUE
 	minstr_req = TRUE //You MUST have the required strength. No exceptions.
-	max_integrity = 300
 	sellprice = 50 //Mauls... Big and beefy.
 
 /obj/item/rogueweapon/mace/maul/getonmobprop(tag)
@@ -705,9 +699,23 @@
 	minstr = 15
 	wdefense_wbonus = 4 // from 6
 	smelt_bar_num = 3
-	max_integrity = 350
 	sellprice = 80 //Mauls... Big and beefy.
 
+//Malumite maul. Intended for Templars.
+/obj/item/rogueweapon/mace/maul/grand/malum
+	name = "Kargrund Maul"
+	desc = "Forged from the legacy of dwarven rock-hammers, this maul’s holy steel and divine runes grant it immense power. \
+	Unwieldy to those weak of arm or faith, its mighty blows have the strength to shatter both stone and skull alike."
+	icon_state = "malumhammer"
+	minstr = 8//Handled by the unique interaction below. Inverted to start, since they spawn with it, and funny stuff can happen.
+
+/obj/item/rogueweapon/mace/maul/grand/malum/pickup(mob/living/user)
+	if(HAS_TRAIT(user, TRAIT_FORGEBLESSED))
+		src.minstr = 8//-10, if you have the ability to use this.
+	else
+		src.minstr = 18
+	..()
+	
 //Dwarvish mauls. Unobtanium outside of Grudgebearer. Do not change that.
 /obj/item/rogueweapon/mace/maul/steel
 	name = "dwarvish maul"
@@ -718,8 +726,9 @@
 	minstr = 11 // +2STR from Grudgebearer Soldier. Should cover this.
 	wdefense_wbonus = 3 // 5
 	smelt_bar_num = 3 // You'll break my heart.
-	max_integrity = 340
+	max_integrity = 390
 	sellprice = 160 //rare!
+
 /obj/item/rogueweapon/mace/maul/spiked
 	name = "spiked maul"
 	desc = "Covered in spikes, such is the weapon of a Dwarvish smith. \
@@ -729,7 +738,7 @@
 	wdefense_wbonus = 2 //4
 	minstr = 10 //+1 STR from Grudgebearer Smith. It should be fine.
 	smelt_bar_num = 3 //Please don't...
-	max_integrity = 320
+	max_integrity = 370
 	sellprice = 80 //Mauls... Big and beefy.
 
 //Intents for the mauls.
@@ -758,3 +767,123 @@
 	warnie = "mobwarning"
 	hitsound = list('sound/combat/hits/bladed/genstab (1).ogg', 'sound/combat/hits/bladed/genstab (2).ogg', 'sound/combat/hits/bladed/genstab (3).ogg')
 	item_d_type = "stab"
+
+/datum/component/mushroom_mace
+	dupe_mode = COMPONENT_DUPE_UNIQUE
+	var/hit_count = 0
+	var/last_hit_time = 0
+	var/reset_timeout = 75 SECONDS
+
+/datum/component/mushroom_mace/Initialize()
+	if(!isitem(parent))
+		return COMPONENT_INCOMPATIBLE
+	RegisterSignal(parent, COMSIG_ITEM_ATTACK_SUCCESS, .proc/on_attack)
+
+/datum/component/mushroom_mace/proc/on_attack(obj/item/source, mob/living/target, mob/living/user)
+	SIGNAL_HANDLER
+
+	if(!istype(user.used_intent, /datum/intent/mace/boom))
+		return
+
+	var/current_time = world.time
+
+	// Reset hit count if it's been too long since the last succesful hit.
+	if(hit_count > 0 && (current_time - last_hit_time) > reset_timeout)
+		hit_count = 1
+		last_hit_time = current_time
+		to_chat(user, span_infection("The mushroom mace starts pulsing."))
+
+	hit_count++
+	spawn(0)
+		spawn_spore_clouds(target, user)
+
+	if(hit_count == 6)
+		playsound(user, 'sound/magic/magnet.ogg', 75)
+		to_chat(user, span_userdanger("The mushroom mace is pulsing wildly!"))
+
+	if(hit_count >= 7)
+		spawn(0)
+			mushroom_boom(target, user)
+		hit_count = 0 // Reset after the big boom
+
+/datum/component/mushroom_mace/proc/spawn_spore_clouds(mob/living/target, mob/living/user)
+	var/turf/T = get_turf(target)
+	var/dir_to_target = get_dir(user, target)
+
+	var/list/target_turfs = list(T)
+	target_turfs += get_step(T, dir_to_target)
+	target_turfs += get_step(T, turn(dir_to_target, 90))
+	target_turfs += get_step(T, turn(dir_to_target, -90))
+
+	for(var/turf/cloud_turf in target_turfs)
+		if(cloud_turf == get_turf(user))
+			continue
+		var/obj/effect/temp_visual/spore/old_spores = locate(/obj/effect/temp_visual/spore) in cloud_turf
+		if(old_spores)
+			qdel(old_spores)
+		new /obj/effect/temp_visual/spore(cloud_turf) 
+
+/datum/component/mushroom_mace/proc/mushroom_boom(mob/living/target, mob/living/user)
+	var/turf/T = get_turf(target)
+	T.visible_message(span_boldwarning("The mushroom mace releases a massive fungal detonation!"))
+	explosion(T, devastation_range = 0, heavy_impact_range = 0, light_impact_range = 4, smoke = TRUE, soundin = pick('sound/misc/explode/explosion.ogg'))
+
+	for(var/mob/living/L in range(2, T))
+		var/damage = 30
+		if(L == user)
+			damage = 10 // User takes reduced damage
+		L.apply_damage(damage, TOX)
+		if(L != user && ishuman(L))
+			var/mob/living/carbon/human/H = L
+			H.Immobilize(15)
+			H.apply_status_effect(/datum/status_effect/debuff/exposed)
+
+/obj/effect/temp_visual/spore
+	name = "spore"
+	icon_state = "spores"
+	duration = 16 SECONDS
+	plane = GAME_PLANE_UPPER
+	layer = ABOVE_ALL_MOB_LAYER
+	var/damage_amount = 5
+
+/obj/effect/temp_visual/spore/Initialize(mapload)
+	. = ..()
+	// Damage anyone already standing on the tile
+	var/turf/T = get_turf(src)
+	for(var/mob/living/L in T)
+		apply_spore_damage(L)
+
+/obj/effect/temp_visual/spore/Crossed(atom/movable/AM)
+	. = ..()
+	if(isliving(AM))
+		apply_spore_damage(AM)
+
+/obj/effect/temp_visual/spore/proc/apply_spore_damage(mob/living/L)
+	if(L.stat == DEAD)
+		return
+
+	to_chat(L, span_danger("You breathe in the spiky spores!"))
+	L.apply_damage(damage_amount, BRUTE)
+
+/datum/intent/mace/boom
+	name = "boom"
+	attack_verb = list("thumps", "fungal-strikes")
+	icon_state = "inboom"
+	item_d_type = "blunt"
+	desc = "A specialized strike that releases spores. Landing 7 consecutive strikes within 75 seconds triggers a fungal explosion."
+	damfactor = 1
+
+/obj/item/rogueweapon/mace/mushroom
+	name = "Lithmyc Mace"
+	desc = "A heavy mace forged from fungal-infused metals. Looks spiky!"
+	icon_state = "mushroom"
+	force = 18
+	force_wielded = 24
+	max_integrity = 500
+	possible_item_intents = list(/datum/intent/mace/strike, /datum/intent/mace/boom)
+	gripped_intents = list(/datum/intent/mace/strike, /datum/intent/mace/boom, /datum/intent/mace/smash)
+	smeltresult = /obj/item/ingot/lithmyc
+
+/obj/item/rogueweapon/mace/mushroom/Initialize()
+	. = ..()
+	AddComponent(/datum/component/mushroom_mace)

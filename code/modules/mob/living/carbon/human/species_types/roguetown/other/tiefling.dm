@@ -70,6 +70,7 @@
 		/datum/customizer/bodypart_feature/face_detail,
 		/datum/customizer/bodypart_feature/underwear,
 		/datum/customizer/bodypart_feature/legwear,
+		/datum/customizer/bodypart_feature/piercing,
 		/datum/customizer/organ/horns/anthro,
 		//Caustic edit
 		// /datum/customizer/organ/tail/tiefling,
@@ -138,6 +139,14 @@
 		"Chyerno" = SKIN_COLOR_CHYERNO,
 		"Drema"	= SKIN_COLOR_DREMA,
 		"Chir"	= SKIN_COLOR_CHIR,
+		"Vesyl"	= SKIN_COLOR_VESYL,
+		"Krosec" = SKIN_COLOR_KROSEC,
+		"Asza" = SKIN_COLOR_ASZA,
+		"Krizzsha" = SKIN_COLOR_KRIZZSHA,
+		"Tosiz" = SKIN_COLOR_TOSIZ,
+		"Velothel" = SKIN_COLOR_VELOTHEL,
+		"Xir" = SKIN_COLOR_XIR,
+		"Esse" = SKIN_COLOR_ESSE,
 		//Caustic edit
 		"Seeker" = SKIN_COLOR_SEEKER,
 		"Splendorous" = SKIN_COLOR_SPLENDOROUS,

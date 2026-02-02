@@ -16,6 +16,19 @@
 	clickcd = 10
 	item_d_type = "slash"
 
+/// For unusually heavy daggers with a strong cutting edge.
+/datum/intent/dagger/cut/heavy
+	name = "heavy cut"
+	damfactor = 1.2
+	penfactor = 20
+	clickcd = 11
+
+/datum/intent/dagger/cut/blunt
+	blade_class = BCLASS_BLUNT
+	hitsound = list('sound/combat/hits/blunt/metalblunt (1).ogg', 'sound/combat/hits/blunt/metalblunt (2).ogg', 'sound/combat/hits/blunt/metalblunt (3).ogg')
+	penfactor = BLUNT_DEFAULT_PENFACTOR
+	intent_intdamage_factor = BLUNT_DEFAULT_INT_DAMAGEFACTOR
+
 /datum/intent/dagger/thrust
 	name = "thrust"
 	icon_state = "instab"
@@ -27,6 +40,17 @@
 	chargetime = 0
 	clickcd = 8
 	item_d_type = "stab"
+
+// A slightly weaker thrust for daggers with a curved blade, or which otherwise aren't very good at stabbing.
+/datum/intent/dagger/thrust/weak
+	name = "lopsided thrust"
+	damfactor = 0.8
+
+/datum/intent/dagger/thrust/blunt
+	blade_class = BCLASS_BLUNT
+	hitsound = list('sound/combat/hits/blunt/metalblunt (1).ogg', 'sound/combat/hits/blunt/metalblunt (2).ogg', 'sound/combat/hits/blunt/metalblunt (3).ogg')
+	penfactor = BLUNT_DEFAULT_PENFACTOR
+	intent_intdamage_factor = BLUNT_DEFAULT_INT_DAMAGEFACTOR
 
 /datum/intent/dagger/thrust/pick
 	name = "icepick stab"
@@ -321,11 +345,11 @@
 	smeltresult = /obj/item/ingot/steel
 	sellprice = 30
 
-/obj/item/rogueweapon/huntingknife/combat
-	force = 20
+/obj/item/rogueweapon/huntingknife/combat //>Combat knife //>Literally never seen it used in combat
+	force = 22 //Hunting knife's bigger, meaner older brother. No pick intent, so it deserves a slight damage bump.
 	name = "seax"
-	desc = "An intimidatingly large sidearm that's been used amongst the Grenzels and Northerners for centuries, both as a combat knife and as a tool for dae-to-dae laboring."
-	possible_item_intents = list(/datum/intent/dagger/cut, /datum/intent/dagger/chop/cleaver, /datum/intent/dagger/sucker_punch, /datum/intent/dagger/thrust/combat)
+	desc = "An intimidatingly large dagger, fit for both hand-to-hand combat and dae-to-dae laboring. The ancenstry of this centuries-old design runs red with Gronnic and Grenzelhoftian blood, alike."
+	possible_item_intents = list(/datum/intent/dagger/cut, /datum/intent/dagger/cut/combat, /datum/intent/dagger/sucker_punch, /datum/intent/dagger/thrust/combat)
 	icon_state = "combatknife"
 	sheathe_icon = "combatknife"
 	icon = 'icons/roguetown/weapons/daggers32.dmi'
@@ -345,7 +369,7 @@
 	if(tag)
 		switch(tag)
 			if("gen")
-				return list("shrink" = 0.4,"sx" = -10,"sy" = 0,"nx" = 11,"ny" = 0,"wx" = -4,"wy" = 0,"ex" = 2,"ey" = 0,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0,"nturn" = 0,"sturn" = 0,"wturn" = 0,"eturn" = 0,"nflip" = 0,"sflip" = 8,"wflip" = 8,"eflip" = 0)
+				return list("shrink" = 0.7,"sx" = -10,"sy" = 0,"nx" = 11,"ny" = 0,"wx" = -4,"wy" = 0,"ex" = 2,"ey" = 0,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0,"nturn" = 14,"sturn" = -14,"wturn" = 16,"eturn" = 17,"nflip" = 0,"sflip" = 8,"wflip" = 8,"eflip" = 0)
 			if("onbelt")
 				return list("shrink" = 0.3,"sx" = -2,"sy" = -5,"nx" = 4,"ny" = -5,"wx" = 0,"wy" = -5,"ex" = 2,"ey" = -5,"nturn" = 0,"sturn" = 0,"wturn" = 0,"eturn" = 0,"nflip" = 0,"sflip" = 0,"wflip" = 0,"eflip" = 0,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0)
 
@@ -362,8 +386,30 @@
 	clickcd = 8
 	item_d_type = "stab"
 
+/datum/intent/dagger/cut/combat
+	name = "wicked slice"
+	icon_state = "inrend"
+	attack_verb = list("slices", "dices")
+	animname = "cut"
+	blade_class = BCLASS_CHOP
+	reach = 1
+	swingdelay = 10
+	penfactor = BLUNT_DEFAULT_PENFACTOR
+	damfactor = 2
+	clickcd = CLICK_CD_CHARGED
+	no_early_release = TRUE
+	hitsound = list('sound/combat/hits/bladed/genslash (1).ogg', 'sound/combat/hits/bladed/genslash (2).ogg', 'sound/combat/hits/bladed/genslash (3).ogg')
+	item_d_type = "slash"
+	misscost = 5 
+	intent_intdamage_factor = 0.05
+
 /obj/item/rogueweapon/huntingknife/idagger
-	possible_item_intents = list(/datum/intent/dagger/thrust,/datum/intent/dagger/cut, /datum/intent/dagger/thrust/pick, /datum/intent/dagger/sucker_punch)
+	possible_item_intents = list(
+		/datum/intent/dagger/thrust,
+		/datum/intent/dagger/cut,
+		/datum/intent/dagger/thrust/pick,
+		/datum/intent/dagger/sucker_punch,
+		)
 	force = 15
 	max_integrity = 100
 	name = "iron dagger"
@@ -371,7 +417,18 @@
 	icon_state = "idagger"
 	sheathe_icon = "idagger"
 	smeltresult = /obj/item/ingot/iron
+	special = /datum/special_intent/dagger_dash
 	sellprice = 20
+
+/obj/item/rogueweapon/huntingknife/idagger/warden_machete
+	possible_item_intents = list(/datum/intent/dagger/thrust/weak, /datum/intent/dagger/cut/heavy, /datum/intent/dagger/chop/cleaver, /datum/intent/dagger/sucker_punch) // Stronger cut and chop, but no pick.
+	force = 22 // Slightly more damage than a steel dagger.
+	max_integrity = 130 // Slightly less integrity than a steel dagger.
+	name = "warden's seax"
+	desc = "A well-worn seax utilised by the Fraternity of Wardens both as a tool and weapon. Nearly as effective for hacking \
+	down men as it is foiliage, but not quite as durable as more modern steel tools. More suitable for cutting than for thrusting."
+	icon_state = "warden_machete"
+	sheathe_icon = "warden_machete"
 
 /obj/item/rogueweapon/huntingknife/idagger/virtue
 	possible_item_intents = list(/datum/intent/dagger/thrust,/datum/intent/dagger/cut, /datum/intent/dagger/thrust/pick, /datum/intent/dagger/sucker_punch)
@@ -417,6 +474,19 @@
 	smeltresult = /obj/item/ingot/steel
 	sellprice = 35
 
+/obj/item/rogueweapon/huntingknife/idagger/steel/trainer
+	name = "dagger trainer"
+	desc = "A blunted steel dagger with a flexible blade for practicing close-in combat with vicious welts \
+	instead of lethal wounds. Still hurts, though."
+	icon_state = "dagger_trainer"
+	sheathe_icon = "sheath_dagger_trainer"
+	force = 7
+	possible_item_intents = list(
+		/datum/intent/dagger/thrust/blunt,
+		/datum/intent/dagger/cut/blunt,
+		/datum/intent/dagger/sucker_punch,
+		)
+
 /obj/item/rogueweapon/huntingknife/idagger/steel/corroded
 	name = "corroded dagger"
 	desc = "A wicked deliverer of poison, serrated and notched. Curved steel cradles the knuckles, ensuring that the wielder doesn't inflict the fatal dose on themselves. </br>I can coat this dagger in most poisons, ensuring that my next strike leaves a festering surprise."
@@ -430,10 +500,11 @@
 
 /obj/item/rogueweapon/huntingknife/idagger/steel/corroded/dirk
 	name = "fanged dagger"
-	desc = "A dagger modeled after the fang of an anthrax spider. Can be poisoned."
+	desc = "A wave-bladed dagger, forged in reverance to the visage of an anthraxi spider's fang. Offer a keen-eyed glance to its obsidian edge, and you might just notice the hundreds of capillary-like channels lining its surface; a cruel finishing touch, soon to be understood by the sundrunk. </br>I can coat this dagger in most poisons, ensuring that my next strike leaves a festering surprise."
 	icon_state = "spiderdagger"
 	sheathe_icon = "spiderdagger"
-	smeltresult = null
+	smeltresult = /obj/item/ingot/drow
+	smelt_bar_num = 1
 	sellprice = 100
 
 /obj/item/rogueweapon/huntingknife/idagger/steel/holysee
@@ -464,7 +535,7 @@
 	)
 
 /obj/item/rogueweapon/huntingknife/idagger/steel/pestrasickle
-	name ="plaguebringer sickle"
+	name = "plaguebringer sickle"
 	desc = "A wicked edge brings feculent delights."
 	icon_state = "pestrasickle"
 	force = 22 // 10% - This is a 8 clickCD weapon
@@ -693,20 +764,30 @@
 
 /obj/item/rogueweapon/huntingknife/idagger/silver/elvish
 	name = "elvish dagger"
-	desc = "This beautiful dagger is of intricate, elvish design. Sharper, too."
-	force = 22
+	desc = "A wave-bladed dagger of Elven design, who's silvered beauty is only rivaled by its deceptive lethality."
+	force = 22 //One of the rare silver-edged weapons that has a positive damage boost, due to it requiring both silver and gold to create.
 	icon_state = "elfdagger"
 	item_state = "elfdag"
 	last_used = 0
-	is_silver = FALSE
+	smeltresult = /obj/item/ingot/gold
+	smelt_bar_num = 1
 	sellprice = 150 //Beautiful, elvish, and sharp!?
+
+/obj/item/rogueweapon/huntingknife/idagger/silver/elvish/poopknife
+	name = "thine majesty's nitesoil-cleaver"
+	desc = "A heraldric accompaniment to the chamberpot, and the most closely-guarded secret in all of Azuria. It is said that this once belonged to the Duke's eldest ancestor, who - in a fit of constipatory labor - had unwittingly realized another use for their wave-bladed trophy."
+	max_integrity = 50 //Should render to ~100, at most. More fragile than alloyed knives. You know why.
+	max_blade_int = 333 //Exceedingly sharp. Ditto.
+	possible_item_intents = list(/datum/intent/dagger/cut, /datum/intent/dagger/cut/combat, /datum/intent/dagger/sucker_punch, /datum/intent/dagger/thrust/combat) //Seax's intents, for self-explanatory reasons.
 
 /obj/item/rogueweapon/huntingknife/idagger/silver/elvish/drow
 	name = "dark elvish dagger"
-	desc = "A vicious wave-bladed dagger from the Underdark."
-	force = 18
+	desc = "A once-elegant mithril dagger, who's sunless presence has long since been overshadowed by its vicious bite."
+	force = 18 
 	last_used = 0
-	is_silver = TRUE
+	is_silver = FALSE //Intended, as it's technically not silver - or at the very least, so divorced from traditional silver that it no longer retains its properties.
+	smeltresult = /obj/item/ingot/drow
+	smelt_bar_num = 1
 	sellprice = 100 //Still expensive!
 
 /obj/item/rogueweapon/huntingknife/idagger/navaja

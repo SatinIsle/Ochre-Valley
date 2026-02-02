@@ -55,12 +55,12 @@
 	equip_lich()
 	greet()
 	save_stats()
-
 	return ..()
 
 /datum/antagonist/lich/greet()
 	to_chat(owner.current, span_userdanger("An immortal king cries for new subjects. Subdue and conquer."))
 	owner.announce_objectives()
+	owner.current.playsound_local(get_turf(owner.current), 'sound/villain/lichintro.ogg', 80, FALSE, pressure_affected = FALSE)
 	..()
 
 /datum/antagonist/lich/proc/save_stats()
@@ -117,6 +117,7 @@
 	H.adjust_skillrank(/datum/skill/magic/arcane, 6, TRUE)
 	H.adjust_skillrank(/datum/skill/misc/riding, 4, TRUE)
 	H.adjust_skillrank(/datum/skill/combat/polearms, 4, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/staves, 4, TRUE)
 	H.adjust_skillrank(/datum/skill/combat/wrestling, 3, TRUE)
 	H.adjust_skillrank(/datum/skill/combat/unarmed, 1, TRUE)
 	H.adjust_skillrank(/datum/skill/misc/swimming, 1, TRUE)
@@ -152,6 +153,7 @@
 		H.mind.AddSpell(new /obj/effect/proc_holder/spell/invoked/tame_undead)
 		H.mind.AddSpell(new /obj/effect/proc_holder/spell/invoked/raise_deadite)
 	H.ambushable = FALSE
+	H.dna.species.soundpack_m = new /datum/voicepack/other/lich()
 
 	addtimer(CALLBACK(H, TYPE_PROC_REF(/mob/living/carbon/human, choose_name_popup), "LICH"), 5 SECONDS)
 

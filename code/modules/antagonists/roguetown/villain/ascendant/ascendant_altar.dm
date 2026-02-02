@@ -164,7 +164,10 @@ GLOBAL_LIST_INIT(capstone_pool, list(
 			priority_announce("The sky begins to turn quicker - MAJOR ARCANA: THE HANGED MAN, REVERSED", "THE DREAMER ", 'sound/villain/dreamer_warning.ogg')
 		if(3)
 			to_chat(user, span_danger("AGONY. SPLITTING HEADACHE. THROBBING OF THE SOUL."))
-			user.flash_fullscreen("redflash3")
+			//Caustic Edit
+			if(user.show_redflash())
+				user.flash_fullscreen("redflash3")
+			//Caustic Edit End
 			user.emote("agony", forced = TRUE)
 			sleep(20)
 			to_chat(user, span_userdanger("THEW ORLD is not real. my BREATH IS gone. my heart barely baeats. my veins are empty."))
@@ -172,13 +175,19 @@ GLOBAL_LIST_INIT(capstone_pool, list(
 			to_chat(user, span_userdanger("i am god. i am god. i am god. i am god. i am god. i am god. i am god. i am god. i am god. i am god. i am god. i am god."))
 			sleep(30)
 			to_chat(user, span_userdanger("i am god i am god i am go di am ogod I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD"))
-			user.flash_fullscreen("redflash3")
+			//Caustic Edit
+			if(user.show_redflash())
+				user.flash_fullscreen("redflash3")
+			//Caustic Edit End
 			user.emote("agony", forced = TRUE)
 			user.Stun(30)
 			user.Knockdown(30)
 			sleep(30)
 			to_chat(user, span_userdanger("i am god i am god i am go di am ogod I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD"))
-			user.flash_fullscreen("redflash3")
+			//Caustic Edit
+			if(user.show_redflash())
+				user.flash_fullscreen("redflash3")
+			//Caustic Edit End
 			user.emote("agony", forced = TRUE)
 			user.Stun(100)
 			user.Knockdown(100)
@@ -186,7 +195,10 @@ GLOBAL_LIST_INIT(capstone_pool, list(
 				spawn((i - 1) * 5)
 					to_chat(user, span_userdanger("I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD I AM GOD "))
 			sleep(30)
-			user.flash_fullscreen("redflash3")
+			//Caustic Edit
+			if(user.show_redflash())
+				user.flash_fullscreen("redflash3")
+			//Caustic Edit End
 
 //all goes dark. tp them over. give them their stats.
 			user.emote("agony", forced = TRUE)
