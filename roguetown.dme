@@ -2941,7 +2941,7 @@
 #include "modular_causticcove\code\__DEFINES\values.dm"
 #include "modular_causticcove\code\__DEFINES\vore_defines.dm"
 #include "modular_causticcove\code\_helpers\vore.dm"
-#include "modular_causticcove\controllers\subsystems\bellies_vr.dm"
+#include "modular_causticcove\code\controllers\subsystems\bellies_vr.dm"
 #include "modular_causticcove\code\datums\combat_music.dm"
 #include "modular_causticcove\code\datums\loadout.dm"
 #include "modular_causticcove\code\datums\spontaneous_vore.dm"

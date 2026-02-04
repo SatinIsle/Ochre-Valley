@@ -866,7 +866,8 @@
 	Itemlist += M.held_items
 	for(var/obj/item/W in Itemlist)
 		M.dropItemToGround(W,TRUE)
-		W.gurgle_contaminate(contents, contamination_flavor, contamination_color) //We do an initial contamination pass to get stuff ike IDs wet.
+		if(contaminates)
+			W.gurgle_contaminate(contents, contamination_flavor, contamination_color) //We do an initial contamination pass to get stuff ike IDs wet.
 		if(item_digest_mode == IM_HOLD)
 			items_preserved |= W
 		else if(item_digest_mode == IM_DIGEST_FOOD && !(istype(W,/obj/item/reagent_containers/food) || istype(W,/obj/item/organ)))
@@ -925,34 +926,24 @@
 		M.enabled = FALSE
 		M.forceMove(hasMMI)
 	else*/
-	M.reset_view(null)
-	var/sfx
-	if(!fancy_vore)
-		sfx = sound(get_sfx("classic_death_sounds"))
-	else
-		sfx = sound(get_sfx("fancy_death_prey"))
-	var/mob/dead/observer/G = M.ghostize(TRUE) // Make sure they're out, so we can copy attack logs and such.
+	var/mob/observer/G = M.ghostize(FALSE) // Make sure they're out, so we can copy attack logs and such.
 	if(G)
-		G.forceMove(owner)
-		if(G.client && G.client.prefs.digestion_noises)
-			SEND_SOUND(G, sfx)
-	M.clear_fullscreen("belly")
-	M.previewing_belly = null
-	M.x = 1
-	M.y = 1
-	M.z = 1
-	M.alpha = 0 
+		G.forceMove(src)
+		G.body_backup = M
+		M.enabled = FALSE
+		M.forceMove(G)
+	else
+		qdel(M)
 	owner.handle_belly_update()
-	playsound(src, sfx, vary = 1, vol = 75, falloff = VORE_SOUND_FALLOFF, frequency = noise_freq, preference = "digestion_noises")
 	
 	
 
 // Handle a mob being absorbed
 /obj/belly/proc/absorb_living(mob/living/M)
 	M.absorbed = TRUE
-	/*if(M.ckey)
+	if(M.ckey)
 		handle_absorb_langs(M, owner)
-		GLOB.prey_absorbed_roundstat++*/
+		GLOB.prey_absorbed_roundstat++
 
 	to_chat(M, span_notice("[belly_format_string(absorb_messages_prey, M, use_absorbed_count = TRUE)]"))
 	to_chat(owner, span_notice("[belly_format_string(absorb_messages_owner, M, use_absorbed_count = TRUE)]"))
@@ -969,13 +960,13 @@
 		// TODO - Find a way to make the absorbed prey share the effects with the pred.
 		// Currently this is infeasible because reagent containers are designed to have a single my_atom, and we get
 		// problems when A absorbs B, and then C absorbs A,  resulting in B holding onto an invalid reagent container.
-		//Pred.changeling_obtain_dna(Prey)
+		//Pred.changeling_obtain_dna(Prey) //We don't have Changelings in Caustic!
 
 	//This is probably already the case, but for sub-prey, it won't be.
 	if(M.loc != src)
 		M.forceMove(src)
 
-	if(ismob(M))
+	if(ismob(M)) //Not entirely sure what this is for? Was removed in recent Chomp Code. Or added here?
 		var/mob/ourmob = M
 		ourmob.reset_view(owner)
 
@@ -1012,7 +1003,7 @@
 // Handle a mob being unabsorbed
 /obj/belly/proc/unabsorb_living(mob/living/M)
 	M.absorbed = FALSE
-	//handle_absorb_langs(M, owner)
+	handle_absorb_langs(M, owner)
 	to_chat(M, span_notice(belly_format_string(unabsorb_messages_prey, M, use_absorbed_count = TRUE)))
 	to_chat(owner, span_notice(belly_format_string(unabsorb_messages_owner, M, use_absorbed_count = TRUE)))
 
@@ -1023,6 +1014,11 @@
 	owner.updateVRPanel()
 	owner.handle_belly_update()
 
+/////////////////////////////////////////////////////////////////////////
+/obj/belly/proc/handle_absorb_langs()
+	owner.absorb_langs()
+
+////////////////////////////////////////////////////////////////////////
 
 
 //Digest a single item
@@ -1033,7 +1029,7 @@
 	if(digested == FALSE)
 		items_preserved |= item
 	else
-		owner_adjust_nutrition((nutrition_percent / 100) * 5 * digested * 10)
+		owner_adjust_nutrition((nutrition_percent / 100) * 5 * digested * 10) //This * 10 at the end is only in our code, not Chomps?
 		digested = TRUE
 	return digested
 
@@ -1048,243 +1044,6 @@
 
 /obj/belly/onDropInto(atom/movable/AM)
 	return null
-
-//Handle a mob struggling
-// Called from /mob/living/carbon/relaymove()
-/obj/belly/proc/relay_resist(mob/living/R, obj/item/C)
-	if (!(R in contents))
-		if(!C)
-			return  // User is not in this belly
-
-	R.changeNext_move(50)
-
-	var/escape_attempt_owner_message = span_warning(belly_format_string(escape_attempt_messages_owner, R))
-	var/escape_attempt_prey_message = span_warning(belly_format_string(escape_attempt_messages_prey, R))
-	var/escape_fail_owner_message = span_warning(belly_format_string(escape_fail_messages_owner, R))
-	var/escape_fail_prey_message = span_notice(belly_format_string(escape_fail_messages_prey, R))
-
-	if(owner.stat) //If owner is stat (dead, KO) we can actually escape
-		escape_attempt_prey_message = span_warning("[escape_attempt_prey_message] (will take around [escapetime/10] seconds.)")
-		to_chat(R, escape_attempt_prey_message)
-		to_chat(owner, escape_attempt_owner_message)
-
-		if(do_after(R, escapetime, owner, target = src))
-			if((owner.stat || escapable)) //Can still escape?
-				if(C)
-					release_specific_contents(C)
-					return
-				if(R.loc == src)
-					release_specific_contents(R)
-					return
-			else if(R.loc != src) //Aren't even in the belly. Quietly fail.
-				return
-			else //Belly became inescapable or mob revived
-				to_chat(R, escape_fail_prey_message)
-				to_chat(owner, escape_fail_owner_message)
-				return
-			return
-
-	var/struggle_user_message = span_alert(belly_format_string(struggle_messages_inside, R))
-
-	if(displayed_message_flags & MS_FLAG_STRUGGLE_OUTSIDE)
-		var/struggle_outer_message = span_alert(belly_format_string(struggle_messages_outside, R))
-		if(private_struggle)
-			to_chat(owner, struggle_outer_message)
-		else
-			for(var/mob/M in hearers(4, owner))
-				M.show_message(struggle_outer_message, 2) // hearable
-
-	var/sound/struggle_snuggle
-	var/sound/struggle_rustle = sound(get_sfx("rustle"))
-
-	if((vore_sprite_flags & DM_FLAG_VORESPRITE_BELLY) && (owner.vore_capacity_ex[belly_sprite_to_affect] >= 1) && !private_struggle && resist_triggers_animation && affects_vore_sprites)
-		owner.vs_animate(belly_sprite_to_affect)
-
-	if(!private_struggle)
-		if(is_wet)
-			if(!fancy_vore)
-				struggle_snuggle = sound(get_sfx("classic_struggle_sounds"))
-			else
-				struggle_snuggle = sound(get_sfx("fancy_prey_struggle"))
-			playsound(src, struggle_snuggle, vary = 1, vol = 75, falloff = VORE_SOUND_FALLOFF, frequency = noise_freq, preference = "digestion_noises")
-		else
-			playsound(src, struggle_rustle, vary = 1, vol = 75, falloff = VORE_SOUND_FALLOFF, frequency = noise_freq, preference = "digestion_noises")
-	if(prob(belchchance))//Unsure if this should go in escapable or not, leaving it here for now.
-		owner.emote("belch")
-	if(escapable) //If the stomach has escapable enabled.
-		if(prob(escapechance)) //Let's have it check to see if the prey escapes first.
-			to_chat(R, escape_attempt_prey_message)
-			to_chat(owner, escape_attempt_owner_message)
-			if(do_after(R, escapetime, target = src))
-				if(escapable && C)
-					var/escape_item_owner_message = span_warning(belly_format_string(escape_item_messages_owner, R, item = C))
-					var/escape_item_prey_message = span_warning(belly_format_string(escape_item_messages_prey, R, item = C))
-					var/escape_item_outside_message = span_warning(belly_format_string(escape_item_messages_outside, R, item = C))
-
-					release_specific_contents(C)
-					to_chat(R, escape_item_prey_message)
-					to_chat(owner, escape_item_owner_message)
-					if(!private_struggle)
-						for(var/mob/M in hearers(4, owner))
-							M.show_message(escape_item_outside_message, 2)
-					return
-				if(escapable && (R.loc == src) && !R.absorbed) //Does the owner still have escapable enabled?
-					var/escape_owner_message = span_warning(belly_format_string(escape_messages_owner, R))
-					var/escape_prey_message = span_warning(belly_format_string(escape_messages_prey, R))
-					var/escape_outside_message = span_warning(belly_format_string(escape_messages_outside, R))
-
-					release_specific_contents(R)
-					to_chat(R, escape_prey_message)
-					to_chat(owner, escape_owner_message)
-					if(!private_struggle)
-						for(var/mob/M in hearers(4, owner))
-							M.show_message(escape_outside_message, 2)
-					return
-				else if(!(R.loc == src)) //Aren't even in the belly. Quietly fail.
-					return
-				else //Belly became inescapable.
-					to_chat(R, escape_fail_prey_message)
-					to_chat(owner, escape_fail_owner_message)
-					return
-
-		else if(prob(transferchance) && transferlocation) //Next, let's have it see if they end up getting into an even bigger mess then when they started.
-			var/obj/belly/dest_belly
-			for(var/obj/belly/B as anything in owner.vore_organs)
-				if(B.name == transferlocation)
-					dest_belly = B
-					break
-
-			if(!dest_belly)
-				to_chat(owner, span_warning("Something went wrong with your belly transfer settings. Your <b>[lowertext(name)]</b> has had it's transfer chance and transfer location cleared as a precaution."))
-				transferchance = 0
-				transferlocation = null
-				return
-			var/primary_transfer_owner_message = span_warning(belly_format_string(primary_transfer_messages_owner, R, dest = transferlocation))
-			var/primary_transfer_prey_message = span_warning(belly_format_string(primary_transfer_messages_prey, R, dest = transferlocation))
-
-			to_chat(R, primary_transfer_prey_message)
-			to_chat(owner, primary_transfer_owner_message)
-			if(C)
-				transfer_contents(C, dest_belly)
-				return
-			transfer_contents(R, dest_belly)
-			return
-
-		else if(prob(transferchance_secondary) && transferlocation_secondary) //After the first potential mess getting into, run the secondary one which might be even bigger of a mess.
-			var/obj/belly/dest_belly
-			for(var/obj/belly/B as anything in owner.vore_organs)
-				if(B.name == transferlocation_secondary)
-					dest_belly = B
-					break
-
-			if(!dest_belly)
-				to_chat(owner, span_warning("Something went wrong with your belly transfer settings. Your <b>[lowertext(name)]</b> has had it's transfer chance and transfer location cleared as a precaution."))
-				transferchance_secondary = 0
-				transferlocation_secondary = null
-				return
-
-			var/secondary_transfer_owner_message = span_warning(belly_format_string(secondary_transfer_messages_owner, R, dest = transferlocation_secondary))
-			var/secondary_transfer_prey_message = span_warning(belly_format_string(secondary_transfer_messages_prey, R, dest = transferlocation_secondary))
-
-			to_chat(R, secondary_transfer_prey_message)
-			to_chat(owner, secondary_transfer_owner_message)
-			if(C)
-				transfer_contents(C, dest_belly)
-				return
-			transfer_contents(R, dest_belly)
-			return
-
-		else if(prob(absorbchance) && digest_mode != DM_ABSORB) //After that, let's have it run the absorb chance.
-			var/absorb_chance_owner_message = span_warning(belly_format_string(absorb_chance_messages_owner, R))
-			var/absorb_chance_prey_message = span_warning(belly_format_string(absorb_chance_messages_prey, R))
-
-			to_chat(R, absorb_chance_prey_message)
-			to_chat(owner, absorb_chance_owner_message)
-			digest_mode = DM_ABSORB
-			return
-
-		else if(prob(digestchance) && digest_mode != DM_DIGEST) //Then, let's see if it should run the digest chance.
-			var/digest_chance_owner_message = span_warning(belly_format_string(digest_chance_messages_owner, R))
-			var/digest_chance_prey_message = span_warning(belly_format_string(digest_chance_messages_prey, R))
-
-			to_chat(R, digest_chance_prey_message)
-			to_chat(owner, digest_chance_owner_message)
-			digest_mode = DM_DIGEST
-			return
-		else if(prob(selectchance) && digest_mode != DM_SELECT) //Finally, let's see if it should run the selective mode chance.
-			var/select_chance_owner_message = span_warning(belly_format_string(select_chance_messages_owner, R))
-			var/select_chance_prey_message = span_warning(belly_format_string(select_chance_messages_prey, R))
-
-			to_chat(R, select_chance_prey_message)
-			to_chat(owner, select_chance_owner_message)
-			digest_mode = DM_SELECT
-
-		else //Nothing interesting happened.
-			to_chat(R, struggle_user_message)
-			to_chat(owner, span_warning("Your prey appears to be unable to make any progress in escaping your [lowertext(name)]."))
-			return
-	to_chat(R, struggle_user_message)
-
-/obj/belly/proc/relay_absorbed_resist(mob/living/R)
-	if (!(R in contents) || !R.absorbed)
-		return  // User is not in this belly or isn't actually absorbed
-
-	R.changeNext_move(50)
-
-	var/struggle_user_message = span_alert(belly_format_string(absorbed_struggle_messages_inside, R, use_absorbed_count = TRUE))
-
-	if(displayed_message_flags & MS_FLAG_STRUGGLE_ABSORBED_OUTSIDE)
-		var/struggle_outer_message = span_alert(belly_format_string(absorbed_struggle_messages_outside, R, use_absorbed_count = TRUE))
-		if(private_struggle)
-			to_chat(owner, struggle_outer_message)
-		else
-			for(var/mob/M in hearers(4, owner))
-				M.show_message(struggle_outer_message, 2) // hearable
-
-	var/sound/struggle_snuggle
-	var/sound/struggle_rustle = sound(get_sfx("rustle"))
-
-	if(!private_struggle)
-		if(is_wet)
-			if(!fancy_vore)
-				struggle_snuggle = sound(get_sfx("classic_struggle_sounds"))
-			else
-				struggle_snuggle = sound(get_sfx("fancy_prey_struggle"))
-			playsound(src, struggle_snuggle, vary = 1, vol = 75, falloff = VORE_SOUND_FALLOFF, frequency = noise_freq, preference = "digestion_noises")
-		else
-			playsound(src, struggle_rustle, vary = 1, vol = 75, falloff = VORE_SOUND_FALLOFF, frequency = noise_freq, preference = "digestion_noises")
-
-	//absorb resists
-	if(escapable || owner.stat) //If the stomach has escapable enabled or the owner is dead/unconscious
-		if(prob(escapechance) || owner.stat) //Let's have it check to see if the prey's escape attempt starts.
-			var/escape_attempt_absorbed_owner_message = span_warning(belly_format_string(escape_attempt_absorbed_messages_owner, R))
-			var/escape_attempt_absorbed_prey_message = span_warning(belly_format_string(escape_attempt_absorbed_messages_prey, R))
-
-			to_chat(R, escape_attempt_absorbed_prey_message)
-			to_chat(owner, escape_attempt_absorbed_owner_message)
-			if(do_after(R, escapetime, target = src))
-				if((escapable || owner.stat) && (R.loc == src) && prob(escapechance_absorbed)) //Does the escape attempt succeed?
-					var/escape_absorbed_owner_message = span_warning(belly_format_string(escape_absorbed_messages_owner, R))
-					var/escape_absorbed_prey_message = span_warning(belly_format_string(escape_absorbed_messages_prey, R))
-					var/escape_absorbed_outside_message = span_warning(belly_format_string(escape_absorbed_messages_outside, R))
-
-					release_specific_contents(R)
-					to_chat(R, escape_absorbed_prey_message)
-					to_chat(owner, escape_absorbed_owner_message)
-					if(!private_struggle)
-						for(var/mob/M in hearers(4, owner))
-							M.show_message(escape_absorbed_outside_message, 2)
-					return
-				else if(!(R.loc == src)) //Aren't even in the belly. Quietly fail.
-					return
-				else //Belly became inescapable or you failed your roll.
-					var/escape_fail_absorbed_owner_message = span_warning(belly_format_string(escape_fail_absorbed_messages_owner, R))
-					var/escape_fail_absorbed_prey_message = span_notice(belly_format_string(escape_fail_absorbed_messages_prey, R))
-
-					to_chat(R, escape_fail_absorbed_prey_message)
-					to_chat(owner, escape_fail_absorbed_owner_message)
-					return
-	to_chat(R, struggle_user_message)
 
 /obj/belly/proc/get_mobs_and_objs_in_belly()
 	var/list/see = list()
@@ -1302,56 +1061,86 @@
 //Transfers contents from one belly to another
 /obj/belly/proc/transfer_contents(atom/movable/content, obj/belly/target, silent = 0)
 	if(!(content in src) || !istype(target))
-		content.belly_cycles = 0
 		return
+	content.belly_cycles = 0
+	var/old_entrance_logs = target.entrance_logs
+	if(silent)
+		target.entrance_logs = FALSE
 	content.forceMove(target)
-	if(ismob(content) && !isobserver(content))
-		var/mob/ourmob = content
-		ourmob.reset_view(owner)
+	target.entrance_logs = old_entrance_logs
+	if(isitem(content))
+		var/obj/item/I = content
+		if(istype(I,/obj/item/card/id))
+			I.gurgle_contaminate(target.contents, target.contamination_flavor, target.contamination_color)
+		if(I.gurgled && target.contaminates)
+			I.wash(CLEAN_WASH)
+			I.gurgle_contaminate(target.contents, target.contamination_flavor, target.contamination_color)
 	items_preserved -= content
+	if(!silent)
+		handle_visual_update()
+
+/obj/belly/proc/handle_visual_update()
 	owner.updateVRPanel()
 	for(var/mob/living/M in contents)
 		M.updateVRPanel()
 	owner.handle_belly_update()
 
-//Autotransfer callback
-/obj/belly/proc/check_autotransfer(var/atom/movable/prey)
-	if(!(prey in contents) || !prey.autotransferable) return
-	var/dest_belly_name
-	if(autotransferlocation_secondary && prob(autotransferchance_secondary))
-		if(ismob(prey) && autotransfer_filter(prey, autotransfer_secondary_whitelist, autotransfer_secondary_blacklist))
-			dest_belly_name = pick(autotransferextralocation_secondary + autotransferlocation_secondary)
-		if(isitem(prey) && autotransfer_filter(prey, autotransfer_secondary_whitelist_items, autotransfer_secondary_blacklist_items))
-			dest_belly_name = pick(autotransferextralocation_secondary + autotransferlocation_secondary)
-	if(autotransferlocation && prob(autotransferchance))
-		if(ismob(prey) && autotransfer_filter(prey, autotransfer_whitelist, autotransfer_blacklist))
-			dest_belly_name = pick(autotransferextralocation + autotransferlocation)
-		if(isitem(prey) && autotransfer_filter(prey, autotransfer_whitelist_items, autotransfer_blacklist_items))
-			dest_belly_name = pick(autotransferextralocation + autotransferlocation)
-	if(!dest_belly_name) // Didn't transfer, so wait before retrying
-		prey.belly_cycles = 0
-		return
-	var/obj/belly/dest_belly
+//Autotransfer belly lookup
+/obj/belly/proc/compile_autotransfer_bellies()
+	var/list/primary_bellies = list()
+	var/list/secondary_bellies = list()
+
+	var/list/primary_locations = autotransferextralocation.Copy()
+	primary_locations += autotransferlocation
+	var/list/secondary_locations = autotransferextralocation_secondary.Copy()
+	secondary_locations += autotransferlocation_secondary
 	for(var/obj/belly/B in owner.vore_organs)
-		if(B.name == dest_belly_name)
-			dest_belly = B
-			break
-	if(!dest_belly) return
+		if(B.name in primary_locations)
+			primary_bellies += B
+		if(B.name in secondary_locations)
+			secondary_bellies += B
+
+	if(!length(primary_bellies) && !length(secondary_bellies))
+		return null
+
+	return list("primary" = primary_bellies, "secondary" = secondary_bellies)
+
+//Autotransfer callback
+/obj/belly/proc/check_autotransfer(var/atom/movable/prey, var/list/transfer_locations)
+	if(!(prey in contents) || !prey.autotransferable)
+		return FALSE
+	var/obj/belly/dest_belly
+	if(length(transfer_locations["secondary"]))
+		if(autotransferlocation_secondary && prob(autotransferchance_secondary))
+			if(ismob(prey) && autotransfer_filter(prey, autotransfer_secondary_whitelist, autotransfer_secondary_blacklist))
+				dest_belly = pick(transfer_locations["secondary"])
+			if(isitem(prey) && autotransfer_filter(prey, autotransfer_secondary_whitelist_items, autotransfer_secondary_blacklist_items))
+				dest_belly = pick(transfer_locations["secondary"])
+	if(length(transfer_locations["primary"]))
+		if(autotransferlocation && prob(autotransferchance))
+			if(ismob(prey) && autotransfer_filter(prey, autotransfer_whitelist, autotransfer_blacklist))
+				dest_belly = pick(transfer_locations["primary"])
+			if(isitem(prey) && autotransfer_filter(prey, autotransfer_whitelist_items, autotransfer_blacklist_items))
+				dest_belly = pick(transfer_locations["primary"])
+	if(!dest_belly) // Didn't transfer, so wait before retrying
+		prey.belly_cycles = 0
+		return FALSE
 	if(ismob(prey))
 		var/autotransfer_owner_message
 		var/autotransfer_prey_message
-		if(dest_belly_name == autotransferlocation)
-			autotransfer_owner_message = span_warning(belly_format_string(primary_autotransfer_messages_owner, prey, dest = dest_belly_name))
-			autotransfer_prey_message = span_warning(belly_format_string(primary_autotransfer_messages_prey, prey, dest = dest_belly_name))
+		var/dest_belly_name = dest_belly.name
+		if(dest_belly.name == autotransferlocation)
+			autotransfer_owner_message = span_vwarning(belly_format_string(primary_autotransfer_messages_owner, prey, dest = dest_belly_name))
+			autotransfer_prey_message = span_vwarning(belly_format_string(primary_autotransfer_messages_prey, prey, dest = dest_belly_name))
 		else
-			autotransfer_owner_message =  span_warning(belly_format_string(secondary_autotransfer_messages_owner, prey, dest = dest_belly_name))
-			autotransfer_prey_message = span_warning(belly_format_string(secondary_autotransfer_messages_prey, prey, dest = dest_belly_name))
+			autotransfer_owner_message =  span_vwarning(belly_format_string(secondary_autotransfer_messages_owner, prey, dest = dest_belly_name))
+			autotransfer_prey_message = span_vwarning(belly_format_string(secondary_autotransfer_messages_prey, prey, dest = dest_belly_name))
 
 		to_chat(prey, autotransfer_prey_message)
 		if(entrance_logs)
 			to_chat(owner, autotransfer_owner_message)
 
-	transfer_contents(prey, dest_belly)
+	transfer_contents(prey, dest_belly, TRUE)
 	return TRUE
 
 //Autotransfer filter
@@ -1426,12 +1215,12 @@
 			if(istype(prey, /obj/item/digestion_remains)) return FALSE*/
 		if(blacklist & autotransfer_flags_list_items["Indigestible Items"])
 			if(prey in items_preserved) return FALSE
-		/*if(blacklist & autotransfer_flags_list_items["Recyclable Items"])
+		if(blacklist & autotransfer_flags_list_items["Recyclable Items"])
 			if(isitem(prey))
 				var/obj/item/I = prey
 				if(I.matter) return FALSE
 		if(blacklist & autotransfer_flags_list_items["Ores"])
-			if(istype(prey, /obj/item/ore)) return FALSE*/
+			if(istype(prey, /obj/item/rogueore)) return FALSE
 		if(blacklist & autotransfer_flags_list_items["Clothes and Bags"])
 			if(istype(prey, /obj/item/clothing) || istype(prey, /obj/item/storage)) return FALSE
 		if(blacklist & autotransfer_flags_list_items["Food"])
@@ -1447,12 +1236,12 @@
 			if(istype(prey, /obj/item/digestion_remains)) return TRUE*/
 		if(whitelist & autotransfer_flags_list_items["Indigestible Items"])
 			if(prey in items_preserved) return TRUE
-		/*if(whitelist & autotransfer_flags_list_items["Recyclable Items"])
+		if(whitelist & autotransfer_flags_list_items["Recyclable Items"])
 			if(isitem(prey))
 				var/obj/item/I = prey
 				if(I.matter) return TRUE
 		if(whitelist & autotransfer_flags_list_items["Ores"])
-			if(istype(prey, /obj/item/ore)) return TRUE*/
+			if(istype(prey, /obj/item/ore)) return TRUE
 		if(whitelist & autotransfer_flags_list_items["Clothes and Bags"])
 			if(istype(prey, /obj/item/clothing) || istype(prey, /obj/item/storage)) return TRUE
 		if(whitelist & autotransfer_flags_list_items["Food"])
@@ -1483,6 +1272,7 @@
 	dupe.digest_tox = digest_tox
 	dupe.digest_clone = digest_clone
 	dupe.bellytemperature = bellytemperature
+	dupe.temperature_damage = temperature_damage
 	dupe.immutable = immutable
 	dupe.can_taste = can_taste
 	dupe.escapable = escapable
@@ -1513,6 +1303,7 @@
 	dupe.belly_fullscreen_color4 = belly_fullscreen_color4
 	dupe.belly_fullscreen_alpha = belly_fullscreen_alpha
 	dupe.show_liquids = show_liquids
+	dupe.reagent_gen_cost_limit = reagent_gen_cost_limit
 	dupe.reagentbellymode = reagentbellymode
 	dupe.vorefootsteps_sounds = vorefootsteps_sounds
 	dupe.liquid_fullness1_messages = liquid_fullness1_messages
@@ -1538,9 +1329,9 @@
 	dupe.custom_reagentalpha = custom_reagentalpha
 	dupe.metabolism_overlay = metabolism_overlay
 	dupe.metabolism_mush_ratio = metabolism_mush_ratio
-	dupe.max_reagents = max_reagents
-	dupe.custom_reagents_color = custom_reagents_color
-	dupe.custom_reagents_alpha = custom_reagents_alpha
+	dupe.max_ingested = max_ingested
+	dupe.custom_ingested_color = custom_ingested_color
+	dupe.custom_ingested_alpha = custom_ingested_alpha
 	dupe.gen_cost = gen_cost
 	dupe.gen_amount = gen_amount
 	dupe.gen_time = gen_time
@@ -1838,10 +1629,7 @@
 	var/belly_fullness = 0
 	for(var/mob/living/M in src)
 		if(count_absorbed_prey_for_sprite || !M.absorbed)
-			var/fullness_to_add = 1
-			if(ishuman(M))
-				var/mob/living/carbon/human/humanvar = M
-				fullness_to_add = humanvar.get_size() / 3
+			var/fullness_to_add = M.size_multiplier
 			fullness_to_add *= M.mob_size / 20
 			if(M.absorbed)
 				fullness_to_add *= absorbed_multiplier
@@ -1884,7 +1672,7 @@
 	color = "#664330"
 	w_class = ITEMSIZE_SMALL*/
 
-//Todo this thing is really cool will have to take a look later
+//Was commented out previously, will keep it this way for now
 /obj/belly/proc/recycle(var/obj/item/O)/*
 	if(!recycling || (!LAZYLEN(O.matter) && !istype(O, /obj/item/ore)))
 		return FALSE
@@ -1938,7 +1726,7 @@
 		return
 	else*/
 	owner.adjust_nutrition(amount)
-/*
+/* //Similarly these were also commented out? Likely part of the recycling?
 /obj/item/reagent_containers/food/rawnutrition
 	name = "raw nutrition"
 	desc = "A nutritious pile of converted mass ready for consumption."
@@ -1993,177 +1781,5 @@
 /obj/belly/proc/toggle_displayed_message_flags(flags_to_set)
 	displayed_message_flags ^= flags_to_set
 
-// SEND_SIGNAL(COMSIG_BELLY_UPDATE_VORE_FX) is sometimes used when calling vore_fx() to send belly visuals
-// to certain non-belly atoms. Not called here as vore_fx() is usually only called if a mob is in the belly.
-// Don't forget it if you need to rework vore_fx().
-/obj/belly/proc/vore_fx(mob/living/L, var/update, var/severity = 0)
-	if(!istype(L))
-		return
-	if(!L.client)
-		return
-	if(L.previewing_belly && L.previewing_belly != src)
-		return
-	if(L.previewing_belly == src && L.vore_selected != src)
-		L.previewing_belly = null
-		return
-	if(!L.show_vore_fx)
-		L.clear_fullscreen("belly")
-		L.previewing_belly = null
-		return
-	if(update)
-		L.clear_fullscreen("belly")
-	if(belly_fullscreen)
-		if(colorization_enabled)
-			var/obj/screen/fullscreen/F = L.overlay_fullscreen("belly", /obj/screen/fullscreen/belly, severity) // preserving save data
-			var/datum/belly_overlays/lookup_belly_path = text2path("/datum/belly_overlays/[lowertext(belly_fullscreen)]")
-			if(!lookup_belly_path)
-				var/used_fullscreen = belly_fullscreen
-				to_chat(owner, span_warning("The belly overlay ([used_fullscreen]) you've selected for [src] no longer exists. Please reselect your overlay."))
-				belly_fullscreen = null
-				CRASH("Icon datum was not defined for [used_fullscreen]")
-
-			var/alpha = min(belly_fullscreen_alpha, L.max_voreoverlay_alpha)
-			F.icon = initial(lookup_belly_path.belly_icon)
-			F.cut_overlays()
-			var/image/I = image(F.icon, belly_fullscreen) //Would be cool if I could just include color and alpha in the image define so we don't have to copy paste
-			I.color = belly_fullscreen_color
-			I.alpha = alpha
-			F.add_overlay(I)
-			I = image(F.icon, belly_fullscreen+"-2")
-			I.color = belly_fullscreen_color2
-			I.alpha = alpha
-			F.add_overlay(I)
-			I = image(F.icon, belly_fullscreen+"-3")
-			I.color = belly_fullscreen_color3
-			I.alpha = alpha
-			F.add_overlay(I)
-			I = image(F.icon, belly_fullscreen+"-4")
-			I.color = belly_fullscreen_color4
-			I.alpha = alpha
-			F.add_overlay(I)
-			var/extra_mush = 0
-			var/extra_mush_color = mush_color
-			if(L.liquidbelly_visuals && ishuman(owner) && metabolism_overlay && metabolism_mush_ratio > 0)
-				var/mob/living/carbon/human/H = owner
-				var/datum/reagents/reagents = H.reagents
-				if(reagents && reagents.total_volume > 0)
-					if(custom_reagents_color)
-						extra_mush_color = custom_reagents_color
-					else
-						extra_mush_color = reagents.get_color()
-					extra_mush = reagents.total_volume * metabolism_mush_ratio
-				if(!mush_overlay)
-					I = image('modular_causticcove/icons/mob/vore_fullscreens/bubbles.dmi', "mush")
-					I.color = extra_mush_color
-					I.alpha = min(custom_reagents_alpha, L.max_voreoverlay_alpha)
-					I.pixel_y = -450 + ((450 / max(max_reagents, 1)) * min(max_reagents, reagents.total_volume))
-					F.add_overlay(I)
-			if(show_liquids && L.liquidbelly_visuals && mush_overlay && (owner.nutrition > 0 || max_mush == 0 || min_mush > 0 || (LAZYLEN(contents) * item_mush_val) > 0))
-				I = image('modular_causticcove/icons/mob/vore_fullscreens/bubbles.dmi', "mush")
-				I.color = mush_color
-				I.alpha = min(mush_alpha, L.max_voreoverlay_alpha)
-				var/total_mush_content = owner.nutrition + LAZYLEN(contents) * item_mush_val + extra_mush
-				I.pixel_y = -450 + (450 / max(max_mush, 1) * max(min(max_mush, total_mush_content), 1))
-				if(I.pixel_y < -450 + (450 / 100 * min_mush))
-					I.pixel_y = -450 + (450 / 100 * min_mush)
-				var/stored_y = I.pixel_y
-				F.add_overlay(I)
-				if(metabolism_overlay && metabolism_mush_ratio > 0 && extra_mush > 0)
-					I = image('modular_causticcove/icons/mob/vore_fullscreens/bubbles.dmi', "mush")
-					I.color = extra_mush_color
-					I.alpha = min(mush_alpha, (extra_mush / max(total_mush_content, 1)) * mush_alpha)
-					I.pixel_y = stored_y
-					F.add_overlay(I)
-			if(show_liquids && L.liquidbelly_visuals && liquid_overlay && reagents.total_volume)
-				if(digest_mode == DM_HOLD && item_digest_mode == IM_HOLD)
-					I = image('modular_causticcove/icons/mob/vore_fullscreens/bubbles.dmi', "calm")
-				else
-					I = image('modular_causticcove/icons/mob/vore_fullscreens/bubbles.dmi', "bubbles")
-				if(custom_reagentcolor)
-					I.color = custom_reagentcolor
-				else
-					I.color = reagentcolor
-				if(custom_reagentalpha)
-					I.alpha = custom_reagentalpha
-				else
-					I.alpha = max(150, min(custom_max_volume, 255)) - (255 - belly_fullscreen_alpha)
-				I.pixel_y = -450 + min((450 / custom_max_volume * reagents.total_volume), 450 / 100 * max_liquid_level)
-				I.alpha = min(I.alpha, L.max_voreoverlay_alpha)
-				F.add_overlay(I)
-			F.update_for_view(L.client.view)
-		else
-			var/obj/screen/fullscreen/F = L.overlay_fullscreen("belly", /obj/screen/fullscreen/belly/fixed, severity) //preserving save data
-			F.icon = 'modular_causticcove/icons/mob/vore_fullscreens/screen_full_vore.dmi'
-			F.cut_overlays()
-			F.add_overlay(image(F.icon, belly_fullscreen))
-			F.add_overlay(image(F.icon, belly_fullscreen+"-2"))
-			F.add_overlay(image(F.icon, belly_fullscreen+"-3"))
-			F.add_overlay(image(F.icon, belly_fullscreen+"-4"))
-			var/image/I
-			var/extra_mush = 0
-			var/extra_mush_color = mush_color
-			if(L.liquidbelly_visuals && ishuman(owner) && metabolism_overlay && metabolism_mush_ratio > 0)
-				var/mob/living/carbon/human/H = owner
-				var/datum/reagents/reagents = H.reagents
-				if(reagents && reagents.total_volume > 0)
-					if(custom_reagents_color)
-						extra_mush_color = custom_reagents_color
-					else
-						extra_mush_color = reagents.get_color()
-					extra_mush = reagents.total_volume * metabolism_mush_ratio
-				if(!mush_overlay)
-					I = image('modular_causticcove/icons/mob/vore_fullscreens/bubbles.dmi', "mush")
-					I.color = extra_mush_color
-					I.alpha = custom_reagents_alpha
-					I.pixel_y = -450 + (450 / max(max_reagents, 1) * max(min(max_reagents, reagents.total_volume), 1))
-					F.add_overlay(I)
-			if(show_liquids && L.liquidbelly_visuals && mush_overlay && (owner.nutrition > 0 || max_mush == 0 || min_mush > 0 || (LAZYLEN(contents) * item_mush_val) > 0))
-				I = image('modular_causticcove/icons/mob/vore_fullscreens/bubbles.dmi', "mush")
-				I.color = mush_color
-				I.alpha = mush_alpha
-				var/total_mush_content = owner.nutrition + LAZYLEN(contents) * item_mush_val + extra_mush
-				I.pixel_y = -450 + (450 / max(max_mush, 1) * max(min(max_mush, total_mush_content), 1))
-				if(I.pixel_y < -450 + (450 / 100 * min_mush))
-					I.pixel_y = -450 + (450 / 100 * min_mush)
-				var/stored_y = I.pixel_y
-				F.add_overlay(I)
-				if(metabolism_overlay && metabolism_mush_ratio > 0 && extra_mush > 0)
-					I = image('modular_causticcove/icons/mob/vore_fullscreens/bubbles.dmi', "mush")
-					I.color = extra_mush_color
-					I.alpha = min(mush_alpha, (extra_mush / max(total_mush_content, 1)) * mush_alpha)
-					I.pixel_y = stored_y
-					F.add_overlay(I)
-			if(show_liquids && L.liquidbelly_visuals && liquid_overlay && reagents.total_volume)
-				if(digest_mode == DM_HOLD && item_digest_mode == IM_HOLD)
-					I = image('modular_causticcove/icons/mob/vore_fullscreens/bubbles.dmi', "calm")
-				else
-					I = image('modular_causticcove/icons/mob/vore_fullscreens/bubbles.dmi', "bubbles")
-				if(custom_reagentcolor)
-					I.color = custom_reagentcolor
-				else
-					I.color = reagentcolor
-				if(custom_reagentalpha)
-					I.alpha = custom_reagentalpha
-				else
-					I.alpha = max(150, min(custom_max_volume, 255)) - (255 - belly_fullscreen_alpha)
-				I.pixel_y = -450 + min((450 / custom_max_volume * reagents.total_volume), 450 / 100 * max_liquid_level)
-				F.add_overlay(I)
-			F.update_for_view(L.client.view)
-	else
-		L.clear_fullscreen("belly")
-
-	if(disable_hud && L != owner)
-		if(L?.hud_used?.hud_shown)
-			to_chat(L, span_notice("((Your pred has disabled huds in their belly. Turn off vore FX and hit F12 to get it back; or relax, and enjoy the serenity.))"))
-			L.toggle_hud_vis(TRUE)
-
-/obj/belly/proc/vore_preview(mob/living/L)
-	if(!istype(L) || !L.client)
-		L.previewing_belly = null
-		return
-	L.previewing_belly = src
-	vore_fx(L)
-
-/obj/belly/proc/clear_preview(mob/living/L)
-	L.previewing_belly = null
-	L.clear_fullscreen("belly")
+#undef MAX_ENTRY_MESSAAGES
+#undef ENTRY_MESSAGE_INTERVAL

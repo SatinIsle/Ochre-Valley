@@ -17,35 +17,35 @@
 				affecting_amt = 5
 			if(affecting_amt >= 1)
 				for(var/mob/living/L in touchable_atoms)
-					if(!L.apply_reagents)
+					if(!L.apply_reagents || L.absorbed)
 						continue
 					if((L.digestable && digest_mode == DM_DIGEST))
 						if(!L.permit_healbelly && is_beneficial) // Healing reagents turned off in preferences!
 							continue
 						if(reagents.total_volume)
-							reagents.trans_to(L, affecting_amt, 1, FALSE)
+							reagents.splash_mob(L, affecting_amt, FALSE)
 					if(L.permit_healbelly && digest_mode == DM_HEAL)
 						if(is_beneficial && reagents.total_volume)
-							reagents.trans_to(L, affecting_amt, 1, FALSE)
+							reagents.splash_mob(L, affecting_amt, FALSE)
 				for(var/obj/item/I in touchable_atoms)
 					if(is_type_in_list(I, GLOB.item_digestion_blacklist))
 						continue
 					if(reagents.total_volume)
 						reagents.trans_to(I, affecting_amt, 1, FALSE)
-		SEND_SIGNAL(src, COMSIG_BELLY_UPDATE_VORE_FX, FALSE, reagents.total_volume) // Signals vore_fx() reagents updates.
+		SEND_SIGNAL(src, COMSIG_BELLY_UPDATE_VORE_FX, reagents.total_volume) // Signals vore_fx() reagents updates.
 		for(var/mob/living/L in contents)
-			vore_fx(L, FALSE, reagents.total_volume)
+			vore_fx(L, reagents.total_volume)
 	if(owner.previewing_belly == src)
-		vore_fx(owner, FALSE, reagents.total_volume)
+		vore_fx(owner, reagents.total_volume)
 
 /obj/belly/proc/GenerateBellyReagents()
-	owner.nutrition -= gen_cost
+	owner.adjust_nutrition(-gen_cost)
 	for(var/reagent in generated_reagents)
 		reagents.add_reagent(reagent, generated_reagents[reagent])
 	if(count_liquid_for_sprite)
 		owner.handle_belly_update() //This is run whenever a belly's contents are changed.
 	if(LAZYLEN(belly_surrounding))
-		SEND_SIGNAL(src, COMSIG_BELLY_UPDATE_VORE_FX, FALSE, reagents.total_volume) // Signals vore_fx() reagents updates.
+		SEND_SIGNAL(src, COMSIG_BELLY_UPDATE_VORE_FX, reagents.total_volume) // Signals vore_fx() reagents updates.
 
 //////////////////////////// REAGENT_DIGEST ////////////////////////
 
