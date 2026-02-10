@@ -1,5 +1,5 @@
 #define MAX_ENTRY_MESSAAGES 20
-#define ENTRY_MESSAGE_INTERVAL 1 SECOND
+#define ENTRY_MESSAGE_INTERVAL 1 SECONDS
 
 //
 //  Belly system 2.0, now using objects instead of datums because EH at datums.
@@ -544,25 +544,25 @@
 		thing.forceMove(get_turf(src))
 		return
 	thing.enter_belly(src) // Atom movable proc, does nothing by default. Overridden in children for special behavior.
-	if(owner && istype(owner.loc,/turf/simulated) && !cycle_sloshed && reagents.total_volume > 0)
+	if(owner && istype(owner.loc,/turf/open) && !cycle_sloshed && reagents.total_volume > 0)
 		var/S = pick(GLOB.slosh)
 		if(S)
-			playsound(owner.loc, S, sound_volume * (reagents.total_volume / 100), FALSE, frequency = noise_freq, preference = /datum/preference/toggle/digestion_noises)
+			playsound(owner.loc, S, sound_volume * (reagents.total_volume / 100), FALSE, frequency = noise_freq, preference = "digestion_noises")
 			cycle_sloshed = TRUE
 	thing.belly_cycles = 0 //reset cycle count
-	if(istype(thing, /mob/observer)) //Ports CHOMPStation PR#3072
+	if(istype(thing, /mob/dead/observer)) //Ports CHOMPStation PR#3072
 		if(desc) //Ports CHOMPStation PR#4772
 			//Allow ghosts see where they are if they're still getting squished along inside.
 			to_chat(thing, span_notice(span_bold("[belly_format_string(desc, thing)]")))
 
 	if(OldLoc in contents)
 		return //Someone dropping something (or being stripdigested)
-	if(istype(OldLoc, /mob/observer) || istype(OldLoc, /obj/item/mmi)) // Prevent reforming causing a lot of log spam/sounds
+	if(istype(OldLoc, /mob/dead/observer)) // Prevent reforming causing a lot of log spam/sounds
 		return //Someone getting reformed most likely (And if not, uh... shouldn't happen anyways?)
 
 	//Generic entered message
 	if(!owner.mute_entry && entrance_logs)
-		if(!istype(thing, /mob/observer))	//Don't have ghosts announce they're reentering the belly on death
+		if(!istype(thing, /mob/dead/observer))	//Don't have ghosts announce they're reentering the belly on death
 			if(world.time - last_transfer_log > ENTRY_MESSAGE_INTERVAL)
 				last_transfer_log = world.time
 				entrance_log_count = 0
@@ -574,7 +574,7 @@
 					last_transfer_log = world.time
 
 	//Sound w/ antispam flag setting
-	if(vore_sound && !recent_sound && !istype(thing, /mob/observer))
+	if(vore_sound && !recent_sound && !istype(thing, /mob/dead/observer))
 		var/soundfile
 		if(!fancy_vore)
 			soundfile = GLOB.classic_vore_sounds[vore_sound]
@@ -583,7 +583,7 @@
 		if(special_entrance_sound) // Custom sound set by mob's init_vore or ingame varedits.
 			soundfile = special_entrance_sound
 		if(soundfile)
-			playsound(src, soundfile, vol = sound_volume, vary = 1, falloff = VORE_SOUND_FALLOFF, frequency = noise_freq, preference = /datum/preference/toggle/eating_noises, volume_channel = VOLUME_CHANNEL_VORE)
+			playsound(src, soundfile, vol = sound_volume, vary = 1, falloff = VORE_SOUND_FALLOFF, frequency = noise_freq, preference = "eating_noises", channel = VOLUME_CHANNEL_VORE)
 			recent_sound = TRUE
 
 	if(reagents.total_volume >= 5 && !isliving(thing) && (item_digest_mode == IM_DIGEST || item_digest_mode == IM_DIGEST_PARALLEL))
@@ -620,11 +620,11 @@
 		if(owner.previewing_belly == src)
 			vore_fx(owner)
 		//Stop AI processing in bellies
-		if(living_mob.ai_holder)
-			living_mob.ai_holder.go_sleep()
+		//if(living_mob.ai_holder)
+		//	living_mob.ai_holder.go_sleep()
 		if(reagents.total_volume >= 5)
 			if(digest_mode == DM_DIGEST && living_mob.digestable)
-				reagents.splash_mob(living_mob, reagents.total_volume * 0.1, FALSE)
+				reagents.trans_to(thing, reagents.total_volume * 0.1, 1 / max(LAZYLEN(contents), 1), FALSE)
 			to_chat(living_mob, span_warning(span_bold("You splash into a pool of [reagent_name]!")))
 	if(!isliving(thing) && count_items_for_sprite) // If this is enabled also update fullness for non-living things
 		owner.handle_belly_update() // This is run whenever a belly's contents are changed.

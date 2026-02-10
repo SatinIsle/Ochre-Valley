@@ -180,6 +180,10 @@
 		dna.species.on_species_gain(src, old_species, pref_load)
 
 /mob/living/carbon/human/set_species(datum/species/mrace, icon_update = TRUE, datum/preferences/pref_load = null)
+	//Caustic Edit - Add in Micro Holders on a per-species basis, in case we want functionally different ones based on species. Not a bad idea? Will it be used? Eeeh who knows
+	if(mrace.holder_type)
+		holder_type = mrace.holder_type
+	//Caustic Edit End
 	if(pref_load)
 		skin_tone = pref_load.skin_tone
 	..()

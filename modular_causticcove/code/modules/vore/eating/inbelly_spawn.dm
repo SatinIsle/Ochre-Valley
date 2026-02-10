@@ -1,9 +1,9 @@
-/mob/living/proc/inbelly_spawn_prompt(client/potential_prey)
+/mob/living/proc/inbelly_spawn_prompt(mob/dead/observer/potential_prey)
 	if(!potential_prey || !istype(potential_prey))		// Did our prey cease to exist?
 		return
 
 	// Are we cool with this prey spawning in at all?
-	var/answer = tgui_alert(src, "[potential_prey.prefs.real_name] wants to spawn in one of your bellies. Do you accept?", "Inbelly Spawning", list("Yes", "No"))
+	var/answer = tgui_alert(src, "[potential_prey.client.prefs.real_name] wants to spawn in one of your bellies. Do you accept?", "Inbelly Spawning", list("Yes", "No"))
 	if(answer != "Yes")
 		to_chat(potential_prey, span_notice("Your request was turned down."))
 		return
@@ -40,7 +40,7 @@
 		return
 
 	// Final confirmation for pred
-	var/confirmation_pred = tgui_alert(src, "Are you certain that you want [potential_prey.prefs.real_name] spawned in your [belly_choice][absorbed ? ", absorbed" : ""]?", "Inbelly Spawning", list("Yes", "No"))
+	var/confirmation_pred = tgui_alert(src, "Are you certain that you want [potential_prey.client.prefs.real_name] spawned in your [belly_choice][absorbed ? ", absorbed" : ""]?", "Inbelly Spawning", list("Yes", "No"))
 
 	if(confirmation_pred != "Yes")
 		to_chat(potential_prey, span_notice("Your pred couldn't finish selection. Try again?"))
@@ -54,20 +54,16 @@
 
 	if(confirmation_prey == "Yes" && potential_prey && src && belly_choice)
 		//Now we finally spawn them in!
-		if(!is_alien_whitelisted(potential_prey, GLOB.all_species[potential_prey.prefs.species]))
+		/*if(!is_alien_whitelisted(potential_prey, GLOB.all_species[potential_prey.prefs.species])) //Caustic - I guess if we have uh, whitelists it would be added in here?
 			to_chat(potential_prey, span_notice("You are not whitelisted to play as currently selected character."))
 			to_chat(src, span_notice("Prey accepted the confirmation, but something went wrong with spawning their character."))
-			return
+			return*/
 		inbelly_spawn(potential_prey, src, belly_choice, absorbed)
 	else
 		to_chat(potential_prey, span_notice("Inbelly spawn cancelled."))
 		to_chat(src, span_notice("Prey cancelled their inbelly spawn request."))
 
-/proc/inbelly_spawn(client/prey, mob/living/pred, obj/belly/target_belly, var/absorbed = FALSE)
-	// All this is basically admin late spawn-in, but skipping all parts related to records and equipment and with predteremined location
-	var/player_key = prey.key
-	var/picked_ckey = prey.ckey
-	var/picked_slot = prey.prefs.default_slot
+/proc/inbelly_spawn(mob/dead/observer/prey, mob/living/pred, obj/belly/target_belly, var/absorbed = FALSE)
 	var/mob/living/carbon/human/new_character
 
 	new_character = new(null)		// Spawn them in nullspace first. Can't have "Defaultname Defaultnameson slides into your Stomach".
@@ -75,45 +71,25 @@
 	if(!new_character)
 		return
 
-	prey.prefs.copy_to(new_character)
-	if(new_character.dna)
-		new_character.dna.ResetUIFrom(new_character)
-		new_character.sync_dna_traits(TRUE) // Traitgenes Sync traits to genetics if needed
-		new_character.sync_organ_dna()
-	new_character.sync_addictions()
-	new_character.initialize_vessel()
-	new_character.key = player_key
-	if(new_character.mind)
-		var/datum/antagonist/antag_data = get_antag_data(new_character.mind.special_role)
-		if(antag_data)
-			antag_data.add_antagonist(new_character.mind)
-			antag_data.place_mob(new_character)
-		new_character.mind.loaded_from_ckey = picked_ckey
-		new_character.mind.loaded_from_slot = picked_slot
-		if(new_character.mind.antag_holder)
-			new_character.mind.antag_holder.apply_antags(new_character)
+	prey.client.prefs.copy_to(new_character)
+	new_character.dna.update_dna_identity()
+	if(prey.mind)
+		prey.mind.late_joiner = TRUE
+		prey.mind.active = 0					//we wish to transfer the key manually
+		prey.mind.transfer_to(new_character)					//won't transfer key since the mind is not active
 
-	for(var/lang in prey.prefs.alternate_languages)
-		var/datum/language/chosen_language = GLOB.all_languages[lang]
-		if(chosen_language)
-			if(is_lang_whitelisted(prey,chosen_language) || (new_character.species && (chosen_language.name in new_character.species.secondary_langs)))
-				new_character.add_language(lang)
-	for(var/key in prey.prefs.language_custom_keys)
-		if(prey.prefs.language_custom_keys[key])
-			var/datum/language/keylang = GLOB.all_languages[prey.prefs.language_custom_keys[key]]
-			if(keylang)
-				new_character.language_keys[key] = keylang
-	if(prey.prefs.preferred_language) // Do we have a preferred language?
-		var/datum/language/def_lang = GLOB.all_languages[prey.prefs.preferred_language]
-		if(def_lang)
-			new_character.default_language = def_lang
+	new_character.name = prey.client.prefs.real_name
 
-	SEND_SIGNAL(new_character, COMSIG_HUMAN_DNA_FINALIZED)
+	new_character.key = prey.key		//Manually transfer the key to log them in
+	var/area/joined_area = get_area(pred.loc)
+	if(joined_area)
+		joined_area.on_joining_game(new_character)
+	new_character.update_fov_angles()
+
+	GLOB.chosen_names += new_character.real_name
 
 	new_character.regenerate_icons()
-
 	new_character.update_transform()
-
 	new_character.forceMove(target_belly)		// Now that they're all setup and configured, send them to their destination.
 
 	if(absorbed)

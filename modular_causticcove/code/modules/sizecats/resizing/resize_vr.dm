@@ -1,3 +1,8 @@
+//Size change stripping options
+#define SIZESTRIP_NONE 				0							//Default, no dropping items on size change
+#define SIZESTRIP_ITEMS				1							//Drop all inventory slots on size change
+#define SIZESTRIP_ALL 				2							//Drop all inventory and remove underwear on size change
+
 // Adding needed defines to /mob/living
 // Note: Polaris had this on /mob/living/carbon/human We need it higher up for animals and stuff.
 /mob

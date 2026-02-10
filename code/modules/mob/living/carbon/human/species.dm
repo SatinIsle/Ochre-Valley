@@ -170,6 +170,10 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 	var/custom_rotation_icon = null
 	var/custom_base_icon = null
 
+	//Caustic Edit - Add a Mob holder type based on Species, so we can maybe have different effects based on species later?
+	var/holder_type = /obj/item/holder/micro
+	//Caustic Edit End
+
 ///////////
 // PROCS //
 ///////////

@@ -185,7 +185,7 @@
 			touchable_mobs += L
 
 			if(L.absorbed)
-				L.Weaken(5)
+				L.Stun(5)
 
 			//Thickbelly flag
 			if((mode_flags & DM_FLAG_THICKBELLY) && !L.muffled) //Caustic - This likely should function like a gag?
@@ -202,8 +202,8 @@
 				L.forced_psay = FALSE
 
 			// Wet flag
-			if(mode_flags & DM_FLAG_WETTENS)
-				L.set_wet_stacks(20)
+			//if(mode_flags & DM_FLAG_WETTENS)
+			//	L.set_wet_stacks(20) //Caustic - It seems like we don't have this prevention-while-wet in Roguecode?
 
 			//Handle 'human'
 			if(ishuman(L))
@@ -336,15 +336,15 @@
 
 /obj/belly/proc/steal_nutrition(mob/living/L)
 	if(L.nutrition <= 110)
-		if(drainmode == DR_SLEEP && ishuman(L)) //Slowly put prey to sleep //Caustic - Can this be changed to instead work with our tiredness stuff?
-			if(L.tiredness <= 105)
-				L.tiredness = (L.tiredness + 6)
-			if(L.tiredness <= 90 && L.tiredness >= 75)
+		if(drainmode == DR_SLEEP && ishuman(L) && !L.IsSleeping()) //Slowly put prey to sleep
+			if(L.drowsyness <= 105)
+				L.drowsyness = (L.drowsyness + 6)
+			if(L.drowsyness <= 90 && L.drowsyness >= 75)
 				to_chat(L, span_warning("You are about to fall unconscious!"))
 				to_chat(owner, span_warning("[L] is about to fall unconscious!"))
 		if(drainmode == DR_FAKE && ishuman(L)) //Slowly bring prey to the edge of sleep without crossing it
-			if(L.tiredness <= 93)
-				L.tiredness = (L.tiredness + 6)
+			if(L.drowsyness <= 93)
+				L.drowsyness = (L.drowsyness + 6)
 		if(drainmode == DR_WEIGHT && ishuman(L)) //Slowly drain your prey's weight and add it to your own
 			if(L.weight > 70)
 				L.weight -= (0.01 * L.weight_loss)

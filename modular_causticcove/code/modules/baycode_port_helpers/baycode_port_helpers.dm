@@ -202,4 +202,4 @@ GLOBAL_LIST_EMPTY(icon_state_lists)
 	return getMaxHealth() - ((getBruteLoss() + getFireLoss() + getToxLoss() + getOxyLoss()))
 
 /mob/living/proc/nutrition_percent()
-	return 100 * nutrition / max_nutrition
+	return 100 * nutrition / maxnutrition

@@ -36,6 +36,7 @@
 
 	var/passtable_reset		// For crawling
 	var/passtable_crawl_checked = FALSE
+	var/holder_type
 
 /mob/living/proc/handle_special_unlocks()
 	return
@@ -85,63 +86,63 @@
 // Handle being clicked, perhaps with something to devour
 //
 /mob/living/proc/vore_attackby(obj/item/I, mob/user)
-	//Handle case: /obj/item/grab
-	if(istype(I, /obj/item/grab))
-		var/obj/item/grab/G = I
-		var/mob/living/carbon/victim = G.affecting
+	//Handle case: /obj/item/grabbing
+	if(istype(I, /obj/item/grabbing))
+		var/obj/item/grabbing/G = I
+		var/mob/living/carbon/victim = G.grabbed
 
 		//Has to be aggressive grab, has to be living click-er and non-silicon grabbed
-		if(G.state >= GRAB_AGGRESSIVE && (isliving(user) && !issilicon(G.affecting)))
+		if(G.state >= GRAB_AGGRESSIVE && (isliving(user)))
 			var/mob/living/attacker = user  // Typecast to living
 
 			// src is the mob clicked on and attempted predator
 
 			///// If user clicked on themselves
-			if(src == G.assailant && is_vore_predator(src))
+			if(src == G.grabbee && is_vore_predator(src))
 				if(istype(victim) && !victim.client && !victim.ai_holder)
-					log_and_message_admins("attempted to eat [key_name_admin(G.affecting)] whilst they were AFK ([G.affecting ? ADMIN_JMP(G.affecting) : "null"])", src)
-				if(feed_grabbed_to_self(src, G.affecting))
+					log_and_message_admins("attempted to eat [key_name_admin(G.grabbed)] whilst they were AFK ([G.grabbed ? ADMIN_JMP(G.grabbed) : "null"])", src)
+				if(feed_grabbed_to_self(src, G.grabbed))
 					qdel(G)
 					return TRUE
 				else
-					log_attack("[attacker] attempted to feed [G.affecting] to [user] ([user.type]) but it failed.")
+					log_attack("[attacker] attempted to feed [G.grabbed] to [user] ([user.type]) but it failed.")
 
 			///// If user clicked on their grabbed target
-			else if((src == G.affecting) && (attacker.a_intent == I_GRAB) && (attacker.zone_sel.selecting == BP_TORSO) && (is_vore_predator(G.affecting)))
+			else if((src == G.grabbed) && (attacker.a_intent == I_GRAB) && (attacker.zone_sel.selecting == BP_TORSO) && (is_vore_predator(G.grabbed)))
 				if(istype(victim) && !victim.client && !victim.ai_holder) //Check whether the victim is: A carbon mob, has no client, but has a ckey. This should indicate an SSD player.
-					log_and_message_admins("attempted to force feed themselves to [key_name_admin(G.affecting)] whilst they were AFK ([G.affecting ? ADMIN_JMP(G.affecting) : "null"])", attacker)
-				if(!G.affecting.feeding)
-					to_chat(user, span_notice("[G.affecting] isn't willing to be fed."))
-					log_and_message_admins("attempted to feed themselves to [key_name_admin(G.affecting)] against their prefs ([G.affecting ? ADMIN_JMP(G.affecting) : "null"])", src)
+					log_and_message_admins("attempted to force feed themselves to [key_name_admin(G.grabbed)] whilst they were AFK ([G.grabbed ? ADMIN_JMP(G.grabbed) : "null"])", attacker)
+				if(!G.grabbed.feeding)
+					to_chat(user, span_notice("[G.grabbed] isn't willing to be fed."))
+					log_and_message_admins("attempted to feed themselves to [key_name_admin(G.grabbed)] against their prefs ([G.grabbed ? ADMIN_JMP(G.grabbed) : "null"])", src)
 					return FALSE
 
-				if(attacker.feed_self_to_grabbed(attacker, G.affecting))
+				if(attacker.feed_self_to_grabbed(attacker, G.grabbed))
 					qdel(G)
 					return TRUE
 				else
-					log_attack("[attacker] attempted to feed [user] to [G.affecting] ([G.affecting ? G.affecting.type : "null"]) but it failed.")
+					log_attack("[attacker] attempted to feed [user] to [G.grabbed] ([G.grabbed ? G.grabbed.type : "null"]) but it failed.")
 
 			///// If user clicked on anyone else but their grabbed target
-			else if((src != G.affecting) && (src != G.assailant) && (is_vore_predator(src)))
+			else if((src != G.grabbed) && (src != G.assailant) && (is_vore_predator(src)))
 				if(istype(victim) && !victim.client && !victim.ai_holder)
-					log_and_message_admins("attempted to feed [key_name_admin(G.affecting)] to [key_name_admin(src)] whilst [key_name_admin(G.affecting)] was AFK ([G.affecting ? ADMIN_JMP(G.affecting) : "null"])", attacker)
+					log_and_message_admins("attempted to feed [key_name_admin(G.grabbed)] to [key_name_admin(src)] whilst [key_name_admin(G.grabbed)] was AFK ([G.grabbed ? ADMIN_JMP(G.grabbed) : "null"])", attacker)
 				var/mob/living/carbon/victim_fed = src
 				if(istype(victim_fed) && !victim_fed.client && !victim_fed.ai_holder)
-					log_and_message_admins("attempted to feed [key_name_admin(G.affecting)] to [key_name_admin(src)] whilst [key_name_admin(src)] was AFK ([G.affecting ? ADMIN_JMP(G.affecting) : "null"])", attacker)
+					log_and_message_admins("attempted to feed [key_name_admin(G.grabbed)] to [key_name_admin(src)] whilst [key_name_admin(src)] was AFK ([G.grabbed ? ADMIN_JMP(G.grabbed) : "null"])", attacker)
 
 				if(!feeding)
 					to_chat(user, span_notice("[src] isn't willing to be fed."))
-					log_and_message_admins("attempted to feed [key_name_admin(G.affecting)] to [key_name_admin(src)] against predator's prefs ([src ? ADMIN_JMP(src) : "null"])", attacker)
+					log_and_message_admins("attempted to feed [key_name_admin(G.grabbed)] to [key_name_admin(src)] against predator's prefs ([src ? ADMIN_JMP(src) : "null"])", attacker)
 					return FALSE
-				if(!(G.affecting.devourable))
-					to_chat(user, span_notice("[G.affecting] isn't able to be devoured."))
-					log_and_message_admins("attempted to feed [key_name_admin(G.affecting)] to [key_name_admin(src)] against prey's prefs ([G.affecting ? ADMIN_JMP(G.affecting) : "null"])", attacker)
+				if(!(G.grabbed.devourable))
+					to_chat(user, span_notice("[G.grabbed] isn't able to be devoured."))
+					log_and_message_admins("attempted to feed [key_name_admin(G.grabbed)] to [key_name_admin(src)] against prey's prefs ([G.grabbed ? ADMIN_JMP(G.grabbed) : "null"])", attacker)
 					return FALSE
-				if(attacker.feed_grabbed_to_other(attacker, G.affecting, src))
+				if(attacker.feed_grabbed_to_other(attacker, G.grabbed, src))
 					qdel(G)
 					return TRUE
 				else
-					log_attack("[attacker] attempted to feed [G.affecting] to [src] ([type]) but it failed.")
+					log_attack("[attacker] attempted to feed [G.grabbed] to [src] ([type]) but it failed.")
 
 	//Handle case: /obj/item/holder
 	else if(istype(I, /obj/item/holder))

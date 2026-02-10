@@ -2,15 +2,14 @@
 	//. = ..()
 	if(isliving(AM))
 		var/mob/living/L = AM
-		if(!L.is_incorporeal())
-			if(buckled != AM && (((confused || is_blind()) && stat == CONSCIOUS && prob(50) && m_intent==I_RUN) || flying && flight_vore))
-				AM.stumble_into(src)
+		if(buckled != AM && (((confused || is_blind()) && stat == CONSCIOUS && prob(50) && m_intent==MOVE_INTENT_RUN) /*|| flying && flight_vore*/)) //Caustic - Flying Vore will require Harpy support? Or... something.
+			AM.stumble_into(src)
 	return ..()
 // Because flips toggle density
 /mob/living/Crossed(var/atom/movable/AM)
 	if(isliving(AM) && isturf(loc) && AM != src)
 		var/mob/living/AMV = AM
-		if(AMV.buckled != src && (((AMV.confused || AMV.is_blind()) && AMV.stat == CONSCIOUS && prob(50) && AMV.m_intent==I_RUN) || AMV.flying && AMV.flight_vore))
+		if(AMV.buckled != src && (((AMV.confused || AMV.is_blind()) && AMV.stat == CONSCIOUS && prob(50) && AMV.m_intent==MOVE_INTENT_RUN) /*|| AMV.flying && AMV.flight_vore*/))
 			INVOKE_ASYNC(src,TYPE_PROC_REF(/atom/movable, stumble_into), AMV)
 	..()
 
@@ -23,8 +22,8 @@
 		return
 
 	playsound(src, "punch", 25, 1, -1)
-	M.Weaken(4)
-	M.stop_flying()
+	M.Stun(4)
+	//M.stop_flying()
 
 	if(ishuman(src))
 		var/mob/living/carbon/human/S = src
@@ -32,8 +31,8 @@
 			visible_message(span_warning("[M] carelessly bowls [src] over!"))
 			M.forceMove(get_turf(src))
 			M.apply_damage(0.5, BRUTE)
-			Weaken(4)
-			stop_flying()
+			Stun(4)
+			//stop_flying()
 			apply_damage(0.5, BRUTE)
 			return
 
