@@ -258,6 +258,13 @@ GLOBAL_LIST_EMPTY(species_list)
 			return
 		return FALSE
 
+	//Caustic Edit - Disable the progress bar if you are currently sneaking, since that gives it away!
+	if(isliving(user))
+		var/mob/living/user_live = user
+		if(user_live.rogue_sneaking)
+			progress = FALSE
+	//Caustic Edit End
+
 	user.doing = TRUE
 
 	var/atom/Tloc = null

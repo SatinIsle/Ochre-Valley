@@ -10,11 +10,11 @@ PROCESSING_SUBSYSTEM_DEF(bellies)
 
 /datum/controller/subsystem/processing/bellies/Recover()
 	log_runtime("[name] subsystem Recover().")
-	if(SSbellies.current_thing)
-		log_runtime("current_thing was: (\ref[SSbellies.current_thing])[SSbellies.current_thing]([SSbellies.current_thing.type]) - currentrun: [length(SSbellies.currentrun)] vs total: [length(SSbellies.processing)]")
+	//if(SSbellies.current_thing) //Caustic - Our subsystems don't have a 'current_thing' for processing
+	//	log_runtime("current_thing was: (\ref[SSbellies.current_thing])[SSbellies.current_thing]([SSbellies.current_thing.type]) - currentrun: [length(SSbellies.currentrun)] vs total: [length(SSbellies.processing)]")
 	var/list/old_processing = SSbellies.processing.Copy()
 	for(var/datum/D in old_processing)
 		if(!isbelly(D))
 			log_runtime("[name] subsystem Recover() found inappropriate item in list: [D.type]")
-		if(CHECK_BITFIELD(D.datum_flags, DF_ISPROCESSING))
-			processing |= D
+		//if(CHECK_BITFIELD(D.datum_flags, DF_ISPROCESSING)) //Caustic - this we also don't really have. And this appears to simply be just error reporting/recovery for the subsystem?
+		//	processing |= D

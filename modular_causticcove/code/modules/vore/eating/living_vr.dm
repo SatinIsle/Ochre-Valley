@@ -38,6 +38,9 @@
 	var/passtable_crawl_checked = FALSE
 	var/holder_type
 
+/mob/living/carbon/human
+	var/list/body_writing // assoc list by BP_ key
+
 /mob/living/proc/handle_special_unlocks()
 	return
 
@@ -92,51 +95,51 @@
 		var/mob/living/carbon/victim = G.grabbed
 
 		//Has to be aggressive grab, has to be living click-er and non-silicon grabbed
-		if(G.state >= GRAB_AGGRESSIVE && (isliving(user)))
+		if(G.grab_state >= GRAB_AGGRESSIVE && (isliving(user)))
 			var/mob/living/attacker = user  // Typecast to living
 
 			// src is the mob clicked on and attempted predator
 
 			///// If user clicked on themselves
 			if(src == G.grabbee && is_vore_predator(src))
-				if(istype(victim) && !victim.client && !victim.ai_holder)
-					log_and_message_admins("attempted to eat [key_name_admin(G.grabbed)] whilst they were AFK ([G.grabbed ? ADMIN_JMP(G.grabbed) : "null"])", src)
-				if(feed_grabbed_to_self(src, G.grabbed))
+				if(istype(victim) && !victim.client && !victim.ai_controller)
+					log_and_message_admins("attempted to eat [key_name_admin(victim)] whilst they were AFK ([G.grabbed ? ADMIN_JMP(victim) : "null"])", src)
+				if(feed_grabbed_to_self(src, victim))
 					qdel(G)
 					return TRUE
 				else
 					log_attack("[attacker] attempted to feed [G.grabbed] to [user] ([user.type]) but it failed.")
 
 			///// If user clicked on their grabbed target
-			else if((src == G.grabbed) && (attacker.a_intent == I_GRAB) && (attacker.zone_sel.selecting == BP_TORSO) && (is_vore_predator(G.grabbed)))
-				if(istype(victim) && !victim.client && !victim.ai_holder) //Check whether the victim is: A carbon mob, has no client, but has a ckey. This should indicate an SSD player.
-					log_and_message_admins("attempted to force feed themselves to [key_name_admin(G.grabbed)] whilst they were AFK ([G.grabbed ? ADMIN_JMP(G.grabbed) : "null"])", attacker)
-				if(!G.grabbed.feeding)
+			else if((src == G.grabbed) && (attacker.a_intent == INTENT_GRAB) && (attacker.zone_selected == BODY_ZONE_CHEST) && (is_vore_predator(G.grabbed)))
+				if(istype(victim) && !victim.client && !victim.ai_controller) //Check whether the victim is: A carbon mob, has no client, but has a ckey. This should indicate an SSD player.
+					log_and_message_admins("attempted to force feed themselves to [key_name_admin(G.grabbed)] whilst they were AFK ([G.grabbed ? ADMIN_JMP(victim) : "null"])", attacker)
+				if(!victim.feeding)
 					to_chat(user, span_notice("[G.grabbed] isn't willing to be fed."))
-					log_and_message_admins("attempted to feed themselves to [key_name_admin(G.grabbed)] against their prefs ([G.grabbed ? ADMIN_JMP(G.grabbed) : "null"])", src)
+					log_and_message_admins("attempted to feed themselves to [key_name_admin(G.grabbed)] against their prefs ([G.grabbed ? ADMIN_JMP(victim) : "null"])", src)
 					return FALSE
 
 				if(attacker.feed_self_to_grabbed(attacker, G.grabbed))
 					qdel(G)
 					return TRUE
 				else
-					log_attack("[attacker] attempted to feed [user] to [G.grabbed] ([G.grabbed ? G.grabbed.type : "null"]) but it failed.")
+					log_attack("[attacker] attempted to feed [user] to [G.grabbed] ([G.grabbed ? victim.type : "null"]) but it failed.")
 
 			///// If user clicked on anyone else but their grabbed target
-			else if((src != G.grabbed) && (src != G.assailant) && (is_vore_predator(src)))
-				if(istype(victim) && !victim.client && !victim.ai_holder)
-					log_and_message_admins("attempted to feed [key_name_admin(G.grabbed)] to [key_name_admin(src)] whilst [key_name_admin(G.grabbed)] was AFK ([G.grabbed ? ADMIN_JMP(G.grabbed) : "null"])", attacker)
+			else if((src != G.grabbed) && (src != G.grabbee) && (is_vore_predator(src)))
+				if(istype(victim) && !victim.client && !victim.ai_controller)
+					log_and_message_admins("attempted to feed [key_name_admin(G.grabbed)] to [key_name_admin(src)] whilst [key_name_admin(G.grabbed)] was AFK ([G.grabbed ? ADMIN_JMP(victim) : "null"])", attacker)
 				var/mob/living/carbon/victim_fed = src
-				if(istype(victim_fed) && !victim_fed.client && !victim_fed.ai_holder)
-					log_and_message_admins("attempted to feed [key_name_admin(G.grabbed)] to [key_name_admin(src)] whilst [key_name_admin(src)] was AFK ([G.grabbed ? ADMIN_JMP(G.grabbed) : "null"])", attacker)
+				if(istype(victim_fed) && !victim_fed.client && !victim_fed.ai_controller)
+					log_and_message_admins("attempted to feed [key_name_admin(G.grabbed)] to [key_name_admin(src)] whilst [key_name_admin(src)] was AFK ([G.grabbed ? ADMIN_JMP(victim) : "null"])", attacker)
 
 				if(!feeding)
 					to_chat(user, span_notice("[src] isn't willing to be fed."))
 					log_and_message_admins("attempted to feed [key_name_admin(G.grabbed)] to [key_name_admin(src)] against predator's prefs ([src ? ADMIN_JMP(src) : "null"])", attacker)
 					return FALSE
-				if(!(G.grabbed.devourable))
+				if(!(victim.devourable))
 					to_chat(user, span_notice("[G.grabbed] isn't able to be devoured."))
-					log_and_message_admins("attempted to feed [key_name_admin(G.grabbed)] to [key_name_admin(src)] against prey's prefs ([G.grabbed ? ADMIN_JMP(G.grabbed) : "null"])", attacker)
+					log_and_message_admins("attempted to feed [key_name_admin(G.grabbed)] to [key_name_admin(src)] against prey's prefs ([G.grabbed ? ADMIN_JMP(victim) : "null"])", attacker)
 					return FALSE
 				if(attacker.feed_grabbed_to_other(attacker, G.grabbed, src))
 					qdel(G)
@@ -169,13 +172,13 @@
 			return FALSE
 		var/mob/living/attacker = user
 
-		if(attacker.a_intent != I_HELP)
+		if(attacker.a_intent != INTENT_HELP)
 			return FALSE
 
-		var/hit_zone = attacker.zone_sel.selecting
+		var/hit_zone = attacker.zone_selected
 
-		var/obj/item/organ/external/affecting = get_organ(hit_zone)
-		if(!affecting || affecting.is_stump())
+		var/obj/item/bodypart/affecting = canvas_user.get_bodypart(hit_zone)
+		if(!affecting || affecting.is_disabled())
 			to_chat(attacker, span_danger("They are missing that limb!"))
 			return TRUE
 
@@ -188,13 +191,13 @@
 			span_notice("You start writing on [canvas_user]'s [affecting.name]..."))
 
 		// Progress bar for writing on someone for better consent check.
-		if(!do_after(attacker, 3 SECONDS, target = canvas_user, max_distance = 1))
+		if(!do_after(attacker, 3 SECONDS, target = canvas_user))
 			to_chat(attacker, span_warning("You stop writing on [canvas_user]."))
 			return TRUE
 
 		log_attack(attacker, canvas_user, "wrote \"[message]\"")
 
-		LAZYSET(canvas_user.body_writing, affecting.organ_tag, message)
+		LAZYSET(canvas_user.body_writing, affecting.body_part, message)
 
 		attacker.visible_message(span_notice("[attacker] finishes writing on [canvas_user]'s [affecting.name]."), \
 			span_notice("You finish writing on [canvas_user]'s [affecting.name]."))
@@ -320,9 +323,9 @@
 
 
 /datum/preferences/proc/load_vore_prefs_from_client(mob/user)
-	if(selecting_slots)
+	/*if(selecting_slots)
 		to_chat(user, span_warning("You already have a slot selection dialog open!"))
-		return
+		return*/
 	if(!savefile)
 		return
 
@@ -741,8 +744,6 @@
 		GAS_CH4 = 100)*/
 
 /mob/living/proc/feed_grabbed_to_self_falling_nom(var/mob/living/user, var/mob/living/prey)
-	if(user.is_incorporeal())
-		return FALSE
 	var/belly = user.vore_selected
 	return begin_instant_nom(user, prey, user, belly)
 
@@ -767,12 +768,12 @@
 			return lookup_belly
 	return vore_selected
 
-/mob/living/proc/glow_toggle()
+/*/mob/living/proc/glow_toggle() //Caustic - Commenting out Glow for now, might not be worth bothering with
 	set name = "Glow (Toggle)"
 	set category = "Abilities.General"
 	set desc = "Toggle your glowing on/off!"
 
-	if(stat || is_paralyzed() || weakened || stunned || world.time < last_special)
+	if(stat || IsParalyzed() || IsImmobilized() || IsStun() || IsKnockdown() || world.time < last_special)
 		to_chat(src, span_warning("You can't do that in your current state."))
 		return
 
@@ -791,7 +792,7 @@
 	//Even if they open the box 900 times, who cares, they get the wrong color and do it again.
 	var/new_color = tgui_color_picker(src,"Select a new color","Body Glow",glow_color)
 	if(new_color)
-		glow_color = new_color
+		glow_color = new_color*/
 
 /mob/living/proc/get_digestion_nutrition_modifier()
 	return 1
@@ -819,12 +820,16 @@
 		to_chat(src, span_notice("You are not holding anything."))
 		return
 
+	if(I.)
+
 	if(!(I.grid_height <= world.icon_size || I.grid_height <= world.icon_size))
 		to_chat(src,span_warning("You can't eat such a large thing !"))//yet <-- YET???
 		return
 
 	if(do_after(src, 10 SECONDS)){
-		drop_item()
+		if(!dropItemToGround(I))
+			to_chat(src,span_warning("You can't eat that!"))
+			return
 		vore_selected.nom_atom(I)
 		updateVRPanel()
 		log_admin("VORE: [src] used Eat Trash to swallow [I].")
@@ -1600,3 +1605,6 @@
 				add_verb(src, /mob/proc/adjust_hive_range)*/
 		temp_languages |= langlist
 		mind.language_holder.languages |= langlist
+
+/mob/living/proc/on_throw_vore_special(var/pred = TRUE, var/mob/living/target)
+	return

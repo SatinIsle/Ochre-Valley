@@ -3,7 +3,7 @@
 	set desc = "Allows you to eat people who are below your tile or adjacent one. Requires passability."
 	set category = "Abilities.Vore"
 
-	if(stat == DEAD || paralysis || weakened || stunned || is_incorporeal())
+	if(stat == DEAD || IsParalyzed() || IsImmobilized() || IsStun() || IsKnockdown())
 		to_chat(src, span_notice("You cannot do that while in your current state."))
 		return
 
@@ -16,7 +16,7 @@
 	for(var/turf/T in range(1, src))
 		if(isopenspace(T))
 			while(isopenspace(T))
-				T = GetBelow(T)
+				T = get_step_multiz(T, DOWN)
 			if(T)
 				for(var/mob/living/L in T)
 					if(L.devourable && L.can_be_drop_prey)

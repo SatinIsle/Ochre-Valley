@@ -5,6 +5,7 @@
 // Bellies subsystem - Process vore bellies
 //
 
+//IS THIS NOT USED EVEN IN CHOMPERS?????
 SUBSYSTEM_DEF(bellies)
 	name = "Bellies"
 	priority = 5

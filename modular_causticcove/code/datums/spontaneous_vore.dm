@@ -83,7 +83,7 @@
 		if(!destination_belly)
 			return
 		if(source.stat != DEAD && source.trash_catching)
-			if(source.adminbus_trash || is_type_in_list(O, GLOB.edible_trash) && O.trash_eatable && !is_type_in_list(O, GLOB.item_vore_blacklist))
+			if(source.adminbus_trash || /*is_type_in_list(O, GLOB.edible_trash) &&*/ O.trash_eatable && !is_type_in_list(O, GLOB.item_vore_blacklist)) //Caustic - It's still in here if we need a check for a whitelist for stuff ate, but... technically people have been doing that with all items so far. Maybe it's fine to keep it that way?
 				source.visible_message(span_warning("[O] is thrown directly into [source]'s [lowertext(destination_belly.name)]!"))
 				destination_belly.nom_atom(O)
 				return COMSIG_CANCEL_HITBY
@@ -147,7 +147,7 @@
 		if(!destination_belly)
 			return
 		source.begin_instant_nom(source, prey = crossed, pred = source, belly = destination_belly)
-		return COMPONENT_BLOCK_CROSS
+		return //COMPONENT_BLOCK_CROSS
 
 	//The person slipping eats the person being slipped into
 	else if(can_slip_vore(pred = crossed, prey = source))

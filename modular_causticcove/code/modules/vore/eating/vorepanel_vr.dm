@@ -984,7 +984,7 @@
 				return FALSE
 
 			var/datum/tgui_module/appearance_changer/vore/V = new(host, H)
-			V.tgui_interact(user)
+			V.ui_interact(user)
 			return TRUE
 
 		/*// Add Reforming <-- Removing this thing until we figure out how to do qdel on digestion
