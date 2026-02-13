@@ -13,7 +13,7 @@ export const FlavorTextPage = (props) => {
     ooc_notes,
     ooc_notes_nsfw,
     headshot,
-    is_naked,
+    // is_naked, // Caustic Edit: Removes naked requirement to view NSFW flavortext
   } = data;
   const [oocNotesIndex, setOocNotesIndex] = useState('SFW');
   const [flavorTextIndex, setFlavorTextIndex] = useState('SFW');
@@ -110,7 +110,7 @@ export const FlavorTextPage = (props) => {
                   </Button>
                   <Button
                     selected={flavorTextIndex === 'NSFW'}
-                    disabled={!flavor_text_nsfw|| !is_naked}
+                    disabled={!flavor_text_nsfw} // Caustic Edit: Removes naked requirement to view NSFW flavortext
                     bold={flavorTextIndex === 'NSFW'}
                     onClick={() => setFlavorTextIndex('NSFW')}
                     textAlign="center"

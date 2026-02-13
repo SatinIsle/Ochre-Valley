@@ -46,7 +46,7 @@
 	var/song_url
 	var/has_song = FALSE
 	var/is_vet = FALSE
-	var/is_naked = FALSE
+	// var/is_naked = FALSE // Caustic Edit: Removes naked requirement to view NSFW flavortext
 	var/obscured = FALSE
 
 	var/datum/preferences/prefs = holder.client?.prefs
@@ -88,7 +88,7 @@
 		"is_playing" = is_playing,
 		"has_song" = has_song,
 		"is_vet" = is_vet,
-		"is_naked" = is_naked,
+		// "is_naked" = is_naked, // Caustic Edit: Removes naked requirement to view NSFW flavortext
 	)
 	return data
 
@@ -105,14 +105,16 @@
 	var/song_url
 	var/has_song = FALSE
 	var/is_vet = FALSE
-	var/is_naked = FALSE
+	// var/is_naked = FALSE // Caustic Edit: Removes naked requirement to view NSFW flavortext
 	var/datum/antagonist/vampire/vampireplayer = user.mind?.has_antag_datum(/datum/antagonist/vampire)
 	var/datum/antagonist/lich/lichplayer = user.mind?.has_antag_datum(/datum/antagonist/lich)
 
 	if(ishuman(holder))
 		var/mob/living/carbon/human/holder_human = holder
+		/* Caustic Edit: Removes naked requirement to view NSFW flavortext
 		if(!(holder.wear_armor && holder.wear_armor.flags_inv) && !(holder.wear_shirt && holder.wear_shirt.flags_inv))
 			is_naked = TRUE
+		*/
 		obscured = ((!isobserver(user)) && !holder_human.client?.prefs?.masked_examine) && ((holder_human.wear_mask && (holder_human.wear_mask.flags_inv & HIDEFACE)) || (holder_human.head && (holder_human.head.flags_inv & HIDEFACE)))
 		flavor_text = obscured ? "Obscured" : holder.flavortext
 		flavor_text_nsfw = obscured ? "Obscured" : holder.nsfwflavortext
@@ -133,7 +135,7 @@
 			headshot = "headshot_red.png"
 
 	else if(pref)
-		is_naked = TRUE
+		// is_naked = TRUE // Caustic Edit: Removes naked requirement to view NSFW flavortext
 		obscured = FALSE
 		flavor_text = pref.flavortext
 		flavor_text_nsfw = pref.nsfwflavortext
@@ -179,7 +181,7 @@
 		"is_playing" = is_playing,
 		"has_song" = has_song,
 		"is_vet" = is_vet,
-		"is_naked" = is_naked,
+		// "is_naked" = is_naked, // Caustic Edit: Removes naked requirement to view NSFW flavortext
 	)
 	return data
 
