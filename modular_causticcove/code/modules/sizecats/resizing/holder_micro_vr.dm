@@ -4,42 +4,20 @@
 	name = "micro"
 	desc = "Another crewmember, small enough to fit in your hand."
 	icon_state = "micro"
-	icon_override = 'icons/inventory/head/mob.dmi'
-	slot_flags = SLOT_FEET | SLOT_HEAD | SLOT_ID | SLOT_HOLSTER | SLOT_BACK
+	//icon_override = 'icons/inventory/head/mob.dmi' //Caustic - We'd need new sprites for these, possibly.
+	slot_flags = SLOT_SHOES | SLOT_HEAD | SLOT_BELT_L | SLOT_BELT_R | SLOT_BACK_L | SLOT_BACK_R
 	w_class = WEIGHT_CLASS_SMALL
-	item_icons = null // No in-hand sprites (for now, anyway, we could totally add some)
+	lefthand_file = null // No in-hand sprites (for now, anyway, we could totally add some)
+	righthand_file = null
 	pixel_y = 0		  // Override value from parent.
 
 /obj/item/holder/micro/Initialize(mapload, mob/held)
 	. = ..()
 	var/mob/living/carbon/human/H = held_mob
-	if(istype(H) && H.species.get_bodytype() == SPECIES_TESHARI)
-		item_icons = list(
-					slot_l_hand_str = 'icons/mob/items/lefthand_toys.dmi',
-					slot_r_hand_str = 'icons/mob/items/righthand_toys.dmi',
-					slot_back_str = 'icons/mob/toy_worn.dmi',
-					slot_head_str = 'icons/mob/toy_worn.dmi')
-
-		// Leaving the following two set makes the sprite not visible
-		icon_override = null
-		sprite_sheets = null
-		icon_state = "teshariplushie_white"
-		item_state = "teshariplushie_white"
-		// Add back slot
-		slot_flags = SLOT_FEET | SLOT_HEAD | SLOT_ID | SLOT_BACK
 
 /obj/item/holder/micro/make_worn_icon(var/body_type,var/slot_name,var/inhands,var/default_icon,var/default_layer,var/icon/clip_mask = null)
 	var/mob/living/carbon/human/H = held_mob
-	// Only proceed if dealing with a tesh (or something shaped like a tesh)
-	if(istype(H) && H.species.get_bodytype() == SPECIES_TESHARI)
-		var/colortemp = color //save original color var to a temp var
-		//convert numerical RGB to Hex #000000 format - is this necessary?
-		//then 'inject' changed color (from skin color) into original proc call
-		color = addtext("#", num2hex(H.r_skin, 2), num2hex(H.g_skin, 2), num2hex(H.b_skin, 2))
-		. = ..()
-		color = colortemp //reset color var to it's old value after original proc call before proceeding - otherwise we change hand-slot icon color too!
-	else
-		. = ..()
+	. = ..()
 
 /obj/item/holder/examine(mob/user)
 	SHOULD_CALL_PARENT(FALSE)
@@ -52,9 +30,8 @@
 	if(M != usr) return
 	if(usr == src) return
 	if(!Adjacent(usr)) return
-	if(isAI(M)) return
 	for(var/mob/living/carbon/human/O in contents)
-		O.show_inventory_panel(usr, state = GLOB.tgui_deep_inventory_state)
+		O.show_inv(usr)
 
 /obj/item/holder/micro/attack_self(mob/living/carbon/user) //reworked so it works w/ nonhumans
 	. = ..(user)

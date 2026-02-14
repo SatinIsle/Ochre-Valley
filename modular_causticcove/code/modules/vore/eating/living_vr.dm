@@ -326,26 +326,22 @@
 	/*if(selecting_slots)
 		to_chat(user, span_warning("You already have a slot selection dialog open!"))
 		return*/
-	if(!savefile)
-		return
-
-	var/list/charlist = list()
-
+	var/savefile/S = new /savefile(path)
 	var/default
-	for(var/i in 1 to CONFIG_GET(number/character_slots))
-		var/list/save_data = savefile.get_entry("character[i]", list())
-		var/name = save_data["real_name"]
-		var/nickname = save_data["nickname"]
-
-		if(!name)
-			name = "[i] - \[Unused Slot\]"
-		else if(i == default_slot)
-			name = "►[i] - [name]"
-			default = "[name][nickname ? " ([nickname])" : ""]"
-		else
-			name = "[i] - [name]"
-
-		charlist["[name][nickname ? " ([nickname])" : ""]"] = i
+	var/charlist = list()
+	if(S)
+		for(var/i=1, i<=max_save_slots, i++)
+			var/name
+			S.cd = "/character[i]"
+			S["real_name"] >> name
+			if(!name)
+				name = "[i] - \[Unused Slot\]"
+			else if(i == default_slot)
+				name = "►[i] - [name]"
+				default = "[name][nickname ? " ([nickname])" : ""]"
+			else
+				name = "[i] - [name]"
+			charlist["[name][nickname ? " ([nickname])" : ""]"] = i
 
 	var/remember_default = default_slot
 
@@ -820,7 +816,7 @@
 		to_chat(src, span_notice("You are not holding anything."))
 		return
 
-	if(I.)
+	//if(I.) //Caustic - Potential Whitelist can go here.
 
 	if(!(I.grid_height <= world.icon_size || I.grid_height <= world.icon_size))
 		to_chat(src,span_warning("You can't eat such a large thing !"))//yet <-- YET???
