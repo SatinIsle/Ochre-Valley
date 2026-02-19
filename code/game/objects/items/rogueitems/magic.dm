@@ -143,7 +143,7 @@
 	if (target == null)
 		return
 
-	if(HAS_TRAIT(target, TRAIT_ANTISCRYING))
+	if(scrying_blocked(target)) //OV EDIT
 		to_chat(user, span_warning("They are not within the gaze of the Orb."))
 		return
 
@@ -338,6 +338,19 @@
 	//Caustic Edit End
 	user.emote("scream")
 
+//OV edit
+/obj/item/scrying/proc/scrying_blocked(mob/living/target)
+	if(HAS_TRAIT(target, TRAIT_ANTISCRYING))
+		return TRUE
+	var/area/target_area = get_area(target)
+	if(target_area.scrying_blocked)
+		return TRUE
+	if(isbelly(target.loc))
+		var/obj/belly/preds_belly = target.loc
+		if(preds_belly.mode_flags & DM_FLAG_JAMSENSORS)
+			return TRUE
+	return FALSE
+//OV edit end
 /////////////////////////////////////////Crystal ball ghsot vision///////////////////
 
 /obj/item/crystalball/attack_self(mob/user)

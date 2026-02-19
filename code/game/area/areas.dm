@@ -117,6 +117,8 @@
 
 	var/coven_protected = FALSE
 
+	var/scrying_blocked = FALSE //OV ADD
+
 
 /**
   * A list of teleport locations
