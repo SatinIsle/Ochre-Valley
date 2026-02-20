@@ -514,7 +514,7 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	_load_virtue(S)
 	_load_flaw(S)
 	//Caustic edit
-	_load_sizecat(S)
+//	_load_sizecat(S) //OV EDIT - Not needed, set based on scale now
 	_load_pickupable(S)
 	//Caustic edit end
 	_load_culinary_preferences(S)
@@ -619,6 +619,7 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	S["body_size"] >> features["body_size"]
 	if (!features["body_size"])
 		features["body_size"] = BODY_SIZE_NORMAL
+	ensure_sizecat() //OV ADD - Replacing sizecat load based on scale
 	//try to fix any outdated data if necessary
 	if(needs_update >= 0)
 		update_character(needs_update, S)		//needs_update == savefile_version if we need an update (positive integer)
