@@ -1,6 +1,7 @@
 GLOBAL_LIST_EMPTY(sizecats)
 #define TRAIT_SIZECAT "SizeCat"
-//Code shamelessly stolen from sizecats
+//Code shamelessly stolen from sizecats //WHY IS THIS COPY-PASTED FROM VIRTUES??? Why not just make a subtype?!
+//THERE SHOULD BE SHAME!!! ^^^
 /datum/sizecat
 	/// What the sizecat is called.
 	var/name

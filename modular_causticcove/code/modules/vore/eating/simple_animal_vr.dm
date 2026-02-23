@@ -1,5 +1,5 @@
 ///////////////////// Simple Animal /////////////////////
-/mob/living/simple_animal
+/*/mob/living/simple_animal
 	var/swallowTime = (3 SECONDS)		//How long it takes to eat its prey in 1/10 of a second. The default is 3 seconds.
 	var/list/prey_excludes = null		//For excluding people from being eaten.
 
@@ -156,3 +156,4 @@
 			adjustCloneLoss(-heal_amount)
 			return
 		adjustCloneLoss(-getCloneLoss())
+*/

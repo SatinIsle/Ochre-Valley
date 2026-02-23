@@ -1,5 +1,5 @@
 // Procs for living mobs based around mob transformation. Initially made for the mouseray, they are now used in various other places and the main procs are now called from here.
-
+/*
 /mob/living/proc/tf_into(var/A, var/allow_emotes = FALSE, var/object_name)
 	if(isliving(A))
 		var/mob/living/M = A
@@ -214,7 +214,7 @@
 		else
 			return FALSE
 	else
-		return FALSE
+		return FALSE */
 
 /*/mob/living/proc/shapeshift_form()
 	set name = "Shapeshift Form"
@@ -225,12 +225,12 @@
 		return
 	else
 		transform_into_mob(tf_form, TRUE, TRUE, TRUE)*/
-
+/*
 /mob/living/set_dir(var/new_dir)
 	. = ..()
 	if(size_multiplier != 1 || icon_scale_x != 1 && center_offset > 0)
 		update_transform(TRUE)
-
+*/
 ///mob
 	//var/muffled = FALSE					// Used by muffling belly
 	//var/transforming = null	//Carbon -- This was not even used??? The thing that DID use it said DONT use it lol

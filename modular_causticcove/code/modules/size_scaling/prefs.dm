@@ -1,5 +1,17 @@
+/mob
+	var/step_mechanics_pref = TRUE		// Allow participation in macro-micro step mechanics
+	var/pickup_pref = TRUE				// Allow participation in macro-micro pickup mechanics
+
 /datum/preferences
+	var/pickupable = TRUE
+
 	var/datum/sizecat/sizecat
+
+/datum/preferences/proc/_load_pickupable(S)
+	S["pickupable"]			>> pickupable
+
+/datum/preferences/proc/save_pickupable(S)
+	WRITE_FILE(S["pickupable"], pickupable)
 
 /datum/preferences/proc/_load_sizecat(S)
 	var/datum/sizecat/sc

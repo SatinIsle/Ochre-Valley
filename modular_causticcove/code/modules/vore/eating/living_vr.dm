@@ -545,14 +545,14 @@
 		muffled = FALSE		//Removes Muffling
 		forceMove(get_turf(src)) //Just move me up to the turf, let's not cascade through bellies, there's been a problem, let's just leave.
 		SetSleeping(0) //Wake up instantly if asleep
-		for(var/mob/living/simple_animal/SA in range(10))
-			LAZYSET(SA.prey_excludes, src, world.time)
+		/*for(var/mob/living/simple_animal/SA in range(10)) //Commented out Simplemob stuff for now, just to get the rest working
+			LAZYSET(SA.prey_excludes, src, world.time)*/
 		log_and_message_admins("[key_name(src)] used the OOC escape button to get out of [key_name(B.owner)] ([B.owner ? "<a href='byond://?_src_=holder;[HrefToken()];adminplayerobservecoodjump=1;X=[B.owner.x];Y=[B.owner.y];Z=[B.owner.z]'>JMP</a>" : "null"])", src)
 
 		B.owner.handle_belly_update() //This is run whenever a belly's contents are changed.
 	
 	//You've been turned into an item!
-	else if(tf_mob_holder && isvoice(src) && istype(src.loc, /obj/item))
+	/*else if(tf_mob_holder && isvoice(src) && istype(src.loc, /obj/item)) //Commented out the TF stuff for now to get the rest working.
 		var/obj/item/item_to_destroy = src.loc //If so, let's destroy the item they just TF'd out of.
 		//If tf_mob_holder is not located in src, then it's a Mind Binder OOC Escape
 		var/mob/living/ourmob = tf_mob_holder
@@ -591,13 +591,13 @@
 	//You've been turned into a mob!
 	else if(tf_mob_holder)
 		log_and_message_admins("[key_name(src)] used the OOC escape button to revert back to their original form from being TFed into another mob.", src)
-		revert_mob_tf()
+		revert_mob_tf()*/
 
-	else if(istype(loc, /obj/structure/gargoyle) && loc:was_rayed)
+	/*else if(istype(loc, /obj/structure/gargoyle) && loc:was_rayed) //For petrification stuff. Probably not anything we have the ability to cause to anyone yet?
 		var/obj/structure/gargoyle/G = loc
 		G.can_revert = TRUE
 		qdel(G)
-		log_and_message_admins("[key_name(src)] used the OOC escape button to revert back from being petrified.", src)
+		log_and_message_admins("[key_name(src)] used the OOC escape button to revert back from being petrified.", src)*/
 
 	//In-shoe OOC escape. Checking voices as precaution if something akin to obj TF or possession happens
 	else if(!istype(src, /mob/living/voice) && istype(src.loc, /obj/item/clothing/shoes))
@@ -614,9 +614,12 @@
 		log_and_message_admins("[key_name(src)] used the OOC escape button to get out of a food item.", src)
 
 	else if(alerts && alerts["leashed"])
-		var/atom/movable/screen/alert/leash_pet/pet_alert = src.alerts["leashed"]
+		var/atom/movable/screen/alert/status_effect/leash_pet/pet_alert = src.alerts["leashed"]
 		var/obj/item/leash/owner = pet_alert.master
-		owner.clear_leash()
+		if(owner.leash_pet)
+			owner.leash_pet.dropItemToGround(owner, TRUE)
+		else if(owner.leash_freepet)
+			owner.leash_freepet.dropItemToGround(owner, TRUE)
 		log_and_message_admins("[key_name(src)] used the OOC escape button to get out of a leash.", src)
 
 	//Don't appear to be in a vore situation

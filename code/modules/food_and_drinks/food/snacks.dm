@@ -368,6 +368,26 @@ All foods are distributed among various categories. Use common sense.
 		for(var/datum/reagent/consumable/C in M.reagents.reagent_list) //we add the nutrition value of what we're currently digesting
 			fullness += C.nutriment_factor * C.volume / C.metabolization_rate
 
+		//Caustic Edit - Attempting to add in Micros hiding in food and being ate
+		if(food_inserted_micros && food_inserted_micros.len)
+			for(var/mob/living/micro in food_inserted_micros)
+				if(!can_food_vore(M, micro))
+					continue
+
+				var/do_nom
+
+				if(!reagents.total_volume)
+					do_nom = TRUE
+				else
+					var/nom_chance = (bitecount/(bitecount + (bitesize / reagents.total_volume) + 1))*100
+					if(prob(nom_chance))
+						do_nom = TRUE
+
+				if(do_nom)
+					M.vore_selected.nom_atom(micro)
+					food_inserted_micros -= micro
+		//Caustic Edit End
+
 		if(M == user)								//If you're eating it myself.
 /*			if(junkiness && M.satiety < -150 && M.nutrition > NUTRITION_LEVEL_STARVING + 50 && !HAS_TRAIT(user, TRAIT_VORACIOUS))
 				to_chat(M, span_warning("I don't feel like eating any more junk food at the moment!"))
@@ -515,6 +535,10 @@ All foods are distributed among various categories. Use common sense.
 
 /obj/item/reagent_containers/food/snacks/examine(mob/user)
 	. = ..()
+	//Caustic Edit - Micros In Food Additions
+	if(food_inserted_micros && food_inserted_micros.len)
+		. += span_notice("It has [english_list(food_inserted_micros)] stuck in it.")
+	//Caustic Edit End
 	if(!in_container)
 		switch (bitecount)
 			if(0)
@@ -565,6 +589,32 @@ All foods are distributed among various categories. Use common sense.
 	if(istype(W, /obj/item/storage))
 		..() // -> item/attackby()
 		return 0
+
+	//Caustic Edit - Micros in Food Additions!
+	if(food_can_insert_micro && istype(W, /obj/item/holder))
+		if(!(istype(W, /obj/item/holder/micro)))
+			. = ..()
+			return
+
+		var/obj/item/holder/holder = W
+
+		if(!food_inserted_micros)
+			food_inserted_micros = list()
+
+		var/mob/living/living_mob = holder.held_mob
+
+		living_mob.forceMove(src)
+		holder.held_mob = null
+		user.dropItemToGround(holder)
+		qdel(holder)
+
+		food_inserted_micros += living_mob
+
+		to_chat(user, "Stuffed [living_mob] into \the [src].")
+		balloon_alert(user, "stuffs [living_mob] into \the [src].")
+		to_chat(living_mob, span_warning("[user] stuffs you into \the [src]."))
+		return
+	//Caustic Edit End
 
 /*	if(istype(W, /obj/item/reagent_containers/food/snacks))
 		var/obj/item/reagent_containers/food/snacks/S = W
@@ -674,6 +724,15 @@ All foods are distributed among various categories. Use common sense.
 	slice.filling_color = filling_color
 	slice.name = slice_name ? slice_name : slice.name
 	slice.update_snack_overlays(src)
+	//Caustic Edit - Micros In Food Addition
+	if(food_inserted_micros && food_inserted_micros.len)
+		for(var/mob/living/F in food_inserted_micros)
+			F.forceMove(slice)
+			if(!slice.food_inserted_micros)
+				slice.food_inserted_micros = list()
+			slice.food_inserted_micros += F
+			food_inserted_micros -= F
+	//Caustic Edit End
 //	if(name != initial(name))
 //		slice.name = "slice of [name]"
 //	if(desc != initial(desc))
@@ -785,6 +844,21 @@ All foods are distributed among various categories. Use common sense.
 	else
 		return ..()
 
+//Caustic Edit - Micros in Food additions!
+/obj/item/reagent_containers/food/snacks/MouseDrop_T(mob/living/M, mob/living/user)
+	if(!user.stat && istype(M) && (M == user) && Adjacent(M) && (M.get_effective_size(TRUE) <= 0.50) && food_can_insert_micro)
+		if(!food_inserted_micros)
+			food_inserted_micros = list()
+
+		M.forceMove(src)
+
+		food_inserted_micros += M
+
+		to_chat(user, span_warning("You climb into \the [src]."))
+		return
+
+	return ..()
+//Caustic Edit End
 
 /obj/item/reagent_containers/food/snacks/badrecipe
 	name = "burned mess"
