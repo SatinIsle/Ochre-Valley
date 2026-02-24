@@ -33,7 +33,8 @@
 	user.visible_message(span_warning("[user] slides a dildo into [target]'s mouth!"))
 
 /datum/sex_action/toy/other/oral/on_perform(mob/living/carbon/human/user, mob/living/carbon/human/target)
-	user.make_sucking_noise()
+	if(!mute_sound) //OV EDIT
+		user.make_sucking_noise() //OV EDIT
 	var/datum/sex_session/sex_session = get_sex_session(user, target)
 	var/obj/item/dildo/used_item = user.get_active_held_item()
 	user.visible_message(sex_session.spanify_force("[user] [sex_session.get_generic_force_adjective()] fucks [target]'s throat with a dildo!"))

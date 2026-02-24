@@ -169,8 +169,8 @@
 	else
 		climaxer = highest_priority.user
 		partner = highest_priority.target
-
-	playsound(parent, 'sound/misc/mat/endout.ogg', 50, TRUE, ignore_walls = FALSE)
+	if(!highest_priority.mute_sound) //OV EDIT
+		playsound(parent, 'sound/misc/mat/endout.ogg', 50, TRUE, ignore_walls = FALSE) //OV EDIT
 	// Special case for when the climaxer has a penis but no testicles
 	if(!mob.getorganslot(ORGAN_SLOT_TESTICLES) && mob.getorganslot(ORGAN_SLOT_PENIS))
 		mob.visible_message(span_love("[mob] climaxes, yet nothing is released!"))
@@ -204,20 +204,24 @@
 		parent.emote("groan", forced = TRUE)
 
 /datum/component/arousal/proc/handle_climax(climax_type, mob/living/carbon/human/climaxer, mob/living/carbon/human/partner, action)
-
+	var/list/parent_sessions = return_sessions_with_user(parent) //OV EDIT
+	var/datum/sex_session/highest_priority = return_highest_priority_action(parent_sessions, parent) //OV EDIT
 	switch(climax_type)
 		if("onto")
 			log_combat(climaxer, partner, "Came onto [partner]")
-			playsound(partner, 'sound/misc/mat/endout.ogg', 50, TRUE, ignore_walls = FALSE)
+			if(!highest_priority.mute_sound) //OV EDIT
+				playsound(partner, 'sound/misc/mat/endout.ogg', 50, TRUE, ignore_walls = FALSE) //OV EDIT
 			var/turf/turf = get_turf(partner)
 			new /obj/effect/decal/cleanable/coom(turf)
 		if("into")
 			log_combat(climaxer, partner, "Came inside [partner]")
-			playsound(partner, 'sound/misc/mat/endin.ogg', 50, TRUE, ignore_walls = FALSE)
+			if(!highest_priority.mute_sound) //OV EDIT
+				playsound(partner, 'sound/misc/mat/endin.ogg', 50, TRUE, ignore_walls = FALSE) //OV EDIT
 		if("self")
 			log_combat(climaxer, climaxer, "Ejaculated")
 			climaxer.visible_message(span_love("[climaxer] makes a mess!"))
-			playsound(climaxer, 'sound/misc/mat/endout.ogg', 50, TRUE, ignore_walls = FALSE)
+			if(!highest_priority.mute_sound)
+				playsound(climaxer, 'sound/misc/mat/endout.ogg', 50, TRUE, ignore_walls = FALSE)
 			var/turf/turf = get_turf(partner)
 			new /obj/effect/decal/cleanable/coom(turf)
 
@@ -238,16 +242,19 @@
 
 	if(climaxer.has_flaw(/datum/charflaw/addiction/thrillseeker))
 		var/datum/charflaw/addiction/thrill = climaxer.get_flaw(/datum/charflaw/addiction/thrillseeker)
-		climaxer.playsound_local(climaxer, 'sound/misc/mat/end.ogg', 100)
+		if(!action.mute_sound) //OV EDIT
+			climaxer.playsound_local(climaxer, 'sound/misc/mat/end.ogg', 100) //OV EDIT
 		last_ejaculation_time = world.time
 		if(!thrill.sated)
 			climaxer.add_stress(/datum/stressevent/thrillsex)
 		if(prob(10))
 			climaxer.emote("groan", forced = TRUE)
 		return	
-
-	climaxer.emote("moan", forced = TRUE)
-	climaxer.playsound_local(climaxer, 'sound/misc/mat/end.ogg', 100)
+	//OV edit
+	if(!action.mute_sound)
+		climaxer.emote("moan", forced = TRUE)
+		climaxer.playsound_local(climaxer, 'sound/misc/mat/end.ogg', 100)
+	//OV edit end
 	last_ejaculation_time = world.time
 
 	if(HAS_TRAIT(climaxer, TRAIT_UNSATISFIED)) //Given for 30 seconds when someone sets their arousal, it prevents gaining any benefits from orgasm
@@ -341,6 +348,12 @@
 
 /datum/component/arousal/proc/try_do_moan(arousal_amt, pain_amt, applied_force, giving)
 	var/mob/user = parent
+	//OV edit
+	var/list/parent_sessions = return_sessions_with_user(parent)
+	var/datum/sex_session/highest_priority = return_highest_priority_action(parent_sessions, parent)
+	if(highest_priority.mute_sound)
+		return
+	//OV edit end
 	if(arousal_amt < 1.5)
 		return
 	if(user.stat != CONSCIOUS)

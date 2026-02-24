@@ -31,7 +31,8 @@
 /datum/sex_action/kissing/on_perform(mob/living/carbon/human/user, mob/living/carbon/human/target)
 	var/datum/sex_session/sex_session = get_sex_session(user, target)
 	user.visible_message(sex_session.spanify_force("[user] [sex_session.get_generic_force_adjective()] makes out with [target]..."))
-	user.make_sucking_noise()
+	if(!mute_sound) //OV EDIT
+		user.make_sucking_noise() //OV EDIT
 
 	sex_session.perform_sex_action(user, 1, 2, TRUE)
 	sex_session.handle_passive_ejaculation()

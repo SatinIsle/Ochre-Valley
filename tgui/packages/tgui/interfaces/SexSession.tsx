@@ -208,6 +208,15 @@ export const SexSession = () => {
                     >
                       STOP
                     </Button>
+                    {' | '}
+                    <Button
+                      inline
+                      compact
+                      color="transparent"
+                      onClick={() => act('toggle_sound')}
+                    >
+                      {data.mute_sound ? 'UNMUTE' : 'MUTE'}
+                    </Button>
                   </Box>
                 </Stack.Item>
               </Stack>

@@ -36,7 +36,8 @@
 /datum/sex_action/suck_nipples/on_perform(mob/living/carbon/human/user, mob/living/carbon/human/target)
 	var/datum/sex_session/sex_session = get_sex_session(user, target)
 	user.visible_message(sex_session.spanify_force("[user] [sex_session.get_generic_force_adjective()] sucks [target]'s nipples..."))
-	user.make_sucking_noise()
+	if(!mute_sound) //OV EDIT
+		user.make_sucking_noise() //OV EDIT
 
 	sex_session.perform_sex_action(target, 1, 3, TRUE)
 	sex_session.handle_passive_ejaculation(target)

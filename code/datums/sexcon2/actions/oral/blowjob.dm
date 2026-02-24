@@ -31,9 +31,10 @@
 	user.visible_message(span_warning("[user] starts sucking [target]'s cock..."))
 
 /datum/sex_action/blowjob/on_perform(mob/living/carbon/human/user, mob/living/carbon/human/target)
-	user.make_sucking_noise()
+	if(!mute_sound) //OV EDIT
+		user.make_sucking_noise() //OV EDIT
 	// you want to know how i got these scars?
-	if(istype(user.head, /obj/item/clothing/head/roguetown/jester))
+	if(istype(user.head, /obj/item/clothing/head/roguetown/jester) && !mute_sound) //OV EDIT
 		playsound(user, SFX_JINGLE_BELLS, 30, TRUE, -2, ignore_walls = FALSE)
 
 	var/datum/sex_session/sex_session = get_sex_session(user, target)

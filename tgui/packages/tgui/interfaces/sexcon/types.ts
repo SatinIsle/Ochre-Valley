@@ -34,6 +34,9 @@ export interface SexSessionData {
   pain: number;
   frozen: boolean;
 
+  // Sound tracking
+  mute_sound: boolean;
+
   // Which actions can be performed
   can_perform: string[];
 

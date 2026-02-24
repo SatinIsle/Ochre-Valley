@@ -37,7 +37,8 @@
 	var/datum/sex_session/sex_session = get_sex_session(user, target)
 	var/verbstring = pick(list("rubs", "smushes", "forces"))
 	user.visible_message(sex_session.spanify_force("[user] [sex_session.get_generic_force_adjective()] [verbstring] [user.p_their()] butt against [target] face."))
-	target.make_sucking_noise()
+	if(!mute_sound) //OV EDIT
+		target.make_sucking_noise() //OV EDIT
 	do_thrust_animate(user, target, sex_session)
 
 	sex_session.perform_sex_action(user, 1, 3, TRUE)

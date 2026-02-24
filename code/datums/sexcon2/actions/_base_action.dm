@@ -56,6 +56,8 @@
 	var/intensity = 2
 	///Used for determining whether the good lover bonus can apply
 	var/masturbation = FALSE
+	///Used to mute sounds
+	var/mute_sound = FALSE //OV ADD
 
 /datum/sex_action/Destroy()
 	for(var/datum/sex_session_lock/lock in sex_locks)
@@ -151,7 +153,7 @@
 		user.visible_message(message)
 
 	var/sound = get_start_sound(user, target)
-	if(sound)
+	if(sound && !mute_sound) //OV EDIT
 		playsound(target, sound, 20, TRUE, ignore_walls = FALSE)
 
 	return TRUE

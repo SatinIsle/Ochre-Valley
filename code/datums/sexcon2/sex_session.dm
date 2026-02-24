@@ -30,6 +30,8 @@
 	var/static/sex_id = 0
 	var/our_sex_id = 0 //this is so we can have more then 1 sex id open at once
 
+	var/mute_sound = FALSE //Whether we allow sounds to play or not
+
 
 /datum/sex_session/New(mob/living/carbon/human/session_user, mob/living/carbon/human/session_target)
 	user = session_user
@@ -129,6 +131,7 @@
 	current_action = action_type
 	inactivity = 0
 	var/datum/sex_action/action = SEX_ACTION(current_action)
+	action.mute_sound = mute_sound
 	log_combat(user, target, "Started sex action: [action.name] with [target.name].")
 	INVOKE_ASYNC(src, PROC_REF(sex_action_loop))
 
@@ -177,6 +180,9 @@
 			break
 		if(desire_stop)
 			break
+		
+		if(action.mute_sound != mute_sound)
+			action.mute_sound = mute_sound
 
 		action.on_perform(user, target)
 
@@ -421,6 +427,7 @@
 	var/current_arousal = arousal_data["arousal"] || 0
 	data["arousal"] = min(100, (current_arousal / ACTIVE_EJAC_THRESHOLD) * 100)
 	data["frozen"] = arousal_data["frozen"] || FALSE
+	data["mute_sound"] = mute_sound
 
 	// Which actions can be performed
 	var/list/can_perform = list()
@@ -481,6 +488,11 @@
 		if("freeze_arousal")
 			SEND_SIGNAL(user, COMSIG_SEX_FREEZE_AROUSAL)
 			. = TRUE
+		//OV edit
+		if("toggle_sound")
+			mute_sound = !mute_sound
+			. = TRUE
+		//OV edit end
 		if("update_session_name")
 			if(collective)
 				collective.collective_display_name = params["name"]
