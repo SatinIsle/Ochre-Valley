@@ -171,6 +171,41 @@
 		/datum/sprite_accessory/penis/tentacle,
 		)
 
+//OV edit
+/mob/living/carbon/proc/change_penis_size_customizer(mob/living/carbon/user) // This could have been done better, but i'm too stupid and tired to get something out of it
+	var/obj/item/organ/penis/_penis = getorganslot("penis")
+	var/datum/preferences/prefs = user.client.prefs
+	var/datum/customizer_entry/organ/penis/penis_entry = null
+	if(!_penis)
+		to_chat(user, "<span class='warning'>What penis?</span>")
+		return
+	if (!prefs)
+	{
+		return
+	}
+
+	for (var/datum/customizer_entry/entry in prefs.customizer_entries)
+	{
+		if (istype(entry, /datum/customizer_entry/organ/penis))
+		{
+			penis_entry = entry
+			break
+		}
+	}
+
+	var/named_size = input(user, "Choose your penis size:", "Penis", find_key_by_value(PENIS_SIZES_BY_NAME, penis_entry.penis_size)) as anything in PENIS_SIZES_BY_NAME
+
+	if (isnull(named_size))
+		return
+
+	var/new_size = PENIS_SIZES_BY_NAME[named_size]
+
+	penis_entry.penis_size = sanitize_integer(new_size, MIN_PENIS_SIZE, MAX_PENIS_SIZE, DEFAULT_PENIS_SIZE)
+
+	_penis.penis_size = penis_entry.penis_size
+	user.regenerate_icons()
+//OV edit end
+
 /datum/customizer/organ/testicles
 	abstract_type = /datum/customizer/organ/testicles
 	name = "Testicles"
@@ -257,6 +292,41 @@
 	var/ball_size = DEFAULT_TESTICLES_SIZE
 	var/virility = TRUE
 
+//OV edit
+/mob/living/carbon/proc/change_testicle_size_customizer(mob/living/carbon/user) // This could have been done better, but i'm too stupid and tired to get something out of it
+	var/obj/item/organ/testicles/_testicles = getorganslot("testicles")
+	var/datum/preferences/prefs = user.client.prefs
+	var/datum/customizer_entry/organ/testicles/testicles_entry = null
+	if(!_testicles)
+		to_chat(user, "<span class='warning'>What testicles?</span>")
+		return
+	if (!prefs)
+	{
+		return
+	}
+
+	for (var/datum/customizer_entry/entry in prefs.customizer_entries)
+	{
+		if (istype(entry, /datum/customizer_entry/organ/testicles))
+		{
+			testicles_entry = entry
+			break
+		}
+	}
+
+	var/named_size = input(user, "Choose your ball size:", "Testicles", find_key_by_value(TESTICLE_SIZES_BY_NAME, testicles_entry.ball_size)) as anything in TESTICLE_SIZES_BY_NAME
+
+	if (isnull(named_size))
+		return
+
+	var/new_size = TESTICLE_SIZES_BY_NAME[named_size]
+
+	testicles_entry.ball_size = sanitize_integer(new_size, MIN_TESTICLES_SIZE, MAX_TESTICLES_SIZE, DEFAULT_TESTICLES_SIZE)
+
+	_testicles.ball_size = testicles_entry.ball_size
+	user.regenerate_icons()
+//OV edit end
+
 /datum/customizer/organ/breasts
 	abstract_type = /datum/customizer/organ/breasts
 	name = "Breasts"
@@ -326,6 +396,41 @@
 		/datum/sprite_accessory/breasts/quad,
 		/datum/sprite_accessory/breasts/sextuple,
 		)
+
+//OV edit
+/mob/living/carbon/proc/change_breast_size_customizer(mob/living/carbon/user) // This could have been done better, but i'm too stupid and tired to get something out of it
+	var/obj/item/organ/breasts/_breasts = getorganslot("breasts")
+	var/datum/preferences/prefs = user.client.prefs
+	var/datum/customizer_entry/organ/breasts/breasts_entry = null
+	if(!_breasts)
+		to_chat(user, "<span class='warning'>What breasts?</span>")
+		return
+	if (!prefs)
+	{
+		return
+	}
+
+	for (var/datum/customizer_entry/entry in prefs.customizer_entries)
+	{
+		if (istype(entry, /datum/customizer_entry/organ/breasts))
+		{
+			breasts_entry = entry
+			break
+		}
+	}
+
+	var/named_size = input(user, "Choose your breast size:", "Breasts", find_key_by_value(BREAST_SIZES_BY_NAME, breasts_entry.breast_size)) as anything in BREAST_SIZES_BY_NAME
+
+	if (isnull(named_size))
+		return
+
+	var/new_size = BREAST_SIZES_BY_NAME[named_size]
+
+	breasts_entry.breast_size = sanitize_integer(new_size, MIN_BREASTS_SIZE, MAX_BREASTS_SIZE, DEFAULT_BREASTS_SIZE)
+
+	_breasts.breast_size = breasts_entry.breast_size
+	user.regenerate_icons()
+//OV edit end
 
 /datum/customizer/organ/vagina
 	abstract_type = /datum/customizer/organ/vagina

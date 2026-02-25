@@ -60,11 +60,27 @@
 		/datum/sprite_accessory/belly
 		)
 
+//OV edit
 /mob/living/carbon/verb/changebellysize()
-	set name = "Change Belly Size"
+	set name = "Change Asset Size"
 	set category = "Vore"
-	set desc = "Change the size of your belly"
-	change_belly_size_customizer(src)
+	set desc = "Change the size of your belly or other assets"
+	var/list/all_assets = list("Belly", "Breasts", "Butt", "Penis", "Testicles")
+	var/option = tgui_input_list(src, "Which asset do you wish to resize?", "Asset Selection", all_assets)
+	if(!option)
+		return
+	switch(option)
+		if("Belly")
+			change_belly_size_customizer(src)
+		if("Breasts")
+			change_breast_size_customizer(src)
+		if("Butt")
+			change_butt_size_customizer(src)
+		if("Penis")
+			change_penis_size_customizer(src)
+		if("Testicles")
+			change_testicle_size_customizer(src)
+//OV edit end
 
 /mob/living/carbon/proc/change_belly_size_customizer(mob/living/carbon/user) // This could have been done better, but i'm too stupid and tired to get something out of it
 	var/obj/item/organ/belly/_belly = getorganslot("belly")
@@ -156,3 +172,37 @@
 /datum/customizer_choice/organ/butt/animal
 	sprite_accessories = list(/datum/sprite_accessory/butt/pair)
 
+//OV edit
+/mob/living/carbon/proc/change_butt_size_customizer(mob/living/carbon/user) // This could have been done better, but i'm too stupid and tired to get something out of it
+	var/obj/item/organ/butt/_butt = getorganslot("butt")
+	var/datum/preferences/prefs = user.client.prefs
+	var/datum/customizer_entry/organ/butt/butt_entry = null
+	if(!_butt)
+		to_chat(user, "<span class='warning'>What butt?</span>")
+		return
+	if (!prefs)
+	{
+		return
+	}
+
+	for (var/datum/customizer_entry/entry in prefs.customizer_entries)
+	{
+		if (istype(entry, /datum/customizer_entry/organ/butt))
+		{
+			butt_entry = entry
+			break
+		}
+	}
+
+	var/named_size = input(user, "Choose your butt size:", "Butt", find_key_by_value(GLOB.named_butt_sizes, butt_entry.organ_size)) as anything in GLOB.named_butt_sizes
+
+	if (isnull(named_size))
+		return
+
+	var/new_size = GLOB.named_butt_sizes[named_size]
+
+	butt_entry.organ_size = sanitize_integer(new_size, MIN_BUTT_SIZE, MAX_BUTT_SIZE, DEFAULT_BUTT_SIZE)
+
+	_butt.organ_size = butt_entry.organ_size
+	user.regenerate_icons()
+//OV edit end
