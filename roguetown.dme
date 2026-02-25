@@ -3071,5 +3071,7 @@
 #include "modular_causticcove\code\modules\events\adventure\random_bosses\random_boss.dm"
 #include "modular_causticcove\code\modules\spells\spell_types\wizard\conjure\conjure_tool.dm"
 #include "modular_ochrevalley\code\ooc_escape.dm"
+#include "modular_ochrevalley\code\vore_verb.dm"
+
 
 // END_INCLUDE
