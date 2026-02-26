@@ -43,19 +43,6 @@ GLOBAL_LIST_INIT(special_traits, build_special_traits())
 		apply_dnr_trait(character, player)
 	if(player.prefs.qsr_pref)
 		apply_qsr_trait(character, player)
-	if(player.prefs.loadout)
-		character.mind.special_items[player.prefs.loadout::name] += player.prefs.loadout::path
-	if(player.prefs.loadout2)
-		character.mind.special_items[player.prefs.loadout2::name] += player.prefs.loadout2::path
-	if(player.prefs.loadout3)
-		character.mind.special_items[player.prefs.loadout3::name] += player.prefs.loadout3::path
-	//Cove edit start
-	apply_prefs_sizecat(character,player)
-	if(player.prefs.loadout4)
-		character.mind.special_items[player.prefs.loadout4::name] += player.prefs.loadout4::path
-	if(player.prefs.loadout5)
-		character.mind.special_items[player.prefs.loadout5::name] += player.prefs.loadout5::path
-	//Cove edit end
 	for(var/item_name in player.prefs.gear_list)
 		var/datum/loadout_item/LI = GLOB.loadout_items_by_name[item_name]
 		if(!LI)
