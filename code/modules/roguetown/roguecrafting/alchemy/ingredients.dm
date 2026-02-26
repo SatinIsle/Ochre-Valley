@@ -1,5 +1,5 @@
 /obj/item/alch
-	name = "dust"
+	name = "Any Alchemical Reagent" //Caustic Edit
 	desc = ""
 	icon = 'icons/roguetown/misc/alchemy.dmi'
 	icon_state = "irondust"
