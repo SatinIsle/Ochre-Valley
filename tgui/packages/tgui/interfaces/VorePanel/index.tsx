@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useBackend } from 'tgui/backend';
 import { Window } from 'tgui/layouts';
 import { Button, Icon, NoticeBox, Stack, Tabs } from 'tgui-core/components';
@@ -8,6 +8,7 @@ import { VoreBellySelectionAndCustomization } from './VorePanelMainTabs/VoreBell
 import { VoreInsidePanel } from './VorePanelMainTabs/VoreInsidePanel';
 import { VoreUserGeneral } from './VorePanelMainTabs/VoreUserGeneral';
 import { VoreUserPreferences } from './VorePanelMainTabs/VoreUserPreferences';
+import { VoreContentsPreyPanel } from './VoreSelectedBellyTabs/VoreContentsPreyPanel';
 
 /**
  * There are three main sections to this UI.
@@ -26,28 +27,37 @@ export const VorePanel = () => {
     inside,
     our_bellies,
     selected,
-    abilities,
     prefs,
     show_pictures,
     icon_overflow,
+    prey_abilities,
+    intent_data,
     host_mobtype,
     unsaved_changes,
     vore_words,
     general_pref_data,
     min_belly_name,
     max_belly_name,
+    presets,
   } = data;
 
   const [editMode, setEditMode] = useState(!!persist_edit_mode);
 
+  useEffect(() => {
+    if (active_tab === 1 && !inside?.ref) {
+      act('change_tab', { tab: 0 });
+    }
+  }, [inside?.ref]);
+
   const tabs: (React.JSX.Element | null | undefined)[] = [];
 
-  tabs[0] = our_bellies && selected && (
+  tabs[0] = our_bellies && selected && host_mobtype && (
     <VoreBellySelectionAndCustomization
       activeVoreTab={active_vore_tab}
       our_bellies={our_bellies}
       selected={selected}
       show_pictures={show_pictures}
+      host_mobtype={host_mobtype}
       icon_overflow={icon_overflow}
       vore_words={vore_words}
       toggleEditMode={setEditMode}
@@ -55,6 +65,16 @@ export const VorePanel = () => {
       persist_edit_mode={persist_edit_mode}
       minBellyName={min_belly_name}
       maxBellyName={max_belly_name}
+      presets={presets}
+    />
+  );
+  tabs[1] = (
+    <VoreContentsPreyPanel
+      inside={inside}
+      prey_abilities={prey_abilities}
+      intent_data={intent_data}
+      show_pictures={show_pictures}
+      icon_overflow={icon_overflow}
     />
   );
   tabs[2] = general_pref_data && our_bellies && (
@@ -64,15 +84,10 @@ export const VorePanel = () => {
       editMode={editMode}
       toggleEditMode={setEditMode}
       persist_edit_mode={persist_edit_mode}
+      presets={presets}
     />
   );
-  tabs[3] = prefs && (
-    <VoreUserPreferences
-      prefs={prefs}
-      show_pictures={show_pictures}
-      icon_overflow={icon_overflow}
-    />
-  );
+  tabs[3] = prefs && <VoreUserPreferences prefs={prefs} />;
 
   return (
     <Window width={1030} height={760} theme="abstract">
@@ -88,17 +103,24 @@ export const VorePanel = () => {
                       Save Prefs
                     </Button>
                   </Stack.Item>
+                  <Stack.Item>
+                    <Button
+                      icon="download"
+                      onClick={() => {
+                        act('saveprefs');
+                        act('exportpanel');
+                      }}
+                    >
+                      Save Prefs & Export Selected Belly
+                    </Button>
+                  </Stack.Item>
                 </Stack>
               </NoticeBox>
             )) ||
               ''}
           </Stack.Item>
           <Stack.Item basis={inside?.desc?.length || 0 > 500 ? '30%' : '20%'}>
-            <VoreInsidePanel
-              inside={inside}
-              show_pictures={show_pictures}
-              icon_overflow={icon_overflow}
-            />
+            <VoreInsidePanel inside={inside} />
           </Stack.Item>
           <Stack.Item>
             <Tabs>
@@ -109,6 +131,15 @@ export const VorePanel = () => {
                 Bellies
                 <Icon name="list" ml={0.5} />
               </Tabs.Tab>
+              {!!inside.ref && (
+                <Tabs.Tab
+                  selected={active_tab === 1}
+                  onClick={() => act('change_tab', { tab: 1 })}
+                >
+                  Inside
+                  <Icon name="person-shelter" ml={0.5} />
+                </Tabs.Tab>
+              )}
               <Tabs.Tab
                 selected={active_tab === 2}
                 onClick={() => act('change_tab', { tab: 2 })}
@@ -125,7 +156,7 @@ export const VorePanel = () => {
               </Tabs.Tab>
             </Tabs>
           </Stack.Item>
-          <Stack.Item grow>{tabs[active_tab]}</Stack.Item>
+          <Stack.Item grow>{tabs[active_tab] || 'Error'}</Stack.Item>
         </Stack>
       </Window.Content>
     </Window>

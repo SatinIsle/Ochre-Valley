@@ -148,4 +148,4 @@
 		prey.mind.current = prey
 		prey.mind.active = TRUE
 
-		SC.catch_mob(prey) //This will result in the prey being deleted so...*/
+		SC.catch_mob(prey)*/ //This will result in the prey being deleted so...

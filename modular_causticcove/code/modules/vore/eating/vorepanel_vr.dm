@@ -970,7 +970,7 @@
 				host.vore_selected.transfer_contents(target, choice)
 			return TRUE
 		
-		if("Transform")
+		/*if("Transform")
 			if(host.stat)
 				to_chat(user,span_warning("You can't do that in your state!"))
 				return TRUE
@@ -985,7 +985,7 @@
 
 			var/datum/tgui_module/appearance_changer/vore/V = new(host, H)
 			V.ui_interact(user)
-			return TRUE
+			return TRUE*/
 
 		/*// Add Reforming <-- Removing this thing until we figure out how to do qdel on digestion
 		if("Reform")

@@ -5,7 +5,7 @@
 		"resizable" = owner.resizable,
 		"feeding" = owner.feeding,
 		"absorbable" = owner.absorbable,
-		"digest_leave_remains" = owner.digest_leave_remains,
+		//"digest_leave_remains" = owner.digest_leave_remains,
 		"allowmobvore" = owner.allowmobvore,
 		"allowtemp" = owner.allowtemp,
 		"permit_healbelly" = owner.permit_healbelly,
@@ -15,7 +15,7 @@
 		"can_be_afk_prey" = owner.can_be_afk_prey,
 		"can_be_afk_pred" = owner.can_be_afk_pred,
 		"latejoin_vore" = owner.latejoin_vore,
-		"latejoin_prey" = owner.latejoin_prey,
+		"latejoin_prey" = owner.latejoin_prey, //I don't think we have Latejoin Vore? but EH.
 		"no_spawnpred_warning" = owner.no_latejoin_vore_warning,
 		"no_spawnprey_warning" = owner.no_latejoin_prey_warning,
 		"no_spawnpred_warning_time" = owner.no_latejoin_vore_warning_time,

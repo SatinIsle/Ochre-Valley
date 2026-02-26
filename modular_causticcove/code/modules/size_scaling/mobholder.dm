@@ -155,7 +155,7 @@
 		to_chat(held, span_warning("You extricate yourself from [holster]."))
 		forceMove(get_turf(src))*/
 	else if(isitem(loc))
-		var/obj/item/I = loc
+		//var/obj/item/I = loc
 		to_chat(held, span_warning("You struggle free of [loc]."))
 		forceMove(get_turf(src))
 		/*if(istype(I)) //This is a proc on /obj/item that would be called if a Holder Item escapes out of it. Was only used in a Hollow Roulette Ball in Chompers so... Not really needed yet?
@@ -180,7 +180,7 @@
 		M.attackby(W,user)
 
 //Mob procs and vars for scooping up
-/mob/living/var/holder_type
+///mob/living/var/holder_type
 
 /mob/living/MouseDrop(var/atom/over_object)
 	var/mob/living/carbon/human/H = over_object

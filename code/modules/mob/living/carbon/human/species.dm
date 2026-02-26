@@ -2054,8 +2054,19 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 /datum/species/proc/handle_environment(mob/living/carbon/human/H)
 
 	//ATMO/TURF/TEMPERATURE
-	var/turf/cur_turf = get_turf(H)
-	var/loc_temp = cur_turf.temperature
+	//Caustic Edit - Account for mobs in Bellies
+	var/loc_temp
+	if(isbelly(H.loc))
+		var/obj/belly/loc_b = H.loc
+		if(H.allowtemp && loc_b.temperature_damage)
+			loc_temp = loc_b.bellytemperature
+		else
+			loc_temp = loc_b.owner.bodytemperature
+	
+	if(!loc_temp)
+		var/turf/cur_turf = get_turf(H)
+		loc_temp = cur_turf.temperature
+	//Caustic Edit End
 
 	//Body temperature is adjusted in two parts: first there my body tries to naturally preserve homeostasis (shivering/sweating), then it reacts to the surrounding environment
 	//Thermal protection (insulation) has mixed benefits in two situations (hot in hot places, cold in hot places)

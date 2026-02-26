@@ -1,6 +1,6 @@
-/mob
-	var/step_mechanics_pref = TRUE		// Allow participation in macro-micro step mechanics
-	var/pickup_pref = TRUE				// Allow participation in macro-micro pickup mechanics
+///mob
+	//var/step_mechanics_pref = TRUE		// Allow participation in macro-micro step mechanics
+	//var/pickup_pref = TRUE				// Allow participation in macro-micro pickup mechanics
 
 /datum/preferences
 	var/pickupable = TRUE

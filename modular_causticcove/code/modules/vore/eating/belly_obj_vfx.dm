@@ -78,7 +78,7 @@
 		return
 
 	var/atom/movable/screen/fullscreen/fullscreen_overlay = living_prey.overlay_fullscreen("belly", /obj/screen/fullscreen/belly/fixed, severity) //preserving save data
-	fullscreen_overlay.icon = 'icons/mob/vore_fullscreens/ui_lists/screen_full_vore.dmi'
+	fullscreen_overlay.icon = 'modular_causticcove/icons/mob/vore_fullscreens/screen_full_vore.dmi'
 	fullscreen_overlay.cut_overlays()
 	fullscreen_overlay.add_overlay(image(fullscreen_overlay.icon, belly_fullscreen))
 	fullscreen_overlay.add_overlay(image(fullscreen_overlay.icon, belly_fullscreen+"-2"))

@@ -147,6 +147,7 @@
 					Knockdown(110)
 
 /mob/living/proc/handle_environment()
+	
 	return
 
 /mob/living/proc/handle_wounds()

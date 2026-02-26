@@ -14,15 +14,16 @@ import type { BooleanLike } from 'tgui-core/react';
 import { createSearch } from 'tgui-core/string';
 
 import { digestModeToColor } from '../constants';
-import type { bellyData, hostMob, selectedData } from '../types';
+import type { BellyData, HostMob, SelectedData } from '../types';
 import { VorePanelEditToggle } from '../VorePanelElements/VorePanelCommonElements';
 import { VoreSelectedBelly } from './VoreSelectedBelly';
 
 export const VoreBellySelectionAndCustomization = (props: {
   activeVoreTab?: number;
-  our_bellies: bellyData[];
-  selected: selectedData | null;
+  our_bellies: BellyData[];
+  selected: SelectedData | null;
   show_pictures: BooleanLike;
+  host_mobtype: HostMob;
   icon_overflow: BooleanLike;
   vore_words: Record<string, string[]>;
   toggleEditMode: React.Dispatch<React.SetStateAction<boolean>>;
@@ -30,6 +31,7 @@ export const VoreBellySelectionAndCustomization = (props: {
   persist_edit_mode: BooleanLike;
   minBellyName: number;
   maxBellyName: number;
+  presets: string;
 }) => {
   const { act } = useBackend();
 
@@ -38,6 +40,7 @@ export const VoreBellySelectionAndCustomization = (props: {
     our_bellies,
     selected,
     show_pictures,
+    host_mobtype,
     icon_overflow,
     vore_words,
     toggleEditMode,
@@ -45,6 +48,7 @@ export const VoreBellySelectionAndCustomization = (props: {
     persist_edit_mode,
     minBellyName,
     maxBellyName,
+    presets,
   } = props;
 
   const [showSearch, setShowSearch] = useState(false);
@@ -54,7 +58,7 @@ export const VoreBellySelectionAndCustomization = (props: {
 
   const bellySearch = createSearch(
     searchedBellies,
-    (belly: bellyData) => belly.name,
+    (belly: BellyData) => belly.name,
   );
 
   const belliesToDisplay = our_bellies.filter(bellySearch);
@@ -112,6 +116,14 @@ export const VoreBellySelectionAndCustomization = (props: {
                   <Icon name="plus" ml={0.5} />
                 </>
               )}
+            </Tabs.Tab>
+            <Tabs.Tab onClick={() => act('exportpanel')}>
+              Export
+              <Icon name="file-export" ml={0.5} />
+            </Tabs.Tab>
+            <Tabs.Tab onClick={() => act('importpanel')}>
+              Import
+              <Icon name="file-import" ml={0.5} />
             </Tabs.Tab>
             <Divider />
             {showSearch && (
@@ -178,8 +190,10 @@ export const VoreBellySelectionAndCustomization = (props: {
               vore_words={vore_words}
               belly={selected}
               show_pictures={show_pictures}
+              host_mobtype={host_mobtype}
               icon_overflow={icon_overflow}
               editMode={editMode}
+              presets={presets}
             />
           </Section>
         )}

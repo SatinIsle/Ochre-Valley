@@ -194,6 +194,7 @@
 #include "code\__DEFINES\mobs\simplemob_movement_speed.dm"
 
 //Caustic Modular Defines
+#include "modular_causticcove\code\__DEFINES\appearance_changer.dm"
 #include "modular_causticcove\code\__DEFINES\belly_messages.dm"
 #include "modular_causticcove\code\__DEFINES\belly_modes.dm"
 #include "modular_causticcove\code\__DEFINES\classcats.dm"
@@ -2737,6 +2738,7 @@
 #include "code\modules\tgs\includes.dm"
 #include "code\modules\tgui\external.dm"
 #include "code\modules\tgui\helpers.dm"
+#include "code\modules\tgui\module_base.dm"
 #include "code\modules\tgui\states.dm"
 #include "code\modules\tgui\status_composers.dm"
 #include "code\modules\tgui\tgui.dm"
@@ -3086,6 +3088,8 @@
 #include "modular_causticcove\code\modules\vore\eating\vore_verbs.dm"
 #include "modular_causticcove\code\modules\vore\eating\vore_vr.dm"
 #include "modular_causticcove\code\modules\vore\eating\vorepanel_vr.dm"
+//#include "modular_causticcove\code\modules\vore\eating\panel_databackend\appearance_changer_helpers.dm"
+//#include "modular_causticcove\code\modules\vore\eating\panel_databackend\appearance_changer.dm"
 #include "modular_causticcove\code\modules\vore\eating\panel_databackend\vorepanel_pref_data.dm"
 #include "modular_causticcove\code\modules\vore\eating\panel_databackend\vorepanel_set_attribute.dm"
 #include "modular_causticcove\code\modules\vore\eating\panel_databackend\vorepanel_set_liqattribute.dm"

@@ -41,6 +41,6 @@
 // Proc: ghostize()
 // Parameters: None
 // Description: Sets a timeofdeath variable, to fix the free respawn bug.
-/mob/living/voice/ghostize()
+/mob/living/voice/ghostize(can_reenter_corpse = 1, force_respawn = FALSE, admin = FALSE, drawskip, ignore_zombie = FALSE)
 	timeofdeath = world.time
 	. = ..()

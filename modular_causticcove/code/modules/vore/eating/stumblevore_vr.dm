@@ -2,18 +2,18 @@
 	//. = ..()
 	if(isliving(AM))
 		var/mob/living/L = AM
-		if(buckled != AM && (((confused || is_blind()) && stat == CONSCIOUS && prob(50) && m_intent==MOVE_INTENT_RUN) /*|| flying && flight_vore*/)) //Caustic - Flying Vore will require Harpy support? Or... something.
+		if(buckled != AM && (((confused || is_blind(L)) && stat == CONSCIOUS && prob(50) && m_intent==MOVE_INTENT_RUN) /*|| flying && flight_vore*/)) //Caustic - Flying Vore will require Harpy support? Or... something.
 			L.stumble_into(src)
 	return ..()
 // Because flips toggle density
 /mob/living/Crossed(var/atom/movable/AM)
 	if(isliving(AM) && isturf(loc) && AM != src)
 		var/mob/living/AMV = AM
-		if(AMV.buckled != src && (((AMV.confused || AMV.is_blind()) && AMV.stat == CONSCIOUS && prob(50) && AMV.m_intent==MOVE_INTENT_RUN) /*|| AMV.flying && AMV.flight_vore*/))
+		if(AMV.buckled != src && (((AMV.confused || is_blind(AMV)) && AMV.stat == CONSCIOUS && prob(50) && AMV.m_intent==MOVE_INTENT_RUN) /*|| AMV.flying && AMV.flight_vore*/))
 			INVOKE_ASYNC(src,TYPE_PROC_REF(/mob/living, stumble_into), AMV)
 	..()
 
-/mob/living/stumble_into(mob/living/M)
+/mob/living/proc/stumble_into(mob/living/M)
 	if(buckled || M.buckled)
 		return
 

@@ -72,7 +72,7 @@
 */
 /atom/movable/proc/size_range_check(size_select) //both objects and mobs needs to have that -- Caustic: This is what allows people to bypass the size limits when in specific areas, IE the Dorms in Chomp/Virgo. Commented out for now, since we don't have area flags for this. Lets get it running first.
 												 // -- All the extremes bells and whistles can come after
-	var/area/A = get_area(src) //Get the atom's area to check for size limit.
+	//var/area/A = get_area(src) //Get the atom's area to check for size limit.
 	size_select = size_select / 100
 	if(/*(!A?.flag_check(AREA_ALLOW_LARGE_SIZE) && */(size_select > RESIZE_MAXIMUM || size_select < RESIZE_MINIMUM)/*) || (size_select > RESIZE_MAXIMUM_DORMS || size_select < RESIZE_MINIMUM_DORMS)*/)
 		return FALSE
@@ -268,7 +268,7 @@
 		if(get_effective_size(TRUE) > tmob.get_effective_size(TRUE) && ishuman(src))
 			src_message = "You carefully step over [tmob]."
 			tmob_message = "[src] steps over you carefully!"
-			var/mob/living/carbon/human/H = src
+			//var/mob/living/carbon/human/H = src
 			/*if(H.flying) //Caustic - Flight is... fucky in Roguecode. Will have to address it better.
 				return TRUE*/ //Silently pass without a message.
 			/*if(istaurtail(H.tail_style)) //Caustic - I don't believe we have these messages on our taur-parts

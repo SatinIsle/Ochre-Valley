@@ -789,25 +789,25 @@
 			new_belly.tail_extra_overlay2 = new_tail_extra_overlay2
 		*/
 		if(istext(belly_data["belly_fullscreen_color"]))
-			var/new_belly_fullscreen_color = sanitize_hexcolor(belly_data["belly_fullscreen_color"],new_belly.belly_fullscreen_color)
+			var/new_belly_fullscreen_color = sanitize_hexcolor(belly_data["belly_fullscreen_color"],default = new_belly.belly_fullscreen_color)
 			new_belly.belly_fullscreen_color = new_belly_fullscreen_color
 
 		if(istext(belly_data["belly_fullscreen_color2"]))
-			var/new_belly_fullscreen_color2 = sanitize_hexcolor(belly_data["belly_fullscreen_color2"],new_belly.belly_fullscreen_color2)
+			var/new_belly_fullscreen_color2 = sanitize_hexcolor(belly_data["belly_fullscreen_color2"],default = new_belly.belly_fullscreen_color2)
 			new_belly.belly_fullscreen_color2 = new_belly_fullscreen_color2
 		else if(istext(belly_data["belly_fullscreen_color_secondary"])) // Inter server support between virgo and chomp!
-			var/new_belly_fullscreen_color2 = sanitize_hexcolor(belly_data["belly_fullscreen_color_secondary"],new_belly.belly_fullscreen_color2)
+			var/new_belly_fullscreen_color2 = sanitize_hexcolor(belly_data["belly_fullscreen_color_secondary"],default = new_belly.belly_fullscreen_color2)
 			new_belly.belly_fullscreen_color2 = new_belly_fullscreen_color2
 
 		if(istext(belly_data["belly_fullscreen_color3"]))
-			var/new_belly_fullscreen_color3 = sanitize_hexcolor(belly_data["belly_fullscreen_color3"],new_belly.belly_fullscreen_color3)
+			var/new_belly_fullscreen_color3 = sanitize_hexcolor(belly_data["belly_fullscreen_color3"],default = new_belly.belly_fullscreen_color3)
 			new_belly.belly_fullscreen_color3 = new_belly_fullscreen_color3
 		else if(istext(belly_data["belly_fullscreen_color_trinary"])) // Inter server support between virgo and chomp!
-			var/new_belly_fullscreen_color3 = sanitize_hexcolor(belly_data["belly_fullscreen_color_trinary"],new_belly.belly_fullscreen_color3)
+			var/new_belly_fullscreen_color3 = sanitize_hexcolor(belly_data["belly_fullscreen_color_trinary"],default = new_belly.belly_fullscreen_color3)
 			new_belly.belly_fullscreen_color3 = new_belly_fullscreen_color3
 
 		if(istext(belly_data["belly_fullscreen_color4"]))
-			var/new_belly_fullscreen_color4 = sanitize_hexcolor(belly_data["belly_fullscreen_color4"],new_belly.belly_fullscreen_color4)
+			var/new_belly_fullscreen_color4 = sanitize_hexcolor(belly_data["belly_fullscreen_color4"],default = new_belly.belly_fullscreen_color4)
 			new_belly.belly_fullscreen_color4 = new_belly_fullscreen_color4
 
 		if(istext(belly_data["belly_fullscreen_alpha"]))
@@ -828,9 +828,9 @@
 			if(new_disable_hud == 1)
 				new_belly.disable_hud = TRUE
 
-		var/possible_fullscreens = cached_icon_states('icons/mob/vore_fullscreens/ui_lists/screen_full_vore_list_base.dmi')
+		var/possible_fullscreens = cached_icon_states('modular_causticcove/icons/mob/vore_fullscreens/screen_full_vore_list.dmi')
 		if(!new_belly.colorization_enabled)
-			possible_fullscreens = cached_icon_states('icons/mob/vore_fullscreens/ui_lists/screen_full_vore.dmi')
+			possible_fullscreens = cached_icon_states('modular_causticcove/icons/mob/vore_fullscreens/screen_full_vore.dmi')
 		if(!(new_belly.belly_fullscreen in possible_fullscreens))
 			new_belly.belly_fullscreen = ""
 
@@ -1073,11 +1073,11 @@
 				new_belly.reagent_mode_flags += new_belly.reagent_mode_flag_list[reagent_flag]
 
 		if(istext(belly_data["custom_reagentcolor"]))
-			var/custom_reagentcolor = sanitize_hexcolor(belly_data["custom_reagentcolor"],new_belly.custom_reagentcolor)
+			var/custom_reagentcolor = sanitize_hexcolor(belly_data["custom_reagentcolor"],default = new_belly.custom_reagentcolor)
 			new_belly.custom_reagentcolor = custom_reagentcolor
 
 		if(istext(belly_data["mush_color"]))
-			var/mush_color = sanitize_hexcolor(belly_data["mush_color"],new_belly.mush_color)
+			var/mush_color = sanitize_hexcolor(belly_data["mush_color"],default = new_belly.mush_color)
 			new_belly.mush_color = mush_color
 
 		if(istext(belly_data["mush_alpha"]))
