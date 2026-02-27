@@ -298,7 +298,7 @@
 		qdel(O)
 	if(recipient.has_flaw(/datum/charflaw/limbloss/arm_r))
 		to_chat(recipient, span_info("In my foolishness I believed a charlatan who wished to trade in my wooden arm for one of bronze. It fell apart. Now I've no arm at all."))
-	else if(recipient.charflaws.len)
+	else //CC Edit, fix I think?
 		var/obj/item/bodypart/r_arm/prosthetic/bronzeright/L = new()
 		L.attach_limb(recipient)
 
@@ -316,7 +316,7 @@
 		qdel(O)
 	if(recipient.has_flaw(/datum/charflaw/limbloss/arm_l))
 		to_chat(recipient, span_info("In my foolishness I believed a sharlatan who wished to trade in my wooden arm for one of bronze. It fell apart. Now I've no arm at all."))
-	else if(recipient.charflaws.len)
+	else //CC Edit, fix I think?
 		var/obj/item/bodypart/l_arm/prosthetic/bronzeleft/L = new()
 		L.attach_limb(recipient)
 
