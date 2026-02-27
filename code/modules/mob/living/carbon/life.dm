@@ -149,6 +149,15 @@
 
 /mob/living/carbon/proc/get_complex_pain()
 	. = 0
+
+	//Caustic Edit - Add check for digest pain pref
+	if(!digest_pain)
+		if(isbelly(loc))
+			var/obj/belly/b = loc
+			if(b.digest_mode == DM_DIGEST || b.digest_mode == DM_SELECT)
+				return FALSE
+	//Caustic Edit End
+
 	var/has_adrenaline = HAS_TRAIT(src, TRAIT_ADRENALINE_RUSH)
 	for(var/obj/item/bodypart/limb as anything in bodyparts)
 		if(limb.status == BODYPART_ROBOTIC || limb.skeletonized)

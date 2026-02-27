@@ -210,6 +210,20 @@
 			L.resize(new_size/100, uncapped = has_large_resize_bounds(), ignore_prefs = TRUE)*/
 		// log_admin("[key_name(src)] used the resize command in-game to be [new_size]% size. [src ? ADMIN_JMP(src) : "null"]") // CHOMPRemove
 
+/mob/living/Crossed(var/atom/movable/AM)
+	..()
+	var/mob/living/target = AM
+	if(istype(target) && src.lying && target.loc && target.buckled != src)
+		// src.lying being true means that in theory this code shouldn't run at the same time as the existing code for this in Bump. Probably.
+		// And optionally, this could be gated behind another preference, to prevent stunlock being abused.
+		if((/*mob_always_swap || */(a_intent == INTENT_HELP || src.restrained()) && (target.a_intent == INTENT_HELP || target.restrained())) && !target.IsImmobilized() && target.handle_micro_bump_helping(src))
+			return
+		if(!(target.a_intent == INTENT_HELP || target.restrained()))
+			if(src.step_mechanics_pref && target.step_mechanics_pref)
+				target.handle_micro_bump_other(src)
+			else
+				target.handle_micro_bump_other(src, 1)
+
 /**
  * Attempt to scoop up this mob up into M's hands, if the size difference is large enough.
  * @return false if normal code should continue, 1 to prevent normal code.

@@ -124,6 +124,18 @@
 	if(!in_range(user, src) || !isturf(user.loc) || user.incapacitated() || M.anchored)
 		return FALSE
 
+	//Caustic Edit - Add sit-vore from sitting on a chair
+	if(has_buckled_mobs() && buckled_mobs.len >= max_buckled_mobs)
+		for(var/mob/living/L in buckled_mobs)
+			if(istype(L) && can_stumble_vore(prey = L, pred = M))
+				unbuckle_mob(L, TRUE)
+				if(M == user)
+					M.visible_message(span_warning("[M.name] sits down on [L.name]!"))
+				else
+					M.visible_message(span_warning("[M.name] is forced to sit down on [L.name] by [user.name]!"))
+				M.begin_instant_nom(user, L, M, M.vore_selected)
+	//Caustic Edit End
+
 	add_fingerprint(user)
 	. = buckle_mob(M, check_loc = check_loc)
 	if(.)
