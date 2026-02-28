@@ -253,8 +253,9 @@ GLOBAL_LIST_INIT(averse_factions, list(
 			var/cnt = 0
 			//OV edit - If you have prey or are in prey, always count as having 1 person nearby (no matter how many you've eaten)
 			for(var/obj/belly/our_belly in user.vore_organs)
-				for(var/mob/living in our_belly.contents)
-					cnt = 1
+				for(var/mob/living/our_prey in our_belly.contents)
+					if(our_prey.client)
+						cnt = 1
 			if(istype(user.loc,/obj/belly))
 				cnt = 1
 			//OV edit end
@@ -300,10 +301,11 @@ GLOBAL_LIST_INIT(averse_factions, list(
 			for(var/obj/belly/our_belly in user.vore_organs)
 				if(cnt > 3)
 					break
-				for(var/mob/living in our_belly.contents)
-					cnt++
-					if(cnt > 3)
-						break
+				for(var/mob/living/our_prey in our_belly.contents)
+					if(our_prey.client)
+						cnt++
+						if(cnt > 3)
+							break
 			if(istype(user.loc,/obj/belly))
 				cnt++
 			//OV edit end
@@ -364,12 +366,13 @@ GLOBAL_LIST_INIT(averse_factions, list(
 			var/distfound = FALSE
 			//OV edit - Always remove stress if there's vore, can't get clingier than that
 			for(var/obj/belly/our_belly in user.vore_organs)
-				for(var/mob/living in our_belly.contents)
-					cnt++
-					distfound = TRUE
-					user.remove_stress(/datum/stressevent/nopeople)
-					if(cnt >= 2)
-						break
+				for(var/mob/living/our_prey in our_belly.contents)
+					if(our_prey.client)
+						cnt++
+						distfound = TRUE
+						user.remove_stress(/datum/stressevent/nopeople)
+						if(cnt >= 2)
+							break
 			if(istype(user.loc,/obj/belly))
 				distfound = TRUE
 				user.remove_stress(/datum/stressevent/nopeople)
