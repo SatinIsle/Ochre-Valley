@@ -2,42 +2,44 @@ GLOBAL_LIST_EMPTY(sizecats)
 #define TRAIT_SIZECAT "SizeCat"
 //Code shamelessly stolen from sizecats //WHY IS THIS COPY-PASTED FROM VIRTUES??? Why not just make a subtype?!
 //THERE SHOULD BE SHAME!!! ^^^
-/datum/sizecat
+/datum/sizecat //Reworking this to basically entirely be a handler for the buff and debuff for being grown/shrunk!
 	/// What the sizecat is called.
 	var/name
 	/// A brief, in-character description of what the sizecat does.
 	var/desc
 	/// A list containing any traits we need to add to the mob.
-	var/list/added_traits = list()
+	//var/list/added_traits = list()
 	/// An associative list containing any skills we want to adjust. You can also pass list objects into this in the following format: list(SKILL_TYPE, SKILL_INCREASE, SKILL_MAXIMUM) as needed.
-	var/list/added_skills = list()
+	//var/list/added_skills = list()
 	/// An associative list containing any items we want to add to our stash.
-	var/list/added_stashed_items = list()
+	//var/list/added_stashed_items = list()
 	/// A list containing any extra languages we need to add to the mob.
-	var/list/added_languages = list()
+	//var/list/added_languages = list()
 	/// An associative list containing any extra stats we need to add to the mob. NOTE: sizecats should GENERALLY NOT add stats unless they impose serious downsides.
-	var/list/added_stats = list()
+	//var/list/added_stats = list()
 	/// The cost of the sizecat to apply in TRIUMPH points, if any.
-	var/triumph_cost = 0
+	//var/triumph_cost = 0
 	/// A custom addendum that explains what the sizecat does outside of the traits / skill adjustments.
 	var/custom_text
+	var/starting_scale = 1
 
 
 /datum/sizecat/New()
 	. = ..()
-	if (triumph_cost)
-		desc += "<b>Costs [triumph_cost] TRIUMPH.</b>"
+	/*if (triumph_cost)
+		desc += "<b>Costs [triumph_cost] TRIUMPH.</b>"*/
 
-/datum/sizecat/proc/apply_to_human(mob/living/carbon/human/recipient)
+/datum/sizecat/proc/apply_to_living(mob/living/recipient)
 	return
 
-/datum/sizecat/proc/handle_traits(mob/living/carbon/human/recipient)
+/*/datum/sizecat/proc/handle_traits(mob/living/recipient)
 	if (!LAZYLEN(added_traits))
 		return
 	for(var/trait in added_traits)
-		ADD_TRAIT(recipient, trait, TRAIT_SIZECAT)
+		ADD_TRAIT(recipient, trait, TRAIT_SIZECAT)*/
 
-/datum/sizecat/proc/handle_skills(mob/living/carbon/human/recipient)
+/*
+/datum/sizecat/proc/handle_skills(mob/living/recipient)
 	if (!recipient.mind || !LAZYLEN(added_skills))
 		return
 	for(var/skill in added_skills)
@@ -54,31 +56,31 @@ GLOBAL_LIST_EMPTY(sizecats)
 					increase_by = (maximum_skill - our_skill)
 				recipient.adjust_skillrank(the_skill.type, increase_by, TRUE)
 			else
-				to_chat(recipient, span_notice("My sizecat cannot influence my skill with [lowertext(the_skill.name)] any further."))
+				to_chat(recipient, span_notice("My sizecat cannot influence my skill with [lowertext(the_skill.name)] any further."))*/
 				
-
-/datum/sizecat/proc/handle_stashed_items(mob/living/carbon/human/recipient)
+/*
+/datum/sizecat/proc/handle_stashed_items(mob/living/recipient)
 	if (!recipient.mind || !LAZYLEN(added_stashed_items))
 		return
 	for(var/stashed_item in added_stashed_items)
-		recipient.mind?.special_items[stashed_item] = added_stashed_items[stashed_item]
-
-/datum/sizecat/proc/handle_added_languages(mob/living/carbon/human/recipient)
+		recipient.mind?.special_items[stashed_item] = added_stashed_items[stashed_item]*/
+/*
+/datum/sizecat/proc/handle_added_languages(mob/living/recipient)
 	if (!LAZYLEN(added_languages))
 		return
 	
 	for (var/language in added_languages)
-		recipient.grant_language(language)
-
-/datum/sizecat/proc/handle_stats(mob/living/carbon/human/recipient)
+		recipient.grant_language(language)*/
+/*
+/datum/sizecat/proc/handle_stats(mob/living/recipient)
 	if (!LAZYLEN(added_stats))
 		return
 	
 	for (var/stat in added_stats)
 		var/value = added_stats[stat]
-		recipient.change_stat(stat, value)
-
-/datum/sizecat/proc/check_triumphs(mob/living/carbon/human/recipient)
+		recipient.change_stat(stat, value)*/
+/*
+/datum/sizecat/proc/check_triumphs(mob/living/recipient)
 	if (!triumph_cost)
 		return TRUE
 	
@@ -87,14 +89,14 @@ GLOBAL_LIST_EMPTY(sizecats)
 	
 	// we should check to see if they have triumphs first but i can't be fucked
 	recipient.adjust_triumphs(-triumph_cost, FALSE)
-	return TRUE
+	return TRUE*/
 
-/proc/apply_sizecat(mob/living/carbon/human/recipient, datum/sizecat/sizecat_type)
-	if (!sizecat_type.check_triumphs(recipient))
-		return
-	sizecat_type.apply_to_human(recipient)
-	sizecat_type.handle_traits(recipient)
-	sizecat_type.handle_skills(recipient)
+/proc/apply_sizecat(mob/living/recipient, datum/sizecat/sizecat_type)
+	/*if (!sizecat_type.check_triumphs(recipient))
+		return*/
+	sizecat_type.apply_to_living(recipient)
+	//sizecat_type.handle_traits(recipient)
+	/*sizecat_type.handle_skills(recipient)
 	sizecat_type.handle_stashed_items(recipient)
 	sizecat_type.handle_added_languages(recipient)
 	sizecat_type.handle_stats(recipient)
@@ -102,9 +104,9 @@ GLOBAL_LIST_EMPTY(sizecats)
 		if(recipient in SStreasury.bank_accounts)
 			SStreasury.generate_money_account(20, recipient)
 		else
-			SStreasury.create_bank_account(recipient, 20)
+			SStreasury.create_bank_account(recipient, 20)*/
 
-/proc/apply_prefs_sizecat(mob/living/carbon/human/character, client/player)
+/proc/apply_prefs_sizecat(mob/living/character, client/player)
 	if (!player)
 		player = character.client
 	if (!player)

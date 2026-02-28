@@ -99,7 +99,7 @@
  * * allow_stripping - CHANGE_ME.  Default: FALSE
  */
 /mob/living/proc/resize(var/new_size, var/animate = TRUE, var/uncapped = FALSE, var/ignore_prefs = FALSE, var/aura_animation = FALSE, var/allow_stripping = FALSE) //CHOMPEdit - Disable aura_animation. Too expensive for something you can't even see.
-	/*if(!uncapped)
+	/*if(!uncapped) //This part handles uncapping the size limits based on area... Potentially add it back later?
 		if((z in using_map.station_levels) && CONFIG_GET(flag/pixel_size_limit))
 			var/size_diff = ((runechat_y_offset() / size_multiplier) * new_size) // This returns 32 multiplied with the new size
 			var/size_cap = world.icon_size * RESIZE_MAXIMUM //Grace for non-humanoids so they don't get forcibly shrunk.
@@ -125,14 +125,14 @@
 	if(size_multiplier == new_size)
 		return 1
 
-	size_multiplier = new_size //Change size_multiplier so that other items can interact with them
-
 	if(animate)
 		var/change = new_size - size_multiplier
+		size_multiplier = new_size //Change size_multiplier so that other items can interact with them
 		var/duration = (abs(change)+0.25) SECONDS
 		var/matrix/resize = matrix() // Defines the matrix to change the player's size
 		var/special_x = 1
 		var/special_y = 1
+		icon
 		if(ishuman(src))
 			/*var/mob/living/carbon/human/H = src
 			var/datum/species/S = H.species
@@ -155,6 +155,7 @@
 
 			animate_aura(src, color = aura_color, offset = aura_offset, anim_duration = aura_anim_duration, loops = aura_loops, grow_to = aura_grow_to)*/
 	else
+		size_multiplier = new_size //Change size_multiplier so that other items can interact with them
 		update_transform() //Lame way
 
 /mob/living/carbon/human/resize(var/new_size, var/animate = TRUE, var/uncapped = FALSE, var/ignore_prefs = FALSE, var/aura_animation = FALSE, var/allow_stripping = FALSE) //CHOMPEdit - Disable aura_animation. Too expensive for something you can't even see.
@@ -301,9 +302,9 @@
 				tmob_message = tail.msg_owner_stepunder*/
 
 		if(src_message)
-			to_chat(src, span_notice("[STEP_TEXT_OWNER(src_message)]"))
+			to_chat(src, span_notice("[src_message]"))
 		if(tmob_message)
-			to_chat(tmob, span_notice("[STEP_TEXT_PREY(tmob_message)]"))
+			to_chat(tmob, span_notice("[tmob_message]"))
 		return TRUE
 	return FALSE
 
