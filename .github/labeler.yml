@@ -40,7 +40,7 @@ Balance:
     - code/game/objects/items/rogueweapon/**
 
 TGS:
-  changed-files:
+- changed-files:
     - any-glob-to-any-file:
         - code/__DEFINES/tgs.dm
         - code/__DEFINES/tgs.config.dm
