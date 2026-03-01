@@ -2134,6 +2134,7 @@
 #include "code\modules\mob\living\carbon\human\examine.dm"
 #include "code\modules\mob\living\carbon\human\examine_tgui.dm"
 #include "code\modules\mob\living\carbon\human\exercise.dm"
+#include "code\modules\mob\living\carbon\human\hand_games.dm"
 #include "code\modules\mob\living\carbon\human\human.dm"
 #include "code\modules\mob\living\carbon\human\human_defense.dm"
 #include "code\modules\mob\living\carbon\human\human_defines.dm"
