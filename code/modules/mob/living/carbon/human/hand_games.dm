@@ -4,7 +4,7 @@
 /mob/living/carbon/human/verb/hand_games()
 	set name = "Hand Games"
 	set desc = "Choose from a variety of hand games to play with someone next to you or across a small table."
-	set category = "IC.Game"
+	set category = "Emotes"
 
 	if(stat)
 		return
@@ -113,18 +113,8 @@
 		player1.visible_message(span_notice("[player1] challenges [player2] to Arm Wrestling!"))
 		var/scale1 = player1.dna.features["body_size"]
 		var/scale2 = player2.dna.features["body_size"]
-		to_chat(player2, span_warning("[player1] is getting ready."))
-		var/strength1 = tgui_input_number(player1, "How strong is your character on a scale of 1 to 10 (1 being a weakling, 10 being very strong).", "Strength")
-		strength1 = clamp(strength1, 1, 10)
-		if(!strength1)
-			player1.visible_message(span_notice("[player1] chickens out!"))
-		if(!hand_games_check(player1,player2))
-			return
-		to_chat(player1, span_warning("[player2] is getting ready."))
-		var/strength2 = tgui_input_number(player2, "How strong is your character on a scale of 1 to 10 (1 being a weakling, 10 being very strong).", "Strength")
-		strength2 = clamp(strength2, 1, 10)
-		if(!strength2)
-			player2.visible_message(span_notice("[player2] chickens out!"))
+		var/strength1 = player1.get_stat(STAT_STRENGTH)
+		var/strength2 = player2.get_stat(STAT_STRENGTH)
 		if(!hand_games_check(player1,player2))
 			return
 
@@ -156,30 +146,18 @@
 		if(!hand_games_check(player1,player2))
 			return
 		player1.visible_message(span_notice("[player1] challenges [player2] to Slap Hands!"))
-		var/scale1 = (2.25 - player1.dna.features["body_size"])
-		scale1 = clamp(scale1, 0.1, 3)
-		var/scale2 = (2.25 - player2.dna.features["body_size"])
-		scale2 = clamp(scale2, 0.1, 3)
-		to_chat(player2, span_warning("[player1] is getting ready."))
-		var/strength1 = tgui_input_number(player1, "How fast are your character's reaction times on a scale of 1 to 10 (1 being slow, 10 being very fast).", "Speed")
-		strength1 = clamp(strength1, 1, 10)
-		if(!strength1)
-			player1.visible_message(span_notice("[player1] chickens out!"))
-		if(!hand_games_check(player1,player2))
-			return
-		to_chat(player1, span_warning("[player2] is getting ready."))
-		var/strength2 = tgui_input_number(player2, "How fast are your character's reaction times on a scale of 1 to 10 (1 being slow, 10 being very fast).", "Speed")
-		strength2 = clamp(strength2, 1, 10)
-		if(!strength2)
-			player2.visible_message(span_notice("[player2] chickens out!"))
+		var/speed1 = player1.get_stat(STAT_SPEED)
+		var/speed2 = player2.get_stat(STAT_SPEED)
+		var/per1 = player1.get_stat(STAT_PERCEPTION)
+		var/per2 = player2.get_stat(STAT_PERCEPTION)
 		if(!hand_games_check(player1,player2))
 			return
 
-		var/score1 = (scale1 * strength1)
-		var/score2 = (scale2 * strength2)
+		var/score1 = (speed1 + per1)
+		var/score2 = (speed2 + per2)
 
 		var/competition = pick(score1;player1, score2;player2)
-		if(!do_after(player1, 1 SECONDS, target = player2))
+		if(!do_after(player1, 3 SECONDS, target = player2))
 			player2.visible_message(span_notice("The players cancelled their competition!"))
 			return 0
 		if(!hand_games_check(player1,player2))
