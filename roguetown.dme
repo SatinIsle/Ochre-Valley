@@ -207,6 +207,7 @@
 #include "modular_causticcove\code\__DEFINES\traits.dm"
 #include "modular_causticcove\code\__DEFINES\values.dm"
 #include "modular_causticcove\code\__DEFINES\vore_defines.dm"
+#include "modular_causticcove\code\__DEFINES\vore_liquid_defines.dm"
 #include "modular_causticcove\code\__DEFINES\vore_prefs.dm"
 //Caustic Modular Defines End
 
@@ -3155,6 +3156,7 @@
 #include "modular_causticcove\code\modules\vore\eating\belly_import.dm"
 #include "modular_causticcove\code\modules\vore\eating\belly_messages.dm"
 #include "modular_causticcove\code\modules\vore\eating\belly_obj_liquids.dm"
+#include "modular_causticcove\code\modules\vore\eating\belly_obj_liquid_choices.dm"
 #include "modular_causticcove\code\modules\vore\eating\belly_obj_resist.dm"
 #include "modular_causticcove\code\modules\vore\eating\belly_obj_vfx.dm"
 #include "modular_causticcove\code\modules\vore\eating\belly_obj.dm"

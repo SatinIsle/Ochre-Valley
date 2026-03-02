@@ -1,5 +1,6 @@
-#define RESIZE_MINIMUM 0.25
-#define RESIZE_MAXIMUM 2
+#define RESIZE_MINIMUM 0.2
+#define RESIZE_STANDARD 1
+#define RESIZE_MAXIMUM 2.5
 #define RESIZE_MINIMUM_DORMS 0.01
 #define RESIZE_MAXIMUM_DORMS 6
 
@@ -404,74 +405,6 @@ GLOBAL_LIST_INIT(contamination_colors, list("green",
 				"beige",
 				"pink"
 				))
-
-
-//Lactation bits
-#define REAGENT_WATER "Water"
-#define REAGENT_ID_WATER /datum/reagent/water
-#define REAGENT_MILK "Milk"
-#define REAGENT_ID_MILK /datum/reagent/consumable/milk
-#define REAGENT_TEA "Tea"
-#define REAGENT_ID_TEA /datum/reagent/consumable/caffeine/tea
-#define REAGENT_COFFEE "Coffee"
-#define REAGENT_ID_COFFEE /datum/reagent/consumable/caffeine/coffee
-#define REAGENT_PARAPOISON "Paralytic venom"
-#define REAGENT_ID_PARAPOISON /datum/reagent/toxin/spidervenom_paralytic
-#define REAGENT_HONEY "Honey"
-#define REAGENT_ID_HONEY /datum/reagent/consumable/honey
-#define REAGENT_SPACEDRUGS "Druggy venom"
-#define REAGENT_ID_SPACEDRUGS /datum/reagent/drug/space_drugs
-#define REAGENT_POT_MANA "Mana potion"
-#define REAGENT_ID_POT_MANA /datum/reagent/medicine/manapot
-#define REAGENT_POT_HEALTH "Health potion"
-#define REAGENT_ID_POT_HEALTH /datum/reagent/medicine/healthpot
-
-#define REAGENT_JUICE_JACKBERRY "Jackberry juice"
-#define REAGENT_ID_JUICE_JACKBERRY /datum/reagent/consumable/juice/jackberry
-#define REAGENT_JUICE_APPLE "Apple juice"
-#define REAGENT_ID_JUICE_APPLE /datum/reagent/consumeable/juice/apple
-#define REAGENT_JUICE_TOMATO "Tomato juice"
-#define REAGENT_ID_JUICE_TOMATO /datum/reagent/consumable/juice/tomato
-
-
-
-#define REAGENT_CHOCOLATEMILK  "Chocolate Milk"
-#define REAGENT_ID_CHOCOLATEMILK "chocolate_milk"
-#define REAGENT_CREAM "Cream"
-#define REAGENT_ID_CREAM "cream"
-#define REAGENT_ICETEA "Iced Tea"
-#define REAGENT_ID_ICETEA "icetea"
-#define REAGENT_MINTTEA "Mint Tea"
-#define REAGENT_ID_MINTTEA "minttea"
-#define REAGENT_LEMONTEA "Lemon Tea"
-#define REAGENT_ID_LEMONTEA "lemontea"
-#define REAGENT_LIMETEA "Lime Tea"
-#define REAGENT_ID_LIMETEA "limetea"
-#define REAGENT_ORANGETEA "Orange Tea"
-#define REAGENT_ID_ORANGETEA "orangetea"
-#define REAGENT_BERRYTEA "Berry Tea"
-#define REAGENT_ID_BERRYTEA "berrytea"
-#define REAGENT_GREENTEA "Green Tea"
-#define REAGENT_ID_GREENTEA "greentea"
-#define REAGENT_CHAITEA "Chai Tea"
-#define REAGENT_ID_CHAITEA "chaitea"
-#define REAGENT_CAFELATTE "Cafe Latte"
-#define REAGENT_ID_CAFELATTE "cafe_latte"
-#define REAGENT_HOTCOCO "Hot Chocolate"
-#define REAGENT_ID_HOTCOCO "hot_coco"
-#define REAGENT_ALE "Ale"
-#define REAGENT_ID_ALE "ale"
-#define REAGENT_BEER "Beer"
-#define REAGENT_ID_BEER "beer"
-
-
-#define REAGENT_STOMACID "Digestive acid"
-#define REAGENT_ID_STOMACID "stomacid"
-#define REAGENT_DIETSTOMACID "Diluted digestive acid"
-#define REAGENT_ID_DIETSTOMACID "diet_stomacid"
-
-#define REAGENT_NUMBENZYME "Numbing Enzyme"
-#define REAGENT_ID_NUMBENZYME "numbenzyme"
 
 
 #define CHEM_VORE 4 // vore belly interactions

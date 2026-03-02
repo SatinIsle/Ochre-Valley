@@ -27,12 +27,12 @@
 	var/target_scale = 1
 
 /obj/item/melee/touch_attack/sizespell/attack_self(mob/user)
-	var/new_target_scale = tgui_input_number(user, "What desired size scale? (Between 0.25 and 2, 1 is normal)", "Target Size", 1, 2, 0.25, round_value = FALSE)
+	var/new_target_scale = tgui_input_number(user, "What desired size scale? (Between [RESIZE_MINIMUM * 100] and [RESIZE_MAXIMUM * 100], 100 is normal)", "Target Size", (RESIZE_STANDARD * 100), (RESIZE_MAXIMUM * 100), (RESIZE_MINIMUM * 100), round_value = FALSE)
 	if(new_target_scale)
-		if(new_target_scale < 0.25 || new_target_scale > 2)
-			to_chat(user, "<font color='red'>Value must be between 0.25 and 2.</font>")
+		if(new_target_scale < (RESIZE_MINIMUM * 100) || new_target_scale > (RESIZE_MAXIMUM * 100))
+			to_chat(user, "<font color='red'>Value must be between [RESIZE_MINIMUM * 100] and [RESIZE_MAXIMUM * 100].</font>")
 			return
-		target_scale = new_target_scale
+		target_scale = (new_target_scale / 100)
 
 /obj/item/melee/touch_attack/sizespell/afterattack(atom/target, mob/living/carbon/user, proximity)
 	if(!proximity)
@@ -47,9 +47,11 @@
 		shrink_target(target, user)
 	else //Grow
 		grow_target(target, user)
-	
+
 	var/datum/status_effect/buff/sizechanged/size_status = target_live.apply_status_effect(/datum/status_effect/buff/sizechanged)
-	size_status.original_scale = target_live.size_multiplier
+	if(istype(size_status))
+		size_status.original_scale = target_live.size_multiplier
+	
 	target_live.resize(target_scale)
 	qdel(src)
 

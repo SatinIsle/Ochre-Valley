@@ -29,7 +29,7 @@
 	boozepwr = 40
 	taste_description = "sweet subtle delights of pear"
 	glass_name = "Glass of Pear Cider"
-	color = "fffc6c"
+	color = "#fffc6c"
 	quality = DRINK_NICE
 
 /datum/reagent/consumable/ethanol/cider/strawberry
@@ -59,7 +59,7 @@
 	name = "Pear Brandy"
 	boozepwr = 60
 	taste_description = "ripe pear with a hint of spice"
-	color = "b9b607"
+	color = "#b9b607"
 	quality = DRINK_VERYGOOD
 
 /datum/reagent/consumable/ethanol/brandy/strawberry

@@ -8,7 +8,7 @@
 /mob
 	var/step_mechanics_pref = TRUE		// Allow participation in macro-micro step mechanics
 	var/pickup_pref = TRUE				// Allow participation in macro-micro pickup mechanics
-	var/center_offset = 0.5				// Center offset for uneven scaling symmetry.
+	var/center_offset = 0//.5				// Center offset for uneven scaling symmetry.
 	var/offset_override = FALSE			// Pref toggle for center offset.
 
 /mob/living
@@ -130,20 +130,20 @@
 		size_multiplier = new_size //Change size_multiplier so that other items can interact with them
 		var/duration = (abs(change)+0.25) SECONDS
 		var/matrix/resize = matrix() // Defines the matrix to change the player's size
-		var/special_x = 1
-		var/special_y = 1
-		icon
-		if(ishuman(src))
+		//var/special_x = 1
+		//var/special_y = 1
+		//if(ishuman(src))
 			/*var/mob/living/carbon/human/H = src
 			var/datum/species/S = H.species
 			special_x = S.icon_scale_x
 			special_y = S.icon_scale_y*/
-			if(fuzzy || offset_override)
-				center_offset = 0
+			//if(fuzzy || offset_override)
+			//	center_offset = 0
 			/*else
 				center_offset = S.center_offset*/
-		resize.Scale(new_size /** icon_scale_x */* special_x, new_size /** icon_scale_y */* special_y) //Change the size of the matrix
-		resize.Translate(center_offset * size_multiplier /** icon_scale_x*/ * special_x, (vis_height/2) * (new_size - 1)) //Move the player up in the tile so their feet align with the bottom
+		resize.Scale(new_size /** icon_scale_x * special_x*/, new_size /** icon_scale_y * special_y*/) //Change the size of the matrix
+		resize.Translate(center_offset * size_multiplier /** icon_scale_x * special_x*/, (vis_height/2) * (new_size - 1)) //Move the player up in the tile so their feet align with the bottom
+		resize.Turn(lying)
 		animate(src, transform = resize, time = duration) //Animate the player resizing
 
 		/*if(aura_animation) //Chomp disabled this according to above, so, lets just comment it out for now.
@@ -157,6 +157,20 @@
 	else
 		size_multiplier = new_size //Change size_multiplier so that other items can interact with them
 		update_transform() //Lame way
+	
+	//Get the old Sizecat on someone, trigger it's removal, and then apply the new one! So that buffs/debuffs are based on your size at the time!
+	remove_sizecat(src)
+
+	if(new_size < 0.35) //From RESIZE_MINIMUM to 0.35 is Micro
+		apply_sizecat(src, new /datum/sizecat/micro)
+	else if(new_size < 0.8) //From 0.35 to 0.8 is Small
+		apply_sizecat(src, new /datum/sizecat/small)
+	else if(new_size < 1.35) //From 0.8 to 1.35 is None (to account for the scale being different on each end cause it's a multiplier)
+		apply_sizecat(src, new /datum/sizecat/none)
+	else if(new_size < 1.85) //From 1.35 to 1.85 is Large
+		apply_sizecat(src, new /datum/sizecat/large)
+	else //From 1.85 to 2.5 is Macro
+		apply_sizecat(src, new /datum/sizecat/macro)
 
 /mob/living/carbon/human/resize(var/new_size, var/animate = TRUE, var/uncapped = FALSE, var/ignore_prefs = FALSE, var/aura_animation = FALSE, var/allow_stripping = FALSE) //CHOMPEdit - Disable aura_animation. Too expensive for something you can't even see.
 	if(!resizable && !ignore_prefs)
