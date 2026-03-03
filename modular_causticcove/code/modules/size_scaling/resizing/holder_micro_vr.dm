@@ -4,7 +4,7 @@
 	desc = "Another crewmember, small enough to fit in your hand."
 	icon_state = "micro"
 	//icon_override = 'icons/inventory/head/mob.dmi' //Caustic - We'd need new sprites for these, possibly.
-	slot_flags = SLOT_SHOES | SLOT_HEAD | SLOT_BELT_L | SLOT_BELT_R | SLOT_BACK_L | SLOT_BACK_R
+	slot_flags = ITEM_SLOT_SHOES|ITEM_SLOT_HEAD|ITEM_SLOT_HIP|ITEM_SLOT_BACK_L|ITEM_SLOT_BACK_R
 	w_class = WEIGHT_CLASS_SMALL
 	lefthand_file = null // No in-hand sprites (for now, anyway, we could totally add some)
 	righthand_file = null

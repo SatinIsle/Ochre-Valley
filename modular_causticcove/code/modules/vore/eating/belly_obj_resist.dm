@@ -20,7 +20,7 @@
 	if(!private_struggle)
 		resist_play_sound()
 
-	if (prob(belchchance) && (escapable != B_ESCAPABLE_INTENT || (living_prey.a_intent == INTENT_HELP && escapable == B_ESCAPABLE_INTENT)))
+	if (prob(belchchance) && (escapable != B_ESCAPABLE_INTENT || (istype(living_prey.a_intent, INTENT_HELP) && escapable == B_ESCAPABLE_INTENT)))
 		owner.emote("belch")
 
 	if(!escapable) //If the stomach has escapable enabled.

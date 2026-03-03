@@ -30,7 +30,7 @@ GLOBAL_LIST_INIT(digest_modes, list())
 	//Person just died in guts!
 	if(L.stat == DEAD)
 		if(!L.digestion_in_progress)
-			if(L.client.prefs.digestion_noises)
+			if(L.client?.prefs.digestion_noises)
 				if(!B.fancy_vore)
 					SEND_SOUND(L, sound(get_sfx("classic_death_sounds")))
 				else
@@ -71,6 +71,10 @@ GLOBAL_LIST_INIT(digest_modes, list())
 	L.adjustOxyLoss(B.digest_oxy)
 	L.adjustToxLoss(B.digest_tox)
 	L.adjustCloneLoss(B.digest_clone)
+
+	if(old_brute > (L.maxHealth * 4.5) || old_burn > (L.maxHealth * 4.5)) //Bandaid Patch for unkillable mobs? Potentially just set the OxyLoss to 200 for one tick, which WILL kill them.
+		L.adjustOxyLoss(200, forced = TRUE)
+
 	//L.attempt_multishock(SHOCKFLAG_DIGESTION) //I don't believe this is in this codebase?
 	// Send a message when a prey-thing enters hard crit.
 	if(iscarbon(L) && old_health > 0 && L.getActualFuckingHealth() <= 0)

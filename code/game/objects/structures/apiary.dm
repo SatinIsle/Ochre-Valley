@@ -298,7 +298,7 @@
 		process_swarm()
 
 /obj/structure/apiary/attack_hand(mob/user)
-	if(queen_bee && user.a_intent == INTENT_HELP && is_wearing_bee_protection(user))
+	if(queen_bee && istype(user.a_intent, INTENT_HELP) && is_wearing_bee_protection(user))
 		user.visible_message("[user] carefully reaches into [src].", "You carefully extract the queen bee from [src].")
 
 		if(!do_after(user, 5 SECONDS, src))

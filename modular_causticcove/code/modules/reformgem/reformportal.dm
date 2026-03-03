@@ -18,13 +18,48 @@
 	soundloop = new(list(src), FALSE)
 	soundloop.start()
 
-/obj/structure/respawn_portal/attack_ghost(mob/dead/observer/user)
-	if(QDELETED(user))
+/obj/structure/respawn_portal/attack_ghost(mob/dead/observer/user) //Bit Jank for now but just copied over the Reform Option code... Maybe this will work? If a Ghost escapes the belly somehow lol
+	/*if(QDELETED(user))
 		return
 	if(!in_range(src, user))
 		return
 	user.bring_body()
-	user.rise_body()
+	user.rise_body()*/
+
+	if(isobserver(user))
+		var/mob/dead/observer/T = user
+		if(!ismob(T.body_backup))
+			//to_chat(user,span_warning("They don't seem to be reformable!"))
+			return
+
+		/*var/accepted = tgui_alert(T, "[host] is trying to reform your body! Would you like to get reformed inside [host]'s [lowertext(host.vore_selected.name)]?", "Reforming Attempt", list("Yes", "No"))
+		if(accepted != "Yes")
+			to_chat(user,span_warning("[T] refused to be reformed!"))
+			return
+		if(!isbelly(T.loc))
+			to_chat(user,span_warning("[T] is no longer inside to be reformed!"))
+			to_chat(T,span_warning("You can't be reformed outside of a belly!"))
+			return*/
+
+		if(isliving(T.body_backup))
+			var/mob/living/body_backup = T.body_backup
+			body_backup.revive(TRUE)
+			body_backup.forceMove(T.loc)
+			body_backup.enabled = TRUE
+			//body_backup.ajourn = 0
+			body_backup.key = T.key
+			//body_backup.teleop = null
+			T.body_backup = null
+			//host.vore_selected.release_specific_contents(T, TRUE)
+			/*if(istype(body_backup, /mob/living/simple_animal))
+				var/mob/living/simple_animal/sm = body_backup
+				if(sm.icon_rest && sm.resting)
+					sm.icon_state = sm.icon_rest
+				else
+					sm.icon_state = sm.icon_living*/
+			T.update_icon()
+			//announce_ghost_joinleave(T.mind, 0, "They now occupy their body again.")
+
 	qdel(src)
 
 /obj/structure/respawn_portal/Destroy()

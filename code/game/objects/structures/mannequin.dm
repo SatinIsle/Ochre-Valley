@@ -112,7 +112,7 @@
 		StandUp(user)
 		return
 	//For easy moving of mannequins.
-	if(!anchored && user.a_intent == INTENT_GRAB)
+	if(!anchored && istype(user.a_intent, INTENT_GRAB))
 		user.start_pulling(src)
 		return
 	tryEquip(user)
@@ -207,7 +207,7 @@
 	. += "<BR><B>Ring:</B> <A href='byond://?src=[REF(src)];command=item_placement;item_slot=[SLOT_MANNEQUIN_RING]'>[makeStrippingButton(clothing[SLOT_MANNEQUIN_RING])]</A>" //No direct slot to equip.
 
 /obj/structure/mannequin/attackby(obj/item/I, mob/user)
-	if(user.cmode || user.a_intent == INTENT_HARM || user.a_intent == INTENT_DISARM)
+	if(user.cmode || istype(user.a_intent, INTENT_HARM) || istype(user.a_intent, INTENT_DISARM))
 		if(!tipped_over)
 			TipOver()
 			return

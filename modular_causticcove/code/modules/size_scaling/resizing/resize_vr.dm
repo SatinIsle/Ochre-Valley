@@ -228,12 +228,12 @@
 /mob/living/Crossed(var/atom/movable/AM)
 	..()
 	var/mob/living/target = AM
-	if(istype(target) && src.lying && target.loc && target.buckled != src)
+	if(istype(target) && !cmode && !target.cmode && src.lying && target.loc && target.buckled != src)
 		// src.lying being true means that in theory this code shouldn't run at the same time as the existing code for this in Bump. Probably.
 		// And optionally, this could be gated behind another preference, to prevent stunlock being abused.
-		if((/*mob_always_swap || */(a_intent == INTENT_HELP || src.restrained()) && (target.a_intent == INTENT_HELP || target.restrained())) && !target.IsImmobilized() && target.handle_micro_bump_helping(src))
+		if((/*mob_always_swap || */(istype(a_intent, INTENT_HELP) || get_active_held_item() || src.restrained()) && (istype(target.a_intent, INTENT_HELP) || target.get_active_held_item() || target.restrained())) && !target.IsImmobilized() && target.handle_micro_bump_helping(src))
 			return
-		if(!(target.a_intent == INTENT_HELP || target.restrained()))
+		if(!(istype(target.a_intent, INTENT_HELP) || target.restrained()))
 			if(src.step_mechanics_pref && target.step_mechanics_pref)
 				target.handle_micro_bump_other(src)
 			else
@@ -248,7 +248,7 @@
 		return FALSE
 	if(!(pickup_pref && M.pickup_pref && M.pickup_active))
 		return FALSE
-	if(!(M.a_intent == INTENT_HELP))
+	if(!(istype(M.a_intent, INTENT_HELP)))
 		return FALSE
 	var/size_diff = M.get_effective_size(FALSE) - get_effective_size(TRUE)
 	if(!holder_default && holder_type)
@@ -328,7 +328,7 @@
  *
  * @return false if normal code should continue, 1 to prevent normal code.
  */
-/mob/living/proc/handle_micro_bump_other(mob/living/tmob, nofetish = 0) //CHOMPEDIT - changed a lot in this whole proc tbh, to bring back micro combat balance
+/mob/living/proc/handle_micro_bump_other(mob/living/tmob, nofetish = 0) //CHOMPEDIT - changed a lot in this whole proc tbh, to bring back micro combat balance //Caustic Edit - This should ONLY get called IF their hand is empty!
 	ASSERT(istype(tmob))
 	//If we're flying, don't do any special interactions.
 	/*if(flying)
@@ -354,7 +354,7 @@
 
 	var/mob/living/carbon/human/prey = tmob
 	var/can_pass = TRUE
-	var/size_ratio_needed = (a_intent == INTENT_DISARM || a_intent == INTENT_HARM) ? 0.75 : (a_intent == INTENT_GRAB ? 0.5 : 0)
+	var/size_ratio_needed = (istype(a_intent, INTENT_DISARM) || istype(a_intent, INTENT_HARM)) ? 0.75 : (istype(a_intent, INTENT_GRAB) ? 0.5 : 0)
 	if (isturf(prey.loc))
 		for (var/atom/movable/M in prey.loc)
 			if (prey == M || pred == M)
@@ -373,17 +373,17 @@
 	// We need to be above a certain size ratio in order to do anything to the prey.
 	// For DISARM and HURT intent, this is >=0.75, for GRAB it is >=0.5
 	var/size_ratio = get_effective_size(FALSE) - tmob.get_effective_size(TRUE)
-	if((a_intent == INTENT_GRAB || a_intent == INTENT_DISARM) && size_ratio < 0.5) //CHOMPEDIT - more step changes
+	if((istype(a_intent, INTENT_GRAB) || istype(a_intent, INTENT_DISARM)) && size_ratio < 0.5) //CHOMPEDIT - more step changes
 		return FALSE
-	if(a_intent == INTENT_HARM && size_ratio < 0.75)
+	if(istype(a_intent, INTENT_HARM) && size_ratio < 0.75)
 		return FALSE
-	if(a_intent == INTENT_HELP) // Theoretically not possible, but just in case.
+	if(istype(a_intent, INTENT_HELP)) // Theoretically not possible, but just in case.
 		return FALSE
 
 	//CHOMPEdit - removed chance to dodge steppies. Get rng out of my combat.
 	now_pushing = 0
 	forceMove(tmob.loc)
-	if(a_intent != INTENT_HELP)
+	if(!istype(a_intent, INTENT_HELP))
 		if(tmob.size_multiplier > 0.75 && nofetish) //So we can stun micros with step mechanics off, but prevent macros from stunning regular heights
 			to_chat(pred, span_danger("You pass over [tmob.name]."))
 			to_chat(prey, span_danger("[src.name] passes over you."))
@@ -401,7 +401,7 @@
 	// I_HARM: Rand 1-3 multiplied by 1 min or 1.75 max. 1 min 5.25 max damage to each limb.
 	// I_DISARM: Perform some HALLOSS damage to the smaller.
 	//           Since stunned is broken, let's do this. Rand 15-30 multiplied by 1 min or 1.75 max. 15 holo to 52.5 holo, depending on RNG and size differnece.
-	var/damage = (a_intent == INTENT_DISARM) ? (rand(15, 30) * size_damage_multiplier) : (rand(1, 3) * size_damage_multiplier)
+	var/damage = (istype(a_intent, INTENT_DISARM)) ? (rand(15, 30) * size_damage_multiplier) : (rand(1, 3) * size_damage_multiplier)
 	// I_HARM only
 	var/calculated_damage = damage / 2 //This will sting, but not kill. Does .5 to 2.625 damage, randomly, to each limb.
 
@@ -411,7 +411,7 @@
 	if(istaurtail(pred.tail_style))
 		tail = pred.tail_style*/
 	if(!nofetish)	//CHOMPedit - Brings back mandatory step mechanics, circumvents the fetish stuff if no pref match
-		if(a_intent == INTENT_GRAB)
+		if(istype(a_intent, INTENT_GRAB))
 			// You can only grab prey if you have no shoes on. And both of you are cool with it.
 			if(pred.shoes || !(pred.pickup_pref && prey.pickup_pref))
 				message_pred = "You step down onto [prey], squishing them and forcing them down to the ground!"
@@ -430,47 +430,45 @@
 				log_combat(pred, prey, "Grabbed underfoot (without shoes)")
 
 		if(m_intent == MOVE_INTENT_RUN)
-			switch(a_intent)
-				if(INTENT_DISARM)
-					message_pred = "You quickly push [prey] to the ground with your foot!"
-					message_prey = "[pred] pushes you down to the ground with their foot!"
-					/*if(tail)
-						message_pred = STEP_TEXT_OWNER(tail.msg_owner_disarm_run)
-						message_prey = STEP_TEXT_PREY(tail.msg_prey_disarm_run)*/
-					log_combat(pred, prey, "Pinned underfoot (run, no halloss)")
-				if(INTENT_HARM)
-					message_pred = "You carelessly step down onto [prey], crushing them!"
-					message_prey = "[pred] steps carelessly on your body, crushing you!"
-					/*if(tail)
-						message_pred = STEP_TEXT_OWNER(tail.msg_owner_harm_run)
-						message_prey = STEP_TEXT_PREY(tail.msg_prey_harm_run)*/
+			if(istype(a_intent, INTENT_DISARM))
+				message_pred = "You quickly push [prey] to the ground with your foot!"
+				message_prey = "[pred] pushes you down to the ground with their foot!"
+				/*if(tail)
+					message_pred = STEP_TEXT_OWNER(tail.msg_owner_disarm_run)
+					message_prey = STEP_TEXT_PREY(tail.msg_prey_disarm_run)*/
+				log_combat(pred, prey, "Pinned underfoot (run, no halloss)")
+			else //It should only hit this if it's "Harm" Intent
+				message_pred = "You carelessly step down onto [prey], crushing them!"
+				message_prey = "[pred] steps carelessly on your body, crushing you!"
+				/*if(tail)
+					message_pred = STEP_TEXT_OWNER(tail.msg_owner_harm_run)
+					message_prey = STEP_TEXT_PREY(tail.msg_prey_harm_run)*/
 
-					for(var/obj/item/bodypart/B in prey.bodyparts)
-						B.receive_damage(calculated_damage, 0, calculated_damage) // 5 damage min, 26.25 damage max, depending on size & RNG. If they're only stepped on once, the damage will (probably not...) heal over time.
-					prey.bleed(0.3)
-					log_combat(pred, prey, "Crushed underfoot (run, about [calculated_damage] damage)")
+				for(var/obj/item/bodypart/B in prey.bodyparts)
+					B.receive_damage(calculated_damage, 0, calculated_damage) // 5 damage min, 26.25 damage max, depending on size & RNG. If they're only stepped on once, the damage will (probably not...) heal over time.
+				prey.bleed(0.3)
+				log_combat(pred, prey, "Crushed underfoot (run, about [calculated_damage] damage)")
 		else
-			switch(a_intent)
-				if(INTENT_DISARM)
-					message_pred = "You firmly push your foot down on [prey], painfully but harmlessly pinning them to the ground!"
-					message_prey = "[pred] firmly pushes their foot down on you, quite painfully but harmlessly pinning you to the ground!"
-					/*if(tail)
-						message_pred = STEP_TEXT_OWNER(tail.msg_owner_disarm_walk)
-						message_prey = STEP_TEXT_PREY(tail.msg_prey_disarm_walk)*/
-					log_combat(pred, prey, "Pinned underfoot (walk, knocked over for a short moment)")
-					tmob.Knockdown(2 SECONDS)
-				if(INTENT_HARM)
-					message_pred = "You methodically place your foot down upon [prey]'s body, slowly applying pressure, crushing them against the floor below!"
-					message_prey = "[pred] methodically places their foot upon your body, slowly applying pressure, crushing you against the floor below!"
-					/*if(tail)
-						message_pred = STEP_TEXT_OWNER(tail.msg_owner_harm_walk)
-						message_prey = STEP_TEXT_PREY(tail.msg_prey_harm_walk)*/
-					// Multiplies the above damage by 3.5. This means a min of 1.75 damage, or a max of 9.1875. damage to each limb, depending on size and RNG. //Caustic - This seems harsher???
-					calculated_damage *= 3.5
-					for(var/obj/item/bodypart/B in prey.bodyparts)
-						B.receive_damage(calculated_damage, 0, calculated_damage)
-					prey.bleed(0.8)
-					log_combat(pred, prey, "Crushed underfoot (walk, about [calculated_damage] damage)")
+			if(istype(a_intent, INTENT_DISARM))
+				message_pred = "You firmly push your foot down on [prey], painfully but harmlessly pinning them to the ground!"
+				message_prey = "[pred] firmly pushes their foot down on you, quite painfully but harmlessly pinning you to the ground!"
+				/*if(tail)
+					message_pred = STEP_TEXT_OWNER(tail.msg_owner_disarm_walk)
+					message_prey = STEP_TEXT_PREY(tail.msg_prey_disarm_walk)*/
+				log_combat(pred, prey, "Pinned underfoot (walk, knocked over for a short moment)")
+				tmob.Knockdown(2 SECONDS)
+			else //It should only hit this if it's "Harm" Intent
+				message_pred = "You methodically place your foot down upon [prey]'s body, slowly applying pressure, crushing them against the floor below!"
+				message_prey = "[pred] methodically places their foot upon your body, slowly applying pressure, crushing you against the floor below!"
+				/*if(tail)
+					message_pred = STEP_TEXT_OWNER(tail.msg_owner_harm_walk)
+					message_prey = STEP_TEXT_PREY(tail.msg_prey_harm_walk)*/
+				// Multiplies the above damage by 3.5. This means a min of 1.75 damage, or a max of 9.1875. damage to each limb, depending on size and RNG. //Caustic - This seems harsher???
+				calculated_damage *= 3.5
+				for(var/obj/item/bodypart/B in prey.bodyparts)
+					B.receive_damage(calculated_damage, 0, calculated_damage)
+				prey.bleed(0.8)
+				log_combat(pred, prey, "Crushed underfoot (walk, about [calculated_damage] damage)")
 
 		to_chat(pred, span_danger("[message_pred]"))
 		to_chat(prey, span_danger("[message_prey]"))

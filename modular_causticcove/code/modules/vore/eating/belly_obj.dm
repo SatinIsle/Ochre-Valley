@@ -966,9 +966,8 @@
 		M.forceMove(G)
 	else
 		qdel(M)
+	
 	owner.handle_belly_update()
-	
-	
 
 // Handle a mob being absorbed
 /obj/belly/proc/absorb_living(mob/living/M)

@@ -987,15 +987,14 @@
 			V.ui_interact(user)
 			return TRUE*/
 
-		/*// Add Reforming <-- Removing this thing until we figure out how to do qdel on digestion
 		if("Reform")
 			if(host.stat)
 				to_chat(user,span_warning("You can't do that in your state!"))
 				return TRUE
 
 			if(isobserver(target))
-				var/mob/observer/T = target
-				if(!ismob(T.body_backup) || GLOB.prevent_respawns.Find(T.mind.name) || ispAI(T.body_backup))
+				var/mob/dead/observer/T = target
+				if(!ismob(T.body_backup))
 					to_chat(user,span_warning("They don't seem to be reformable!"))
 					return TRUE
 
@@ -1013,20 +1012,17 @@
 					if(ishuman(body_backup))
 						var/mob/living/carbon/human/H = body_backup
 						H.setOxyLoss(0)
-						if(H.isSynthetic())
-							H.adjustToxLoss(-H.getToxLoss())
-						else
-							H.adjustToxLoss(-25)
+						H.adjustToxLoss(-25)
 						if(H.health <= -H.getMaxHealth())
 							H.adjustBruteLoss(-25)
 							H.adjustFireLoss(-25)
-							H.adjustCloneLoss(-25)
+							//H.adjustCloneLoss(-25)
 
 							//This looks how much health we need to get to 'barely in crit'
 							//We heal up to that point here, starting with toxins and moving up to the harder to heal types.
 							//Once we heal one type, we check again to see if we're still dead. If so, we heal the next type in the list.
 							if(H.health <= -H.getMaxHealth())
-								var/barely_in_crit = -(H.get_crit_point() - 1)
+								var/barely_in_crit = -1
 								var/adjust_health = barely_in_crit - H.health
 								if(adjust_health < 0)
 									adjust_health *= -1
@@ -1036,53 +1032,49 @@
 									H.adjustFireLoss(adjust_health)
 								if(H.health <= -H.getMaxHealth())
 									H.adjustBruteLoss(adjust_health)
-								if(H.health <= -H.getMaxHealth())
-									H.adjustCloneLoss(adjust_health)
+								//if(H.health <= -H.getMaxHealth())
+								//	H.adjustCloneLoss(adjust_health)
 
 						body_backup.updatehealth()
 						// Now we do the check to see if we should revive...
 						var/should_proceed_with_revive = TRUE
-						var/obj/item/organ/internal/brain/brain = H.internal_organs_by_name[O_BRAIN]
-						should_proceed_with_revive &&= !H.should_have_organ(O_BRAIN) || (brain && (!istype(brain) || brain.defib_timer > 0))
-						if(!H.isSynthetic())
-							should_proceed_with_revive &&= !(HUSK in H.mutations) && H.can_defib
-						if(should_proceed_with_revive)
-							for(var/organ_tag in H.species.has_organ)
-								var/obj/item/organ/O = H.species.has_organ[organ_tag]
-								var/vital = initial(O.vital) //check for vital organs
-								if(vital)
-									O = H.internal_organs_by_name[organ_tag]
-									if(!O || O.damage > O.max_damage)
-										should_proceed_with_revive = FALSE
-										break
+						//var/obj/item/organ/brain/brain = H.parse_organ_slot
+						//should_proceed_with_revive &&= !H.should_have_organ(O_BRAIN) || (brain && (!istype(brain) || brain.defib_timer > 0))
+						//if(should_proceed_with_revive)
+						for(var/obj/item/organ/singleorgan in H.internal_organs)
+							//var/vital = initial(singleorgan.vital) //check for vital organs
+							if(singleorgan.organ_flags & ORGAN_VITAL && singleorgan.damage > singleorgan.maxHealth)
+								should_proceed_with_revive = FALSE
+								break
 						if(should_proceed_with_revive)
 							GLOB.dead_mob_list.Remove(H)
-							if((H in GLOB.living_mob_list) || (H in GLOB.dead_mob_list))
+							if((H in GLOB.alive_mob_list) || (H in GLOB.dead_mob_list))
 								WARNING("Mob [H] was reformed but already in the living or dead list still!")
-							GLOB.living_mob_list += H
+							GLOB.alive_mob_list += H
 
 							H.timeofdeath = 0
-							H.set_stat(UNCONSCIOUS) //Life() can bring them back to consciousness if it needs to.
+							H.stat = UNCONSCIOUS
+							H.update_stat() //Life() can bring them back to consciousness if it needs to.
 							H.failed_last_breath = 0 //So mobs that died of oxyloss don't revive and have perpetual out of breath.
 							H.reload_fullscreen()
 					else
 						body_backup.revive()
 					body_backup.forceMove(T.loc)
 					body_backup.enabled = TRUE
-					body_backup.ajourn = 0
+					//body_backup.ajourn = 0
 					body_backup.key = T.key
-					body_backup.teleop = null
+					//body_backup.teleop = null
 					T.body_backup = null
 					host.vore_selected.release_specific_contents(T, TRUE)
-					if(istype(body_backup, /mob/living/simple_animal))
+					/*if(istype(body_backup, /mob/living/simple_animal))
 						var/mob/living/simple_animal/sm = body_backup
 						if(sm.icon_rest && sm.resting)
 							sm.icon_state = sm.icon_rest
 						else
-							sm.icon_state = sm.icon_living
+							sm.icon_state = sm.icon_living*/
 					T.update_icon()
-					announce_ghost_joinleave(T.mind, 0, "They now occupy their body again.")
-			return TRUE*/
+					//announce_ghost_joinleave(T.mind, 0, "They now occupy their body again.")
+			return TRUE
 		if("Health")
 			var/mob/living/ourtarget = target
 			to_chat(user, span_notice("Current health reading for \The [ourtarget]: [ourtarget.health] / [ourtarget.getMaxHealth()] "))

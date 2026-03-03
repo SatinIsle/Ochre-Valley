@@ -34,7 +34,7 @@
 	if(isliving(A))
 		var/mob/living/L = A
 		//Caustic Edit - Add Scooping of Micros
-		if(used_intent.type == INTENT_HELP && !cmode && attempt_to_scoop(L) && !on_fire)
+		if(used_intent.type == INTENT_HELP && !cmode && !L.cmode && L.attempt_to_scoop(src) && !on_fire)
 			return
 		//Caustic Edit End
 		if(!used_intent.noaa)

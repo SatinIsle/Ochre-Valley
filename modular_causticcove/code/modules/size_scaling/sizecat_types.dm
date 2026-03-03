@@ -8,10 +8,12 @@
 	recipient.change_stat(STATKEY_STR, 2)
 	recipient.change_stat(STATKEY_CON, 2)
 	recipient.add_movespeed_modifier(MOVESPEED_ID_MACROMICRO, update=TRUE, priority=100, multiplicative_slowdown=0.5, movetypes=GROUND) // Base slowdown is increased to the equivalent of having 5 speed.
+	ADD_TRAIT(recipient, TRAIT_BIGGUY, MAGIC_TRAIT)
 
 /datum/sizecat/macro/remove_sizecat_from_living(mob/living/recipient)
 	recipient.change_stat(STATKEY_STR, -2)
 	recipient.change_stat(STATKEY_CON, -2)
+	REMOVE_TRAIT(recipient, TRAIT_BIGGUY, MAGIC_TRAIT)
 
 /datum/sizecat/large
 	name = "Large"
@@ -23,10 +25,12 @@
 	recipient.change_stat(STATKEY_STR, 1)
 	recipient.change_stat(STATKEY_CON, 1)
 	recipient.add_movespeed_modifier(MOVESPEED_ID_MACROMICRO, update=TRUE, priority=100, multiplicative_slowdown=0.2, movetypes=GROUND) //Go a little slower. Same as having 8 speed
+	ADD_TRAIT(recipient, TRAIT_BIGGUY, MAGIC_TRAIT)
 
 /datum/sizecat/large/remove_sizecat_from_living(mob/living/recipient)
 	recipient.change_stat(STATKEY_STR, -1)
 	recipient.change_stat(STATKEY_CON, -1)
+	REMOVE_TRAIT(recipient, TRAIT_BIGGUY, MAGIC_TRAIT)
 
 /datum/sizecat/none
 	name = "None"

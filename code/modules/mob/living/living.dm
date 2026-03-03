@@ -267,15 +267,16 @@
 	if(ishuman(M) && ishuman(src))
 		var/mob/living/carbon/human/srchuman = src
 		var/mob/living/target = M
-		if(((a_intent == INTENT_HELP || src.restrained()) && (target.a_intent == INTENT_HELP || target.restrained())) && !target.IsImmobilized() && srchuman.handle_micro_bump_helping(target))
-			forceMove(target.loc)
-			now_pushing = FALSE
-			return TRUE
-		
-		if(step_mechanics_pref && target.step_mechanics_pref)
-			if(handle_micro_bump_other(target)) return
-		else
-			if(handle_micro_bump_other(target,1)) return
+		if(!cmode && !target.cmode)
+			if(((istype(a_intent, INTENT_HELP) || get_active_held_item() || src.restrained()) && (istype(target.a_intent, INTENT_HELP) || target.get_active_held_item() || target.restrained())) && !target.IsImmobilized() && srchuman.handle_micro_bump_helping(target))
+				forceMove(target.loc)
+				now_pushing = FALSE
+				return TRUE
+			
+			if(step_mechanics_pref && target.step_mechanics_pref)
+				if(handle_micro_bump_other(target)) return
+			else
+				if(handle_micro_bump_other(target,1)) return
 	///Caustic edit end
 	//okay, so we didn't switch. but should we push?
 	//not if he's not CANPUSH of course

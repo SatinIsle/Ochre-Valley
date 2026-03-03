@@ -111,7 +111,7 @@
 					log_attack("[attacker] attempted to feed [G.grabbed] to [user] ([user.type]) but it failed.")
 
 			///// If user clicked on their grabbed target
-			else if((src == G.grabbed) && (attacker.a_intent == INTENT_GRAB) && (attacker.zone_selected == BODY_ZONE_CHEST) && (is_vore_predator(G.grabbed)))
+			else if((src == G.grabbed) && (istype(attacker.a_intent, INTENT_GRAB)) && (attacker.zone_selected == BODY_ZONE_CHEST) && (is_vore_predator(G.grabbed)))
 				if(istype(victim) && !victim.client && !victim.ai_controller) //Check whether the victim is: A carbon mob, has no client, but has a ckey. This should indicate an SSD player.
 					log_and_message_admins("attempted to force feed themselves to [key_name_admin(G.grabbed)] whilst they were AFK ([G.grabbed ? ADMIN_JMP(victim) : "null"])", attacker)
 				if(!victim.feeding)
@@ -172,7 +172,7 @@
 			return FALSE
 		var/mob/living/attacker = user
 
-		if(attacker.a_intent != INTENT_HELP)
+		if(!istype(attacker.a_intent, INTENT_HELP))
 			return FALSE
 
 		var/hit_zone = attacker.zone_selected

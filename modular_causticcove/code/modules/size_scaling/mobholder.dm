@@ -3,7 +3,7 @@
 	desc = "You shouldn't ever see this."
 	icon = 'icons/obj/objects.dmi'
 	flags_1 = HEAR_1
-	slot_flags = SLOT_HEAD | SLOT_BELT_L | SLOT_BELT_R
+	slot_flags = ITEM_SLOT_HEAD|ITEM_SLOT_HIP
 	var/mob/living/held_mob
 	var/matrix/original_transform
 	var/original_vis_flags = NONE
@@ -167,7 +167,7 @@
 
 /obj/item/holder/attackby(obj/item/W as obj, mob/user as mob)
 	//CHOMPADDITION: MicroHandCrush
-	if(W == src && user.a_intent == INTENT_HARM)
+	if(W == src && istype(user.a_intent, INTENT_HARM))
 		for(var/mob/living/M in src.contents)
 			if(user.size_multiplier > M.size_multiplier)
 				var/dam = (user.size_multiplier - M.size_multiplier)*(rand(2,5))
@@ -184,7 +184,7 @@
 
 /mob/living/MouseDrop(var/atom/over_object)
 	var/mob/living/carbon/human/H = over_object
-	if(holder_type && issmall(src) && istype(H) && !H.lying && Adjacent(H) && (src.a_intent == INTENT_HELP && H.a_intent == INTENT_HELP)) //VOREStation Edit
+	if(holder_type && issmall(src) && istype(H) && !H.lying && Adjacent(H) && (istype(src.a_intent, INTENT_HELP) && istype(H.a_intent, INTENT_HELP))) //VOREStation Edit
 		if(!issmall(H) || !ishuman(src))
 			get_scooped(H, (usr == src))
 		return
