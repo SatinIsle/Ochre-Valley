@@ -382,8 +382,11 @@ GLOBAL_VAR_INIT(last_crown_announcement_time, -1000)
 				user.mind.adjust_triumphs(1)
 			SSmapping.retainer.head_rebel_decree = TRUE
 	record_round_statistic(STATS_LAWS_AND_DECREES_MADE)
+	//CC Edit
+	//SScommunications.make_announcement(user, TRUE, raw_message)
 	GLOB.lord_decrees += raw_message
 	priority_announce("[length(GLOB.lord_decrees)]. [raw_message]", "A LAW IS DECLARED", pick('sound/misc/new_law.ogg', 'sound/misc/new_law2.ogg'), "Captain")
+	//CC Edit End
 
 /obj/structure/roguemachine/titan/proc/declare_outlaw(mob/living/user, raw_message)
 	if(!SScommunications.can_announce(user))
