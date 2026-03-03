@@ -307,6 +307,16 @@
 
 	if(binded)
 		return FALSE
+	
+	//OV edit
+	if(ishuman(target))
+		var/mob/living/carbon/human/our_prey = target
+		if(vore_active && our_prey.surrendering)
+			if(will_eat(our_prey))
+				perform_the_nom(our_prey)
+				return FALSE
+	//OV edit end
+
 	if(rapid_melee > 1)
 		var/datum/callback/cb = CALLBACK(src, PROC_REF(CheckAndAttack))
 		var/delay = SSnpcpool.wait / rapid_melee
