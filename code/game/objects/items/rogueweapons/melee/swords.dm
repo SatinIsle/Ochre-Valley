@@ -1767,11 +1767,12 @@
 	to the siege that smashed the Mad Duke's keep to rubble, and burnt the Duke himself to cinders."
 	icon_state = "lordrap"
 	sheathe_icon = "lordrapier"
+	//CC edit
 	sellprice = 222
-	max_integrity = 300
-	max_blade_int = 300
+	max_integrity = 500
+	max_blade_int = 500
 	wdefense = 7
-
+	//CC edit end
 /obj/item/rogueweapon/sword/rapier/eora
 	name = "\"Heartstring\""
 	desc = "A specialty-made bilbo hilt rapier made in service to Lady Eora. For the time when soft words can no longer be spoken, and hearts are to be pierced."
