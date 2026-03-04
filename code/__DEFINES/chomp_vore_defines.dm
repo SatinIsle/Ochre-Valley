@@ -1,3 +1,4 @@
+//OV FILE
 //Blacklist to exclude items from object ingestion. Digestion blacklist located in digest_act_vr.dm
 GLOBAL_LIST_INIT(item_vore_blacklist, list())
 
