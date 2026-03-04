@@ -606,7 +606,10 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	S["werewolf_headshot_link"]			>> werewolf_headshot_link
 	if(!valid_headshot_link(null, werewolf_headshot_link, TRUE))
 		werewolf_headshot_link = null
-
+	// OC Edit Start
+	S["werewolf_setname"]			>> werewolf_setname
+	S["werewolf_setdesc"]			>> werewolf_setdesc
+	// OC Edit End
 	S["qsr"] 			>> qsr_pref
 	S["flavortext"]			>> flavortext
 	S["ooc_notes"]			>> ooc_notes
@@ -648,7 +651,7 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	ooc_notes_cached = ooc_notes ? parsemarkdown_basic(html_encode(ooc_notes), hyperlink = TRUE) : ""
 	nsfwflavortext_cached = nsfwflavortext ? parsemarkdown_basic(html_encode(nsfwflavortext), hyperlink = TRUE) : ""
 	erpprefs_cached = erpprefs ? parsemarkdown_basic(html_encode(erpprefs), hyperlink = TRUE) : ""
-
+	werewolf_setdesc_cached = werewolf_setdesc ? parsemarkdown_basic(parse_spoilers(html_encode(werewolf_setdesc)), hyperlink = TRUE) : "" // OC Edit
 	//Sanitize
 
 	real_name = reject_bad_name(real_name)
@@ -813,6 +816,10 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	WRITE_FILE(S["headshot_link"] , headshot_link)
 	WRITE_FILE(S["vampire_headshot_link"] , vampire_headshot_link)
 	WRITE_FILE(S["werewolf_headshot_link"] , werewolf_headshot_link)
+	// OC Edit S
+	WRITE_FILE(S["werewolf_setname"] , werewolf_setname)
+	WRITE_FILE(S["werewolf_setdesc"] , html_decode(werewolf_setdesc))
+	// OC Edit E
 	WRITE_FILE(S["lich_headshot_link"] , lich_headshot_link)
 	WRITE_FILE(S["qsr"] , qsr_pref)
 	WRITE_FILE(S["preset_bounty_enabled"] , preset_bounty_enabled)

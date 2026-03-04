@@ -88,10 +88,13 @@
 		var/displayed_headshot
 		var/datum/antagonist/vampire/vampireplayer = src.mind?.has_antag_datum(/datum/antagonist/vampire)
 		var/datum/antagonist/lich/lichplayer = src.mind?.has_antag_datum(/datum/antagonist/lich)
+		var/datum/antagonist/werewolf/werewolfplayer = src.mind?.has_antag_datum(/datum/antagonist/werewolf) // OC Add var
 		if(vampireplayer && (!SEND_SIGNAL(src, COMSIG_DISGUISE_STATUS))&& !isnull(vampire_headshot_link)) //vampire with their disguise down and a valid headshot
 			displayed_headshot = src.vampire_headshot_link
 		else if (lichplayer && !isnull(src.lich_headshot_link))//Lich with a valid headshot
 			displayed_headshot = src.lich_headshot_link
+		else if (werewolfplayer && (werewolfplayer.transformed || istype(src, /mob/living/carbon/human/species/werewolf)) && !isnull(src.werewolf_headshot_link)) //Werewolf with a valid headshot && transformed // OC Add ELSE IF WEREWOLF
+			displayed_headshot = src.werewolf_headshot_link
 		else
 			displayed_headshot = src.headshot_link
 
@@ -156,6 +159,14 @@
 			else
 				. += span_notice("Something about them seems... predatory.")
 // Caustic Edit End
+// OV Edit Start
+		if(werewolfplayer && (werewolfplayer.transformed || istype(src, /mob/living/carbon/human/species/werewolf)))
+			if(werewolfplayer.wolfdesc_cached && length(werewolfplayer.wolfdesc_cached))
+				// . += span_details("Werewolf RP Description",werewolfplayer.wolfdesc_cached) // The #define is in 'modular_causticcove/__DEFINES/slop.dm' but its not loaded here! Will use a temp proc until then.
+				. += examine_span_details(span_info("Werewolf Description"),span_info(werewolfplayer.wolfdesc_cached))
+			else
+				. += span_danger("THE HOWL OF A MAD GOD SHAKES YOUR BONES! FLESH SHORN INTO VISCERA SPRAYS THE WALLS! RIP AND TEAR!") // Default 'npc' werewolf examine. Thought it seemed edgy enough.
+// OV Edit End
 		if(SSticker.rulermob == src)
 			. += span_notice("<b>The ruler of this land.</b>")
 		else if(GLOB.lord_titles[name])

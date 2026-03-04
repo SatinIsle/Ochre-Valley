@@ -154,6 +154,11 @@
 	var/lich_headshot_link
 	//setting up the hooks for this, but not shown yet
 	var/werewolf_headshot_link
+	// OC Edit Start -- Also using werewolf_headshot_link.
+	var/werewolf_setname
+	var/werewolf_setdesc
+	var/werewolf_setdesc_cached
+	// OC Edit End
 
 	/// Whether our FOV cone is overridden to be hidden. Simple bool.
 	var/viewcone_override

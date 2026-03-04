@@ -9,7 +9,7 @@
 	recharge_time = 3 MINUTES
 	spell_tier = 2
 	invocations = list("Mens Nexu")
-	invocation_type = "whisper"
+	invocation_type = "none" //OV EDIT
 
 	// Charged spell variables
 	chargedloop = /datum/looping_sound/invokegen

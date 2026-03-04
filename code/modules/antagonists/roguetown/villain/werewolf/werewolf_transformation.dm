@@ -131,12 +131,14 @@
 	W.gender = gender
 	W.regenerate_icons()
 	W.stored_mob = src
-
+	W.werewolf_headshot_link = src.werewolf_headshot_link // OC Added Line
+	
 	// Set the werewolf's name from the antagonist datum
 	var/datum/antagonist/werewolf/Were = mind.has_antag_datum(/datum/antagonist/werewolf/)
 	if(Were)
 		W.real_name = Were.wolfname
 		W.name = Were.wolfname
+		Were.apply_verbs(W) // OC Edit: Adds Verbs line.
 	W.limb_destroyer = TRUE
 	W.ambushable = FALSE
 	var/list/dying_world = list('sound/music/cmode/antag/combat_dying_world.ogg' = 1,  // probably best if its not vocals all the time
@@ -238,6 +240,11 @@
 		B.owner = W
 	vore_organs.Cut()
 	// CC Edit End
+	// OV Edit Start
+	// var/datum/antagonist/werewolf/WW = mind?.has_antag_datum(/datum/antagonist/werewolf)
+	// if(WW)
+		// WW.apply_verbs(W)
+	// OV Edit End
 	W.RemoveSpell(new /obj/effect/proc_holder/spell/self/howl)
 	W.RemoveSpell(new /obj/effect/proc_holder/spell/self/claws)
 	W.RemoveSpell(new /obj/effect/proc_holder/spell/targeted/woundlick)

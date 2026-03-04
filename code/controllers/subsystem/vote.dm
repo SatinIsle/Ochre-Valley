@@ -395,6 +395,11 @@ SUBSYSTEM_DEF(vote)
 			return
 		if("cancel")
 			if(usr.client.holder)
+				//OV edit
+				var/actually_cancel = tgui_alert(usr,"Are you sure you want to cancel the vote?","Cancel Vote",list("Yes, Cancel Vote","No"))
+				if(!actually_cancel || (actually_cancel == "No"))
+					return
+				//OV edit end
 				if(mode == "endround")
 					GLOB.round_timer = world.time + ROUND_EXTENSION_TIME // admin cancels an endround, defaults to same as continue playing
 					log_admin("[key_name(usr)] canceled end round vote.")

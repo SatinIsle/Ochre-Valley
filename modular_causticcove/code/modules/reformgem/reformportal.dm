@@ -56,6 +56,7 @@ GLOBAL_LIST_EMPTY(reformation_portals)
 	SStgui.on_transfer(src, mind.current) // Transfer NanoUIs.
 	mind.remove_antag_datum(/datum/antagonist/zombie)
 	//OV edit
+	mind.current.muffled = FALSE
 	if(portal_loc)
 		mind.current.forceMove(portal_loc)
 	else
@@ -75,6 +76,7 @@ GLOBAL_LIST_EMPTY(reformation_portals)
 /obj/structure/respawn_portal/permanent
 	name = "vore reformation portal"
 	desc = "A gate that's said to spit out Necra's unwanted denizens, only to be used by those who perished inside of another."
+	icon = 'modular_ochrevalley/icons/roguetown/misc/structure.dmi'
 	icon_state = "voreportal"
 	invisibility = INVISIBILITY_OBSERVER
 

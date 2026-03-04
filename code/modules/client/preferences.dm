@@ -190,6 +190,11 @@ GLOBAL_LIST_EMPTY(chosen_names)
 	var/lich_headshot_link
 	var/vampire_headshot_link
 	var/werewolf_headshot_link //not used but setting up for the future
+	// OC Edit Start // Inregards to werewolf_headshot_link comment above me: Hey, guess what. I'll set it up for ya and then some~!
+	var/werewolf_setname
+	var/werewolf_setdesc
+	var/werewolf_setdesc_cached
+	// OC Edit End
 	var/chatheadshot = FALSE
 	var/ooc_extra
 	var/song_artist
@@ -1357,6 +1362,13 @@ Slots: [job.spawn_positions] [job.round_contrib_points ? "RCP: +[job.round_contr
 	else
 		dat += "<a href='?_src_=prefs;preference=vampire_hair;task=input'>(C)</a>"
 	dat += "<BR><b>Quicksilver Resistant:</b> <a href='?_src_=prefs;preference=qsr;task=input'>[qsr_pref ? "Yes" : "No"]</a>"
+	// OC Edit Start
+	dat += "<br><b>Werewolf Headshot:</b> <a href='?_src_=prefs;preference=werewolf_headshot;task=input'>Change</a>"
+	if(werewolf_headshot_link != null)
+		dat += "<br><img src='[werewolf_headshot_link]' width='100px' height='100px'>"
+	dat += "<br><b>Werewolf Name:</b> [werewolf_setname ? werewolf_setname : "None (random)"] (<a href='?_src_=prefs;preference=werewolf_setname;task=input'>Change</a>)"
+	dat += "<br><b>Werewolf Description:</b> [werewolf_setdesc ? "Has One Set" : "None Specified (Default)"] (<a href='?_src_=prefs;preference=werewolf_setdesc;task=input'>Change</a>)"
+	// OC Edit End
 	dat += "</body>"
 
 	dat += "<br><br><br><b>Preset Bounty:</b> "
@@ -2017,6 +2029,24 @@ Slots: [job.spawn_positions] [job.round_contrib_points ? "RCP: +[job.round_contr
 					vampire_headshot_link = new_vampire_headshot_link
 					to_chat(user, "<span class='notice'>Successfully updated vampire headshot picture</span>")
 					log_game("[user] has set their vampire Headshot image to '[vampire_headshot_link]'.")
+				if("werewolf_headshot")
+					to_chat(user, "<span class='notice'>Please use a relatively SFW image of the head and shoulder area to maintain immersion level. Lastly, ["<span class='bold'>do not use a real life photo or use any image that is less than serious.</span>"]</span>")
+					to_chat(user, "<span class='notice'>If the photo doesn't show up properly in-game, ensure that it's a direct image link that opens properly in a browser.</span>")
+					to_chat(user, "<span class='notice'>Keep in mind that the photo will be downsized to 325x325 pixels, so the more square the photo, the better it will look.</span>")
+					var/new_werewolf_headshot_link = tgui_input_text(user, "Input the Werewolf headshot link (https, hosts: gyazo, discord, lensdump, imgbox, catbox):", "Werewolf Headshot", werewolf_headshot_link,  encode = FALSE)
+					if(new_werewolf_headshot_link == null)
+						return
+					if(new_werewolf_headshot_link == "")
+						werewolf_headshot_link = null
+						ShowChoices(user)
+						return
+					if(!valid_headshot_link(user, new_werewolf_headshot_link))
+						werewolf_headshot_link = null
+						ShowChoices(user)
+						return
+					werewolf_headshot_link = new_werewolf_headshot_link
+					to_chat(user, "<span class='notice'>Successfully updated Werewolf headshot picture</span>")
+					log_game("[user] has set their Werewolf Headshot image to '[werewolf_headshot_link]'.")
 				if("legacyhelp")
 					var/list/dat = list()
 					dat += "This slot was around since before major Flavortext / OOC changes.<br>"
@@ -2066,6 +2096,35 @@ Slots: [job.spawn_positions] [job.round_contrib_points ? "RCP: +[job.round_contr
 					flavortext_cached = parsemarkdown_basic(html_encode(flavortext), hyperlink = TRUE)
 					to_chat(user, "<span class='notice'>Successfully updated flavortext</span>")
 					log_game("[user] has set their flavortext'.")
+				// OC Edit Stard
+				if("werewolf_setname")
+					var/new_werewolfname = tgui_input_text(user, "The name of this wolf?", "WEREWOLF IDENTITY", encode = FALSE)
+					if(isnull(new_werewolfname))
+						return
+					if(length(new_werewolfname) <= 0)
+						werewolf_setname = null
+						to_chat(user, "<font color='red'>Werewolf name had length of zero, it has been reset. If it remains nothing it will be randomly generated per round!</font>")
+					else
+						new_werewolfname = reject_bad_name(new_werewolfname)
+						if(new_werewolfname)
+							werewolf_setname = new_werewolfname
+							to_chat(user, "<span class='notice'>Successfully updated your Werewolf Name</span>")
+						else
+							to_chat(user, "<font color='red'>Invalid werewolf name. Your name should be at least 2 and at most [MAX_NAME_LEN] characters long. It may only contain the characters A-Z, a-z, -, ', . and ,.</font>")
+				if("werewolf_setdesc")
+					to_chat(user, "<span class='notice'>["<span class='bold'>Werewolf description is only shown when you are a werewolf, of course. There is very little formatting for this as of right now. You may, however, use spoilers for more explicit descriptions by doing; ||this||</span>"]</span>")
+					var/new_werewolfdesc = tgui_input_text(user, "Input your werewolf description:", "WEREWOLF IDENTITY", werewolf_setdesc, multiline = TRUE,  encode = FALSE, bigmodal = TRUE)
+					if(new_werewolfdesc == null)
+						return
+					if(new_werewolfdesc == "")
+						werewolf_setdesc = null
+						ShowChoices(user)
+						return
+					werewolf_setdesc = new_werewolfdesc
+					werewolf_setdesc_cached = parsemarkdown_basic(parse_spoilers(html_encode(werewolf_setdesc)), hyperlink = TRUE)
+					to_chat(user, "<span class='notice'>Successfully updated your Werewolf desc</span>")
+					log_game("[user] has set their werewolf desc.")
+				// OC Edit End
 				if("ooc_notes")
 					to_chat(user, "<span class='notice'>["<span class='bold'>OOC notes should be used for roleplay hooks and general information about your character.</span>"]</span>")
 					var/new_ooc_notes = tgui_input_text(user, "Input your OOC preferences:", "OOC notes", ooc_notes, multiline = TRUE,  encode = FALSE, bigmodal = TRUE)
@@ -3013,7 +3072,12 @@ Slots: [job.spawn_positions] [job.round_contrib_points ? "RCP: +[job.round_contr
 	character.lich_headshot_link = lich_headshot_link
 
 	character.vampire_headshot_link = vampire_headshot_link
-
+	// OC Edit Start
+	character.werewolf_headshot_link = werewolf_headshot_link
+	character.werewolf_setname = werewolf_setname
+	character.werewolf_setdesc = werewolf_setdesc
+	character.werewolf_setdesc_cached = werewolf_setdesc_cached
+	// OC Edit End
 	character.statpack = statpack
 
 	character.flavortext = flavortext
