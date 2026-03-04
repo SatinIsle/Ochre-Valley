@@ -47,6 +47,7 @@
 	var/voremob_loaded = FALSE // On-demand belly loading.
 
 	var/eat_surrendering_only = TRUE
+	var/currently_eating = FALSE
 
 /mob/living/simple_animal/proc/will_eat(var/mob/living/M)
 	if(client) //You do this yourself, dick!
@@ -203,3 +204,23 @@
 	vore_selected.fancy_vore = !vore_selected.fancy_vore
 	to_chat(user, "[src] is now using [vore_selected.fancy_vore ? "Fancy" : "Classic"] vore sounds.")
 
+/mob/living/simple_animal/proc/vore_surrendered(var/mob/living/carbon/human/our_prey)
+	if(!istype(our_prey))
+		message_admins("[our_prey] not human")
+		return FALSE
+	if(stat || !vore_active)
+		message_admins("stat or not vore active")
+		return FALSE
+	
+	if(our_prey.surrendering)
+		if(will_eat(our_prey))
+			if(!vore_selected)
+				init_vore()
+			currently_eating = TRUE
+			addtimer(CALLBACK(src, PROC_REF(finished_eating)), 5 SECONDS)
+			return perform_the_nom(src, our_prey, src, src.vore_selected, 5 SECONDS)
+
+	return FALSE
+
+/mob/living/simple_animal/proc/finished_eating()
+	currently_eating = FALSE
