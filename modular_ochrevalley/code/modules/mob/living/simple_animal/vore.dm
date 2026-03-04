@@ -206,10 +206,8 @@
 
 /mob/living/simple_animal/proc/vore_surrendered(var/mob/living/carbon/human/our_prey)
 	if(!istype(our_prey))
-		message_admins("[our_prey] not human")
 		return FALSE
 	if(stat || !vore_active)
-		message_admins("stat or not vore active")
 		return FALSE
 	
 	if(our_prey.surrendering)
