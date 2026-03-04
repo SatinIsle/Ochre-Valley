@@ -3076,6 +3076,7 @@
 #include "modular\piercing\supply.dm"
 #include "modular_causticcove\code\modules\antagonists\roguetown\villains\werewolf\werewolf_transformation_resist.dm"
 #include "modular_ochrevalley\code\datums\loadout\loadout_accessories.dm"
+#include "modular_ochrevalley\code\modules\jobs\job_types\roguetown\adventurer\types\combat\spellblade_pre_rework.dm"
 #include "modular_ochrevalley\code\modules\rogueclothes\neck.dm"
 #include "modular_causticcove\__DEFINES\traits.dm"
 #include "modular_causticcove\code\datums\combat_music.dm"
