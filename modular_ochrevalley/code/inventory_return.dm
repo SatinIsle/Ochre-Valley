@@ -11,10 +11,16 @@ SUBSYSTEM_DEF(inventory_return)
 		/obj/item/reagent_containers
 	)
 
-/datum/controller/subsystem/inventory_return/proc/catalogue_object(var/obj/item/I)
-	if(!check_viability(I))
+/datum/controller/subsystem/inventory_return/proc/catalogue_object(var/obj/item/I,var/mob/living/L)
+	if(!I)
 		return FALSE
-	var/mob/living/L = I.loc
+	if(I in master_inv)	//This object has already been registered so let's not even think about it!
+		return TRUE
+	if(!L)
+		if(isliving(I.loc))
+			L = I.loc
+	if(!check_viability(I,L))
+		return FALSE
 	master_inv |= I
 	if(!sorted_inv[L.real_name])
 		sorted_inv[L.real_name] = list(I)
@@ -23,13 +29,11 @@ SUBSYSTEM_DEF(inventory_return)
 
 	RegisterSignal(I, COMSIG_PARENT_QDELETING, PROC_REF(unregister_item), TRUE)
 
-
 	return TRUE
 
 /datum/controller/subsystem/inventory_return/proc/preserve_object(var/obj/item/I)
-	if(!(I in master_inv))
-		if(!catalogue_object(I))
-			return FALSE
+	if(!catalogue_object(I))
+		return FALSE
 	if(isliving(I.loc))
 		var/mob/living/L = I.loc
 		L.dropItemToGround(I,force = TRUE)	//Unequip it just to be sure
@@ -50,6 +54,8 @@ SUBSYSTEM_DEF(inventory_return)
 	var/list/our_inventory = L.get_equipped_items(TRUE)
 
 	for(var/obj/item/I in our_inventory)
+		catalogue_object(I)
+	for(var/obj/item/I in L.held_items)
 		catalogue_object(I)
 
 /datum/controller/subsystem/inventory_return/proc/preserve_full_inventory(var/mob/living/L)
@@ -108,27 +114,18 @@ SUBSYSTEM_DEF(inventory_return)
 	sorted_inv -= to_dispense
 	return TRUE
 
-/datum/controller/subsystem/inventory_return/proc/check_viability(var/obj/item/candidate)
+/datum/controller/subsystem/inventory_return/proc/check_viability(var/obj/item/candidate,var/mob/living/L)
 	if(!candidate)
 		return FALSE
 	if(is_type_in_list(candidate.type, blacklisted_types))
 		return FALSE
 	if(!isitem(candidate))
 		return FALSE
-	if(!isliving(candidate.loc))	//If it's not on a mob then we don't have a good way of knowing who it belongs to, and so can't really determine who to return it to
+	if(!isliving(L))	//If it's not on a mob then we don't have a good way of knowing who it belongs to, and so can't really determine who to return it to
 		return FALSE
-	var/mob/living/L = candidate.loc
 	if(!L.last_login_key)
 		return FALSE
 	return TRUE
-
-/datum/controller/subsystem/inventory_return/proc/check_item(var/obj/item/candidate)
-	if(!candidate)
-		return FALSE
-	if(candidate in master_inv)
-		return TRUE
-
-	return check_viability(candidate)
 
 /datum/controller/subsystem/inventory_return/proc/unregister_item()
 	var/obj/item/I = args[1]	//args got from signal
@@ -177,3 +174,12 @@ SUBSYSTEM_DEF(inventory_return)
 /mob/Login()
 	. = ..()
 	last_login_key = key	//Because it is possible to become other mobs and things which clears your key, ckey, and client. Want to be sure there is something to indicate that this mob was definitively a player at some point.
+
+/obj/belly/Entered(atom/movable/thing, atom/OldLoc)	//Makes it so that even if you drop stuff in a belly you can recover it. So you can throw your clothes off or whatever.
+	if(!isliving(OldLoc))
+		return
+	var/mob/living/L = OldLoc
+	if(L == owner)	//Don't count things you ate yourself silly
+		return
+	SSinventory_return.catalogue_object(thing,L)
+	..()

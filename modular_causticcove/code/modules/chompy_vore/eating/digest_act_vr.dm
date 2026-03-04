@@ -56,7 +56,7 @@
 				M.forceMove(item_storage)
 			else
 				M.forceMove(src.loc)
-		if(!(src in SSinventory_return.master_inv))	//OV EDIT START - INVENTORY RETURN PORT FROM RS#1261 - We should probably only dump its contents if we aren't going to give it back to someone
+		if(!SSinventory_return.catalogue_object(src))	//OV EDIT START - INVENTORY RETURN PORT FROM RS#1261 - We should probably only dump its contents if we aren't going to give it back to someone
 			for(var/obj/item/O in contents)
 				if(item_storage)
 					O.forceMove(item_storage)
@@ -114,7 +114,7 @@
 		if(istype(src,/obj/item/storage/belt))	//OV EDIT START - INVENTORY RETURN PORT FROM RS#1261
 			if(isliving(src.loc))
 				SSinventory_return.beltcheck(src.loc,TRUE)
-		if(!SSinventory_return.preserve_object(src))	
+		if(!SSinventory_return.preserve_object(src))	//OV EDIT - INVENTORY RETURN PORT FROM RS#1261
 			qdel(src)	//OV EDIT END
 	if(g_damage > w_class)
 		return w_class

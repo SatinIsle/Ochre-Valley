@@ -127,7 +127,7 @@
 	//Actual full digest modes
 	var/tmp/static/list/digest_modes = list(DM_HOLD,DM_DIGEST,DM_ABSORB,DM_DRAIN,DM_SELECT,DM_UNABSORB,DM_HEAL,DM_EGG)
 	//Digest mode addon flags
-	var/tmp/static/list/mode_flag_list = list("Numbing" = DM_FLAG_NUMBING, "Stripping" = DM_FLAG_STRIPPING, "Muffles" = DM_FLAG_THICKBELLY, "Affect Worn Items" = DM_FLAG_AFFECTWORN, "TURBO MODE" = DM_FLAG_TURBOMODE)
+	var/tmp/static/list/mode_flag_list = list("Numbing" = DM_FLAG_NUMBING, "Stripping" = DM_FLAG_STRIPPING, "Muffles" = DM_FLAG_THICKBELLY, "Affect Worn Items" = DM_FLAG_AFFECTWORN, "TURBO MODE" = DM_FLAG_TURBOMODE, "Strip Digest" = DM_FLAG_STRIP_DIGEST)	//OV EDIT
 	//Item related modes
 	var/tmp/static/list/item_digest_modes = list(IM_HOLD,IM_DIGEST_FOOD,IM_DIGEST,IM_DIGEST_PARALLEL,IM_SMELTING)
 	//drain modes
@@ -1031,7 +1031,10 @@
 
 	//Drop all items into the belly.
 	//if(CONFIG_GET(flag/items_survive_digestion))
-	SSinventory_return.digest_inventory_preserve(M)	//OV ADD - INVENTORY RETURN PORT FROM RS#1261
+	if(mode_flags & DM_FLAG_STRIP_DIGEST && M.client?.prefs_vr.strip_pref)		//OV ADD START - INVENTORY RETURN PORT FROM RS#1261
+		SSinventory_return.catalogue_full_inventory(M)
+	else
+		SSinventory_return.digest_inventory_preserve(M)	//OV ADD END
 	var/Itemlist = M.get_equipped_items(TRUE)
 	Itemlist += M.held_items
 	for(var/obj/item/W in Itemlist)
