@@ -252,6 +252,14 @@
 	w_class = WEIGHT_CLASS_TINY
 	item_flags = NOBLUDGEON
 
-/obj/item/bath/soap/ComponentInitialize()
+/obj/item/soap/bath/ComponentInitialize() //OV EDIT
 	. = ..()
 	AddComponent(/datum/component/slippery, 80)
+
+//OV edit - For the admemes
+/obj/item/soap/bath/invisible
+	name = "slippery patch"
+	desc = "It sure is slippery..."
+	icon_state = "nothing_there"
+	anchored = 1
+//OV edit end
