@@ -292,8 +292,10 @@
 			did_an_item = digest_item(I, touchable_amount)
 		if(IM_SMELTING)
 			if(I.smeltresult && I.smeltresult != /obj/item/rogueore/coal/charcoal && !istype(I, /obj/item/ingot) && I.smeltresult != /obj/item/rogueore/coal)
-				var/obj/item/ingot/newingot = new I.smeltresult(src)
-				newingot.quality = SMELTERY_LEVEL_SPOIL
+				var/obj/item/newingot = new I.smeltresult(src)
+				if(istype(newingot, /obj/item/ingot))
+					var/obj/item/ingot/newdefinietlyingot = newingot
+					newdefinietlyingot.quality = SMELTERY_LEVEL_SPOIL
 				qdel(I)
 	return did_an_item
 

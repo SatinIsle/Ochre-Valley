@@ -970,10 +970,11 @@
 			user.add_stress(/datum/stressevent/hunted)
 
 	if(dna?.species?.type == /datum/species/gnoll)
-		var/mob/living/carbon/human/H = user
-		if(H.dna?.species?.type == /datum/species/gnoll)
-			if(user.advjob)
-				. += span_notice("<i>They are a [advjob] of the pack.</i>")
+		if(istype(user, /mob/living/carbon/human)) //Submitting this one upstream because not our shitcode for once
+			var/mob/living/carbon/human/H = user
+			if(H.dna?.species?.type == /datum/species/gnoll)
+				if(user.advjob)
+					. += span_notice("<i>They are a [advjob] of the pack.</i>")
 
 	var/trait_exam = common_trait_examine()
 	if(!isnull(trait_exam))

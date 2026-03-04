@@ -31,7 +31,9 @@
 	VV_DROPDOWN_OPTION(VV_HK_EXPOSE, "Show VV To Player")
 	VV_DROPDOWN_OPTION(VV_HK_ADDCOMPONENT, "Add Component/Element")
 	VV_DROPDOWN_OPTION(VV_HK_MODIFY_TRAITS, "Modify Traits")
-
+	//CC Edit
+	VV_DROPDOWN_OPTION(VV_HK_ADD_ABITRARY_TRAIT, "Add Abitrary Trait by string")
+	//CC Edit End
 //This proc is only called if everything topic-wise is verified. The only verifications that should happen here is things like permission checks!
 //href_list is a reference, modifying it in these procs WILL change the rest of the proc in topic.dm of admin/view_variables!
 //This proc is for "high level" actions like admin heal/set species/etc/etc. The low level debugging things should go in admin/view_variables/topic_basic.dm incase this runtimes.
@@ -40,6 +42,19 @@
 		return FALSE			//This is VV, not to be called by anything else.
 	if(href_list[VV_HK_MODIFY_TRAITS])
 		usr.client.holder.modify_traits(src)
+	///CC Edit
+	if(href_list[VV_HK_ADD_ABITRARY_TRAIT])
+		var/arbitrary_input = input("What is the trait's string?", "Adding abitrary trait") as null|text
+		if(!arbitrary_input)
+			to_chat(usr,span_info("Input empty, cancelling"))
+			return TRUE
+		ADD_TRAIT(src,arbitrary_input,TRAIT_GENERIC)
+		message_admins("Admin [key_name_admin(usr)] add trait [arbitrary_input] to [src]!")
+		log_admin("Admin [key_name_admin(usr)] add trait [arbitrary_input] to [src]!")
+		
+
+
+	///CC Edit End
 	return TRUE
 
 /datum/proc/vv_get_header()

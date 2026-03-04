@@ -176,12 +176,12 @@ GLOBAL_LIST_INIT(taur_types, subtypesof(/obj/item/bodypart/taur))
 	has_taur_color = TRUE
 
 /obj/item/bodypart/taur/alraune
-	name = "Alraune Body"
+	name = "Alraune (take tail too)"
 
 	offset_x = -16
 	taur_icon_state = "alraune_s"
 
-	has_taur_color = FALSE
+	has_taur_color = TRUE /// CAUSTIC EDIT
 
 /obj/item/bodypart/taur/frog
 	name = "Frog Body"

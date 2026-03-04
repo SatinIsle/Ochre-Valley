@@ -385,7 +385,7 @@
 	req_bar = /obj/item/ingot/iron
 	req_blade = /obj/item/blade/iron_plate
 	additional_items = list(/obj/item/ingot/iron)
-	created_item = /obj/item/clothing/suit/roguetown/armor/chainmail/hauberk
+	created_item = /obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/iron //Caustic Edit - Fix the smelting issue turning iron into steel
 
 /datum/anvil_recipe/armor/iron/knightarmet
 	name = "Helmet, Armet, Knight, Iron (+1 Iron)"

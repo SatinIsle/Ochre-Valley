@@ -960,10 +960,14 @@ GLOBAL_LIST_EMPTY(personal_objective_minds)
 						if(islist(metadata))
 							// Free loadout items cannot be sold, smelted, or salvaged (triumph items are exempt)
 							var/datum/loadout_item/LI = GLOB.loadout_items_by_name[item]
+							//Caustic Edit Start - Move Triumph Cost to when you pull the item out, not on join!
 							if(!LI?.triumph_cost)
 								I.sellprice = 0
 								I.smeltresult = null
 								I.salvage_result = null
+							else
+								user.mind.adjust_triumphs(-LI.triumph_cost)
+							//Caustic Edit End
 							// Apply metadata (color, custom name, custom desc)
 							if(metadata["color"])
 								I.add_atom_colour(metadata["color"], FIXED_COLOUR_PRIORITY)

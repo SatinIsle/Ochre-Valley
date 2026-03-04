@@ -50,8 +50,8 @@ GLOBAL_LIST_INIT(special_traits, build_special_traits())
 			continue
 		if(LI.triumph_cost && character.get_triumphs() < LI.triumph_cost)
 			continue
-		if(LI.triumph_cost)
-			character.adjust_triumphs(-LI.triumph_cost)
+		//if(LI.triumph_cost) //Caustic Edit - Move the Triumph cost to when you pull it out, not on joining!
+		//	character.adjust_triumphs(-LI.triumph_cost)
 		character.mind.special_items[LI.name] = LI.path
 	var/datum/job/assigned_job = SSjob.GetJob(character.mind?.assigned_role)
 	if(assigned_job)

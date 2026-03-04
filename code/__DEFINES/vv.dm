@@ -76,6 +76,10 @@
 #define VV_HK_ADDCOMPONENT "addcomponent"
 #define VV_HK_MODIFY_TRAITS "modtraits"
 
+///CC Edit
+#define VV_HK_ADD_ABITRARY_TRAIT "addabitrarytrait"
+///CC Edit end
+
 // /atom
 #define VV_HK_MODIFY_TRANSFORM "atom_transform"
 #define VV_HK_ADD_REAGENT "addreagent"

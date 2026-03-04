@@ -38,6 +38,7 @@
 		/datum/sprite_accessory/tail_feature/taur/fatnaga,
 		/datum/sprite_accessory/tail_feature/taur/caustic/bunny,
 		/datum/sprite_accessory/tail_feature/taur/caustic/deerbelly,
+		/datum/sprite_accessory/tail_feature/taur/alrauneflower,
 		/// CAUSTIC EDIT END
 		)
 

@@ -97,7 +97,10 @@
 	icon = 'modular_causticcove/icons/mob/taurs/fatnaga_markings.dmi'
 	icon_state = "fatnaga_markings"
 
-
+/datum/sprite_accessory/tail_feature/taur/alrauneflower
+	name = "Alraune Flower"
+	icon = 'modular_causticcove/icons/mob/taurs/alraune_markings.dmi'
+	icon_state = "alraune_markings"
 
 
 

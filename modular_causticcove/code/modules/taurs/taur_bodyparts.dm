@@ -152,7 +152,7 @@
 	offset_x = -16
 	taur_icon_state = "alraune_s"
 
-	has_taur_color = FALSE
+	has_taur_color = TRUE /// CAUSTIC EDIT
 
 /obj/item/bodypart/taur/frog
 	name = "Frog Body"

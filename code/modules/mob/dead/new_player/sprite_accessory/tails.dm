@@ -179,6 +179,14 @@
 	color_keys = 2
 	color_key_names = list("Tail", "Underbelly")
 
+/datum/sprite_accessory/tail/large_tails/alraune
+	icon = 'modular_causticcove/icons/mob/tails/alraune.dmi'
+	name = "Alraune flower pod"
+	icon_state = "alraune"
+	color_keys = 2
+	color_key_names = list("Leaves", "Flower")
+	can_wag = TRUE
+	pixel_y = -1
 //Caustic Edit end
 
 /datum/sprite_accessory/tail/murid

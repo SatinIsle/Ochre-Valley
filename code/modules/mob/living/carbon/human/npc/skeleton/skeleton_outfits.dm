@@ -56,7 +56,10 @@
 
 /mob/living/carbon/human/species/skeleton/npc/special/disgraced_noble
 	skel_outfit = /datum/outfit/job/roguetown/skeleton/npc/disgraced_noble
-
+//CC edit
+/mob/living/carbon/human/species/skeleton/npc/special/mad_duke
+	skel_outfit = /datum/outfit/job/roguetown/skeleton/npc/mad_duke
+//CC edit end
 /datum/outfit/job/roguetown/skeleton/npc/supereasy/pre_equip(mob/living/carbon/human/H)
 	..()
 	H.STASTR = 10
@@ -317,4 +320,37 @@
 	H.adjust_skillrank(/datum/skill/combat/wrestling, 4, TRUE)
 	H.adjust_skillrank(/datum/skill/misc/swimming, 4, TRUE)
 	H.adjust_skillrank(/datum/skill/misc/climbing, 4, TRUE)
-
+//CC edit
+/datum/outfit/job/roguetown/skeleton/npc/mad_duke/pre_equip(mob/living/carbon/human/H)
+	..()
+	H.STASTR = 12 // stabs quick, stabs strong.
+	H.STACON = 12
+	H.STAWIL = 12
+	H.STASPD = 12
+	H.STAINT = 1
+	name = "The Mad Duke"
+	id = /obj/item/clothing/ring/ruby
+	mask = /obj/item/clothing/mask/rogue/facemask/goldmask
+	belt = /obj/item/storage/belt/rogue/leather/plaquegold/steward
+	shoes = /obj/item/clothing/shoes/roguetown/boots/nobleboot
+	r_hand = /obj/item/clothing/neck/roguetown/psicross/inhumen/g
+	l_hand = /obj/item/rogueweapon/sword/rapier/lord
+	pants = /obj/item/clothing/under/roguetown/platelegs/paalloy
+	shirt = /obj/item/clothing/suit/roguetown/shirt/dress/royal/prince
+	armor = /obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/paalloy
+	wrists = /obj/item/clothing/wrists/roguetown/bracers/paalloy
+	head = /obj/item/clothing/head/roguetown/crown/mad_duke_crown
+	cloak = /obj/item/clothing/cloak/lordcloak
+	neck = /obj/item/clothing/neck/roguetown/chaincoif/paalloy
+	gloves = /obj/item/clothing/gloves/roguetown/plate/paalloy
+	H.adjust_skillrank(/datum/skill/combat/polearms, 4, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/maces, 4, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/axes, 4, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/swords, 4, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/knives, 4, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/shields, 4, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/unarmed, 4, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/wrestling, 4, TRUE)
+	H.adjust_skillrank(/datum/skill/misc/swimming, 4, TRUE)
+	H.adjust_skillrank(/datum/skill/misc/climbing, 4, TRUE)
+//CC edit end

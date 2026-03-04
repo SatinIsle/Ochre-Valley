@@ -43,7 +43,12 @@
 	icon_state = "circlet"
 	item_state = "circlet"
 	sellprice = 50
-
+//CC edit
+/obj/item/clothing/head/roguetown/crown/mad_duke_crown
+	name = "Crown of The Mad Duke"
+	desc = "A pristine crown, cold, heavy...it feels wrong. Your downfall"
+	icon_state = "serpcrown"
+//CC edit end
 ////////////////////////
 // Triumph Exclusive! //
 ////////////////////////

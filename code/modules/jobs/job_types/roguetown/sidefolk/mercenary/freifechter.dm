@@ -73,7 +73,7 @@
 	cmode_music = 'sound/music/frei_lancer.ogg'
 	outfit = /datum/outfit/job/roguetown/mercenary/freelancer_lancer
 	subclass_languages = list(/datum/language/aavnic)//Your character could not have possibly "graduated" without atleast some basic knowledge of Aavnic.
-	allowed_patrons = list(/datum/patron/old_god)
+	//allowed_patrons = list(/datum/patron/old_god) //Caustic Edit - Remove patron limits
 	traits_applied = list(TRAIT_BADTRAINER, TRAIT_FENCERDEXTERITY, TRAIT_INTELLECTUAL)
 	subclass_stats = list(
 		STATKEY_CON = 2,
@@ -134,7 +134,7 @@
 	allowed_races = RACES_ALL_KINDS
 	outfit = /datum/outfit/job/roguetown/mercenary/sabrist
 	subclass_languages = list(/datum/language/aavnic)//Your character could not have possibly "graduated" without atleast some basic knowledge of Aavnic.
-	allowed_patrons = list(/datum/patron/old_god)
+	//allowed_patrons = list(/datum/patron/old_god) //Caustic Edit - Remove Patron Limits
 	class_select_category = CLASS_CAT_AAVNR
 	category_tags = list(CTAG_MERCENARY)
 	cmode_music = 'sound/music/frei_sabre.ogg'
