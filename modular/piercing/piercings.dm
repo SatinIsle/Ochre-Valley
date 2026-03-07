@@ -28,7 +28,7 @@
 				user.dropItemToGround(src)
 				forceMove(H)
 				H.piercings_item = src
-				SEND_SIGNAL(src, COMSIG_ITEM_UNDERWEAR_EQUIPPED, H)
+				SEND_SIGNAL(src, COMSIG_ITEM_UNDERWEAR_EQUIPPED, H) // OV Add
 
 /obj/item/piercings/beads
 	name = "bead piercings"
