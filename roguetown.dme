@@ -3074,7 +3074,6 @@
 #include "modular\piercing\piercings.dm"
 #include "modular\piercing\supply.dm"
 #include "modular\ze_genesis_call\genesis_call.dm"
-#include "modular_causticcove\code\modules\antagonists\roguetown\villains\werewolf\werewolf_transformation_resist.dm"
 #include "modular_causticcove\__DEFINES\traits.dm"
 #include "modular_causticcove\code\datums\combat_music.dm"
 #include "modular_causticcove\code\datums\loadout.dm"
