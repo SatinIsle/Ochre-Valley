@@ -3213,6 +3213,8 @@
 #include "modular_causticcove\code\game\objects\items\clothes\causthats.dm"
 #include "modular_ochrevalley\code\ooc_escape.dm"
 #include "modular_ochrevalley\code\vore_verb.dm"
+#include "modular_ochrevalley\code\modules\spells\spell_types\wizard\utility\appearance_changer.dm"
+#include "modular_ochrevalley\code\modules\spells\spell_types\wizard\utility\mirror_transform.dm"
 
 
 // END_INCLUDE
