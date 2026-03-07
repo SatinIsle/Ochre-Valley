@@ -110,6 +110,7 @@ GLOBAL_LIST_EMPTY(chosen_names)
 	var/shake = TRUE
 	var/sexable = FALSE
 	var/compliance_notifs = TRUE
+	var/hide_pq = FALSE //OV ADD
 
 	var/list/custom_names = list()
 	var/preferred_ai_core_display = "Blue"
@@ -418,7 +419,10 @@ GLOBAL_LIST_EMPTY(chosen_names)
 			// ANOTHER ROW HOLY SHIT WE FINALLY A GOD DAMN GRID NOW! WHOA!
 			dat += "<tr style='padding-top: 0px;padding-bottom:0px'>"
 			dat += "<td style='width:33%; text-align:left'>"
-			dat += "<a href='?_src_=prefs;preference=playerquality;task=menu'><b>PQ:</b></a> [get_playerquality(user.ckey, text = TRUE)]"
+			//OV edit
+			if(!hide_pq)
+				dat += "<a href='?_src_=prefs;preference=playerquality;task=menu'><b>PQ:</b></a> [get_playerquality(user.ckey, text = TRUE)]"
+			//OV edit end
 			dat += "</td>"
 
 			dat += "<td style='width:33%;text-align:center'>"

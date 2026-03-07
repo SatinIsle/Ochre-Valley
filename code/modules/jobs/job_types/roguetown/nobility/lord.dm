@@ -109,6 +109,8 @@ GLOBAL_LIST_EMPTY(lord_titles)
 
 /datum/outfit/job/roguetown/lord/choose_loadout(mob/living/carbon/human/H)
 	. = ..()
+	//OV Edit Start: End discrimination against non-fantasy-Europeans
+	/*
 	var/client/player = H?.client
 	if(player.prefs)
 		if(!istype(player.prefs.virtue_origin, /datum/virtue/origin/azuria) && !istype(player.prefs.virtue_origin, /datum/virtue/origin/grenzelhoft) && !istype(player.prefs.virtue_origin, /datum/virtue/origin/otava) && !istype(player.prefs.virtue_origin, /datum/virtue/origin/etrusca))
@@ -124,7 +126,8 @@ GLOBAL_LIST_EMPTY(lord_titles)
 				to_chat(player, span_notice("No choice detected. Picking a random compatible origin."))
 				new_origin = pick(/datum/virtue/origin/grenzelhoft, /datum/virtue/origin/otava, /datum/virtue/origin/etrusca)
 			change_origin(H, new_origin, "Royal line")
-
+	*/
+	//OV Edit End
 //	SSticker.rulermob = H
 /**
 	Warrior Lord subclass. An evolution from the Daring Twit. This is the original Lord Class.

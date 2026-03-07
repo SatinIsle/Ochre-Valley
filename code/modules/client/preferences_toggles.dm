@@ -784,4 +784,20 @@ GLOBAL_LIST_INIT(ghost_orbits, list(GHOST_ORBIT_CIRCLE,GHOST_ORBIT_TRIANGLE,GHOS
 		else
 			to_chat(src, "Examines will have some information behind dropdowns.")
 
+//OV edit
+/client/verb/toggle_PQ() // Totally hides PQ values from yourself to prevent bad brain.
+	set category = "Options"
+	set name = "Hide PQ"
+	if(prefs)
+		var/check1 = tgui_alert(src, "This will permanently hide your player quality values and they cant be reenabled without contancting staff. Are you sure?", "Hide PQ", list("Yes, hide them", "No"))
+		if(!check1 || (check1 == "No"))
+			return
+		var/check2 = tgui_alert(src, "Just to double check and avoid misclicks, this WILL make you unable to see commends and other PQ data. Are you sure?", "Hide PQ", list("Yes, I'm sure", "No"))
+		if(!check2 || (check2 == "No"))
+			return
+		prefs.hide_pq = TRUE
+		to_chat(src, "You will no longer be able to view your PQ values until you contact a staff member to reenable them.")
+		prefs.save_preferences()
+//OV edit end
+
 #undef TOGGLE_CHECKBOX

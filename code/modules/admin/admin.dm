@@ -24,6 +24,11 @@
 	if(!M)
 		to_chat(usr, "<span class='warning'>I seem to be selecting a mob that doesn't exist anymore.</span>")
 		return
+	//OV edit
+	var/same_user = FALSE
+	if(usr.key == M.key)
+		same_user = TRUE
+	//OV edit end
 
 	var/body = "<html><head><title>Options for [M.key]</title><style>"
 	body += "<style>"
@@ -83,9 +88,12 @@
 
 		var/pq = get_playerquality(M.ckey, TRUE)
 		var/pq_num = get_playerquality(M.ckey, FALSE)
-		body += "<br><br>Player Quality: [pq] ([pq_num])"
-		body += "<br><a href='?_src_=holder;[HrefToken()];editpq=add;mob=[REF(M)]'>\[Modify PQ\]</a> "
-		body += "<a href='?_src_=holder;[HrefToken()];showpq=add;mob=[REF(M)]'>\[Check PQ\]</a> "
+		//OV edit
+		if(!same_user || !M.client.prefs.hide_pq) //If you are looking at yourself and don't want to see PQ, hide this
+			body += "<br><br>Player Quality: [pq] ([pq_num])"
+			body += "<br><a href='?_src_=holder;[HrefToken()];editpq=add;mob=[REF(M)]'>\[Modify PQ\]</a> "
+			body += "<a href='?_src_=holder;[HrefToken()];showpq=add;mob=[REF(M)]'>\[Check PQ\]</a> "
+		//OV edit end
 		body += "<br><a href='?_src_=holder;[HrefToken()];edittriumphs=add;mob=[REF(M)]'>\[Modify Triumphs\]</a> "
 		body += "<br>"
 		body += "<a href='?_src_=holder;[HrefToken()];roleban=add;mob=[REF(M)]'>\[Role Ban Panel\]</a> "
