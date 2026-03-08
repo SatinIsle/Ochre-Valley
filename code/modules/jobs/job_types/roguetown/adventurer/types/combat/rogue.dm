@@ -106,7 +106,7 @@
 	var/trades = list("Normal arrows","Arrows with a glass ampule full of water")
 	var/trade_choice = input(H, "Choose your quiver.", "WHICH ARROWS?") as anything in trades
 	switch(trade_choice)
-		if("Normal arrows") //alchemy and medicine. that's pretty strong as-is, so...
+		if("Normal arrows")
 			beltl = /obj/item/quiver/arrows
 		if("Arrows with a glass ampule full of water")
 			beltl = /obj/item/quiver/Warrows
