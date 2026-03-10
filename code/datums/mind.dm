@@ -110,7 +110,7 @@ GLOBAL_LIST_EMPTY(personal_objective_minds)
 
 	var/datum/sleep_adv/sleep_adv = null
 
-	var/mugshot_set = FALSE
+	// var/mugshot_set = FALSE CC Edit: Mugshots are optimized, take them to your heart's content!
 
 	/// Nickname used for heretic commune.
 	var/heretic_nickname
