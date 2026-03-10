@@ -69,7 +69,8 @@
 	"Militia Spear",
 	"Militia War Axe",
 	"Militia Thresher",
-	"Militia Goedendag (Pair)") // Any that scales off labor skill isn't included
+	"Militia Goedendag (Pair)",
+	"Greatsword (Iron)") // Any that scales off labor skill isn't included
 	var/weapon_choice = input(H, "Choose your weapon.", "ARMS TO SLAY THE OPPRESSORS") as anything in weapons
 	switch(weapon_choice)
 		if("Warhammer")
@@ -101,3 +102,9 @@
 			H.put_in_hands(new /obj/item/rogueweapon/woodstaff/militia)
 			H.equip_to_slot_or_del(new /obj/item/rogueweapon/woodstaff/militia, SLOT_BACK_L)
 			H.adjust_skillrank_up_to(/datum/skill/combat/polearms, SKILL_LEVEL_EXPERT)
+		//OV edit
+		if("Greatsword (Iron)")
+			H.put_in_hands(new /obj/item/rogueweapon/greatsword/iron)
+			H.equip_to_slot_or_del(new /obj/item/rogueweapon/scabbard/gwstrap, SLOT_BACK_L)
+			H.adjust_skillrank_up_to(/datum/skill/combat/swords, SKILL_LEVEL_EXPERT)
+		//OV edit end
