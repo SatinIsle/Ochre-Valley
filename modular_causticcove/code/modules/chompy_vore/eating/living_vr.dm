@@ -132,10 +132,10 @@
 		var/mob/living/attacker = user  // Typecast to living
 		// src is the mob clicked on and attempted predator
 		///// If user clicked on themselves
-		if(target.can_be_drop_prey)
+		if(target.can_be_drop_prey && attacker.can_be_drop_pred) //OV EDIT
 			feed_grabbed_to_self_falling_nom(attacker, target)
 			return
-		if(target.can_be_drop_pred)
+		if(target.can_be_drop_pred && attacker.can_be_drop_prey) //OV EDIT
 			feed_grabbed_to_self_falling_nom(target, attacker)
 	return FALSE
 

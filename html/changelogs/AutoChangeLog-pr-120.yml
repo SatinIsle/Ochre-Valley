@@ -1,0 +1,4 @@
+author: "Ryumi"
+delete-after: True
+changes:
+  - admin: "Signal horns now add combat logs when blown."

@@ -206,8 +206,15 @@ GLOBAL_VAR_INIT(mobids, 1)
 	if(self_message)
 		hearers -= src
 	for(var/mob/M in hearers)
-		if(!M.client)
+		//OV edit
+		if(!M.client && !M.aghosted)
 			continue
+		if(M.aghosted)
+			if(!isclient(M.aghosted))
+				continue
+			to_chat(M.aghosted, span_green("(BODY) ")+"[message]")
+			continue
+		//OV edit end
 		//This entire if/else chain could be in two lines but isn't for readibilties sake.
 		var/msg = message
 		if(M.see_invisible < invisibility)//if src is invisible to M
@@ -241,6 +248,13 @@ GLOBAL_VAR_INIT(mobids, 1)
 	if(self_message)
 		hearers -= src
 	for(var/mob/M in hearers)
+		//OV edit
+		if(M.aghosted)
+			if(!isclient(M.aghosted))
+				continue
+			to_chat(M.aghosted, span_green("(BODY) ")+"[message]")
+			continue
+		//OV edit end
 		M.show_message(message, MSG_AUDIBLE, deaf_message, MSG_VISUAL)
 		if(runechat_message && M.can_see_runechat(src) && M.can_hear())
 			M.create_chat_message(src, used_language, raw_message = runechat_message, spans = custom_spans)
