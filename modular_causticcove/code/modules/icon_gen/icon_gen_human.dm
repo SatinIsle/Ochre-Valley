@@ -6,6 +6,11 @@
 		setDir(D)
 		COMPILE_OVERLAYS(src)
 		var/icon/partial = getFlatIcon(src)
+		if(partial.Width() > 32 || partial.Height() > 32)
+			var/middlewidthstart = ((partial.Width() - 32) / 2) +1
+			var/middleheightstart = ((partial.Height() - 32) / 2 ) +1
+
+			partial.Crop(middlewidthstart,middleheightstart,middlewidthstart+31,middlewidthstart+31)
 		out_icon.Insert(partial,dir=D)
 	setDir(originaldir)
 	return out_icon
