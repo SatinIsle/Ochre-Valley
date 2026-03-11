@@ -6,8 +6,13 @@
 	show_runechat = TRUE
 
 /datum/emote/living/quest/run_emote(mob/living/user, params, type_override, intentional, targetted, animal)
-	. = ..()
-	user.play_overhead_indicator('modular_ochrevalley/icons/mob/overhead_effects.dmi', "quest", 100, MUTATIONS_LAYER, soundin = 'sound/misc/levelup1.ogg', y_offset = 32)
+	if(user.persistent_emote)
+		user.clear_overhead_indicator(user.persistent_emote, MUTATIONS_LAYER)
+		user.persistent_emote = null
+	else
+		. = ..()
+		user.persistent_emote = user.play_overhead_indicator_simple('modular_ochrevalley/icons/mob/overhead_effects.dmi', "quest", 0, MUTATIONS_LAYER, soundin = 'sound/misc/levelup1.ogg', y_offset = 32)
+		
 
 /mob/living/carbon/human/verb/emote_quest()
 	set name = "Offer Quest"

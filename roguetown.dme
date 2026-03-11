@@ -3215,7 +3215,8 @@
 #include "modular_ochrevalley\code\modules\jobs\job_types\roguetown\adventurer\types\combat\spellblade_pre_rework.dm"
 #include "modular_ochrevalley\code\modules\mob\dead\new_player\sprite_accessory\antennas.dm"
 #include "modular_ochrevalley\code\modules\mob\dead\new_player\sprite_accessory\wings.dm"
-#include "modular_ochrevalley\code\modules\mob\living\emote.dm"
 #include "modular_ochrevalley\code\modules\mob\living\carbon\human\hand_games.dm"
+#include "modular_ochrevalley\code\modules\mob\living\emote.dm"
+#include "modular_ochrevalley\code\modules\mob\living\living.dm"
 #include "modular_ochrevalley\code\modules\rogueclothes\neck.dm"
 // END_INCLUDE
