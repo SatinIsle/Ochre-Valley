@@ -9,10 +9,11 @@
 	if(user.persistent_emote)
 		user.clear_overhead_indicator(user.persistent_emote, MUTATIONS_LAYER)
 		user.persistent_emote = null
+		to_chat(user, span_notice("You have stopped signaling you're offering a quest"))
 	else
 		. = ..()
 		user.persistent_emote = user.play_overhead_indicator_simple('modular_ochrevalley/icons/mob/overhead_effects.dmi', "quest", 0, MUTATIONS_LAYER, soundin = 'sound/misc/levelup1.ogg', y_offset = 32)
-		
+		to_chat(user, span_notice("You have signaled you are offering a quest, use the 'Offer Quest' emote again to stop."))
 
 /mob/living/carbon/human/verb/emote_quest()
 	set name = "Offer Quest"
