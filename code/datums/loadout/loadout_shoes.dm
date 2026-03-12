@@ -48,7 +48,7 @@
 	name = "Exotic Anklets"
 	path = /obj/item/clothing/shoes/roguetown/anklets
 	sort_category = "Shoes"
-	cost = 2
+	cost = 1 //OV EDIT
 
 /datum/loadout_item/rumaclanshoes
 	name = "Raised Sandals"

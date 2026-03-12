@@ -53,7 +53,15 @@
 	name = "Exotic Silk Bra"
 	path = /obj/item/clothing/suit/roguetown/shirt/exoticsilkbra
 	sort_category = "Shirts"
-	cost = 2
+	cost = 1 //OV EDIT
+
+//OV edit
+/datum/loadout_item/bindings
+	name = "Cloth Bindings"
+	path = /obj/item/clothing/suit/roguetown/shirt/bindings
+	sort_category = "Shirts"
+	cost = 1
+//OV edit end
 
 /datum/loadout_item/desertbra
 	name = "Desert Bra"

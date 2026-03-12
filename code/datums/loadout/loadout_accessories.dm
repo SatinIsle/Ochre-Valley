@@ -33,7 +33,7 @@
 	name = "Exotic Silk Belt"
 	path = /obj/item/storage/belt/rogue/leather/exoticsilkbelt
 	sort_category = "Accessories"
-	cost = 2
+	cost = 1 //OV EDIT
 
 /datum/loadout_item/ragmask
 	name = "Rag Mask"

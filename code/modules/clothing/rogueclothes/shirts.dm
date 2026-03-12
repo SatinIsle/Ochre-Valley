@@ -702,6 +702,24 @@
 	salvage_amount = 3
 	sellprice = 15
 
+//OV edit
+/obj/item/clothing/suit/roguetown/shirt/bindings
+	name = "cloth bindings"
+	desc = "Simple cloth bindings that wrap around the chest, flattening it out. Usually for the purpose of fitting armour above it."
+	icon_state = "bindings"
+	item_state = "bindings"
+	icon = 'modular_ochrevalley/icons/roguetown/clothing/shirts.dmi'
+	mob_overlay_icon = 'modular_ochrevalley/icons/roguetown/clothing/onmob/shirts.dmi'
+	body_parts_covered = CHEST
+	boobed = FALSE
+	sewrepair = TRUE
+	flags_inv = HIDEBOOB
+	slot_flags = ITEM_SLOT_SHIRT
+	salvage_result = /obj/item/natural/cloth
+	salvage_amount = 2
+	sellprice = 5
+//OV edit end
+
 //kazengite content
 /obj/item/clothing/suit/roguetown/shirt/undershirt/eastshirt1
 	slot_flags = ITEM_SLOT_SHIRT|ITEM_SLOT_ARMOR
