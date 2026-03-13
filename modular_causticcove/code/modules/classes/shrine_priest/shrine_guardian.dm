@@ -48,7 +48,7 @@
 		/obj/item/reagent_containers/glass/bottle/rogue/healthpot,
 		/obj/item/roguekey/mercenary
 		)
-	var/weapons = list("Eagle's Beak + Shortbow","Naginata + Recurve Bow")
+	var/weapons = list("Eagle's Beak + Shortbow","Naginata + Shortbow","Naginata + Recurve Bow") //OV Edit: Added Naginata + Shortbow
 	if(H.mind)
 		var/weapon_choice = input(H, "Choose your weapons.", "TAKE UP ARMS") as anything in weapons
 		H.set_blindness(0)
@@ -59,6 +59,14 @@
 				r_hand = /obj/item/rogueweapon/eaglebeak
 				l_hand = /obj/item/gun/ballistic/revolver/grenadelauncher/bow/short
 				beltr = /obj/item/quiver/arrows
+				//OV Add Start
+			if("Naginata + Shortbow")
+				H.adjust_skillrank_up_to(/datum/skill/combat/polearms, 4, TRUE)
+				backr = /obj/item/rogueweapon/scabbard/gwstrap
+				r_hand = /obj/item/rogueweapon/spear/naginata
+				l_hand = /obj/item/gun/ballistic/revolver/grenadelauncher/bow/short
+				beltr = /obj/item/quiver/arrows
+				//OV Add End: Added option for Naginata Maxing on spawn
 			if("Naginata + Recurve Bow")
 				H.adjust_skillrank_up_to(/datum/skill/combat/bows, 4, TRUE)
 				backr = /obj/item/rogueweapon/scabbard/gwstrap //OV Add: Added so can holster naginata

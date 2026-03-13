@@ -12,7 +12,7 @@
 	subclass_stats = list(
 		STATKEY_CON = 2,
 		STATKEY_WIL = 2,
-		STATKEY_FOR = 2,
+		STATKEY_LCK = 2, //OV Edit: Fixing stat issue while fixing sandals
 		STATKEY_STR = -1
 	)
 	subclass_skills = list(
@@ -38,7 +38,7 @@
 	gloves = /obj/item/clothing/gloves/roguetown/eastgloves1
 	pants = /obj/item/clothing/under/roguetown/heavy_leather_pants/eastpants2
 	shirt = /obj/item/clothing/suit/roguetown/shirt/undershirt/eastshirt2
-	shoes = /datum/supply_pack/rogue/wardrobe/shoes/sandals
+	shoes = /obj/item/clothing/shoes/roguetown/gladiator //OV Edit: Fixed pathing for sandals
 	neck = /obj/item/clothing/neck/roguetown/psicross/astrata
 	gloves = /obj/item/clothing/gloves/roguetown/plate/kote
 	belt = /obj/item/storage/belt/rogue/leather/knifebelt/black/kazengun
