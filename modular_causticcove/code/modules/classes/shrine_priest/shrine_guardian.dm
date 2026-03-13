@@ -35,12 +35,12 @@
 	C.grant_miracles(H, cleric_tier = CLERIC_T1, passive_gain = CLERIC_REGEN_WEAK, devotion_limit = CLERIC_REQ_1)
 	head = /obj/item/clothing/head/roguetown/mentorhat
 	cloak = /obj/item/clothing/cloak/kazengun //OV Add: Added Kazengun Drip to Kazengun Class
-	gloves = /obj/item/clothing/gloves/roguetown/eastgloves1
 	pants = /obj/item/clothing/under/roguetown/heavy_leather_pants/eastpants2
 	shirt = /obj/item/clothing/suit/roguetown/shirt/undershirt/eastshirt2
 	shoes = /obj/item/clothing/shoes/roguetown/gladiator //OV Edit: Fixed pathing for sandals
 	neck = /obj/item/storage/belt/rogue/pouch/coins/poor
-	gloves = /obj/item/clothing/neck/roguetown/psicross/astrata
+	ring = /obj/item/clothing/neck/roguetown/psicross/astrata //OV Edit: Moved to ring slot
+	gloves = /obj/item/clothing/gloves/roguetown/plate/kote //OV Edit: Parity with priest + fashion
 	belt = /obj/item/storage/belt/rogue/leather/knifebelt/black/kazengun
 	backl = /obj/item/storage/backpack/rogue/satchel
 	backpack_contents = list(
