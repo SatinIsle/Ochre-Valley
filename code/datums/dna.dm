@@ -269,7 +269,7 @@
 /datum/dna/proc/update_body_size()
 	if(!holder || current_body_size == features["body_size"])
 		return
-	var/change_multiplier = features["body_size"] / current_body_size
+	//var/change_multiplier = features["body_size"] / current_body_size //OV REMOVE
 	//We update the translation to make sure our character doesn't go out of the southern bounds of the tile
 	//var/translate = ((change_multiplier-1) * 32)/2 //OV REMOVE
 	//holder.transform = holder.transform.Scale(change_multiplier, change_multiplier) //OV REMOVE

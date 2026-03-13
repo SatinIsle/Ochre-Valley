@@ -80,8 +80,8 @@ SUBSYSTEM_DEF(inventory_return)
 			var/mob/living/L = thing
 			L.forceMove(droploc)
 			continue
-		if(istype(thing,/obj/item/micro))	//Micro holders always hold mobs! If we find one we don't even need to think about it
-			var/obj/item/micro/M = thing
+		if(istype(thing,/obj/item/holder/micro))	//Micro holders always hold mobs! If we find one we don't even need to think about it
+			var/obj/item/holder/micro/M = thing
 			M.forceMove(droploc)
 			continue
 		mob_check(thing,droploc)	//We need to recursive check allllll the way down, since you can hide a person in a bottle, in a shirt, in a bag, etc etc etc
