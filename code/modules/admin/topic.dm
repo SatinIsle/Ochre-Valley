@@ -892,6 +892,12 @@
 			C.admin_ghost()
 		sleep(2)
 		C.jumptocoord(x,y,z)
+	
+	//OV edit
+	else if(href_list["adminplayereffects"])
+		var/mob/M = locate(href_list["adminplayereffects"])
+		usr.client.player_effects(M)
+	//OV edit end
 
 	else if(href_list["adminmoreinfo"])
 		var/mob/M = locate(href_list["adminmoreinfo"]) in GLOB.mob_list
