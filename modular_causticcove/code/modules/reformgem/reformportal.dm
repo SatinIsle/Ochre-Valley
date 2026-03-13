@@ -68,6 +68,7 @@ GLOBAL_LIST_EMPTY(reformation_portals)
 
 /mob/dead/observer/proc/rise_body()
 	var/mob/living/carbon/human/bigbad = mind.current
+	bigbad.enabled = TRUE
 	bigbad.revive(TRUE, TRUE)
 	bigbad.alpha = 255
 
