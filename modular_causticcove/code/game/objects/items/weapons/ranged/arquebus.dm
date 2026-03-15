@@ -5,6 +5,7 @@
 	icon = 'modular_causticcove/icons/weapons/arquebus.dmi'
 	icon_state = "arquebus"
 	item_state = "arquebus"
+	dropshrink = 0.6 // OV Edit, I think this might look nicer.
 	force = 10
 	force_wielded = 15
 	possible_item_intents = list(/datum/intent/mace/strike/wood)
@@ -277,6 +278,7 @@
 	icon = 'icons/roguetown/weapons/32.dmi'
 	icon_state = "pistol"
 	item_state = "pistol"
+	dropshrink = 0.6 // OV Edit, I think this might look nicer.
 	force = 10
 	possible_item_intents = list(/datum/intent/shoot/arquebus_pistol, /datum/intent/arc/arquebus_pistol, /datum/intent/mace/strike/wood)
 	internal_magazine = TRUE
