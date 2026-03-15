@@ -19,6 +19,7 @@ GLOBAL_LIST_EMPTY(mindlinks)
 	target = null
 	return ..()
 
+
 /datum/mindlink/proc/handle_speech(mob/living/speaker, list/speech_args)
 	SIGNAL_HANDLER
 
@@ -41,15 +42,25 @@ GLOBAL_LIST_EMPTY(mindlinks)
 		qdel(src)
 		return
 
+	//OV edit - Restores silent mindlinks
 	// Check for the ,y prefix
 	if(findtext(message, ",y", 1, 3))
 		message = trim(copytext(message, 3))
-		message = span_centcomradio("[message]")
+		//message = span_centcomradio("[message]")
 		var/mob/living/recipient = (speaker == owner ? target : owner)
 		
-		var/audible_message = "The voice of [speaker] echoes, \"<i>[capitalize(message)]</i>\"."
-		recipient.audible_message(audible_message, runechat_message = message, custom_spans = list("mindlink", "italic"))
+		to_chat(speaker, span_purple("You project your thoughts to [recipient]: \"[message]\""))
+		to_chat(recipient, span_purple("[speaker] projects their thoughts to you: \"[message]\""))
+		//recipient.playsound_local(recipient, 'sound/magic/message.ogg', 100)
+
+		
+		//var/audible_message = "The voice of [speaker] echoes, \"<i>[capitalize(message)]</i>\"."
+		//___callbacknewrecipient.audible_message(audible_message, runechat_message = message, custom_spans = list("mindlink", "italic"))
 		playsound(recipient, 'sound/magic/mindlink.ogg', 100, TRUE)
 		playsound(speaker, 'sound/magic/mindlink.ogg', 100, TRUE)
-		speech_args[SPEECH_MESSAGE] = message
+		//speech_args[SPEECH_MESSAGE] = message
+		
+
 		speaker.log_talk(message, LOG_SAY, tag="mindlink (to [recipient])")
+		speech_args[SPEECH_MESSAGE] = null // Prevent the normal speech from happening
+	//OV edit end

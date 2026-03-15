@@ -76,7 +76,10 @@ GLOBAL_LIST_INIT(virtue_mount_choices_anthrax, (list(
 	if (HAS_TRAIT(user, TRAIT_NOBLE))
 		to_chat(user, span_info("As an anointed noble, your steed can also come from pedigree stock."))
 		mount_choices += GLOB.virtue_mount_choices_noble
-	if (HAS_TRAIT(user, TRAIT_ANTHRAXI))
+	//Caustic Cove Edit
+	//if (HAS_TRAIT(user, TRAIT_ANTHRAXI))
+	if (isdarkelf(user))
+	//Caustic Cove Edit End
 		to_chat(user, span_info("As a Drow, you are skilled in handling giant spiders of the Underdark."))
 		mount_choices += GLOB.virtue_mount_choices_anthrax
 

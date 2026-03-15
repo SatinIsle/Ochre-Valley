@@ -21,6 +21,13 @@
 		/datum/sprite_accessory/tail/eevee,
 		/datum/sprite_accessory/tail/fennec,
 		/datum/sprite_accessory/tail/jackal,
+		//OV edit
+		/datum/sprite_accessory/tail/kitsune_two,
+		/datum/sprite_accessory/tail/kitsune_three,
+		/datum/sprite_accessory/tail/kitsune_seven,
+		/datum/sprite_accessory/tail/kitsune_nine,
+		/datum/sprite_accessory/tail/sabresune,
+		//OV edit end
 		/datum/sprite_accessory/tail/tamamo_kitsune
 		)
 
@@ -38,6 +45,13 @@
 		/datum/sprite_accessory/tail/wolf,
 		/datum/sprite_accessory/tail/fox,
 		/datum/sprite_accessory/tail/fox2,
+		//OV edit
+		/datum/sprite_accessory/tail/kitsune_two,
+		/datum/sprite_accessory/tail/kitsune_three,
+		/datum/sprite_accessory/tail/kitsune_seven,
+		/datum/sprite_accessory/tail/kitsune_nine,
+		/datum/sprite_accessory/tail/sabresune,
+		//OV edit end
 		/datum/sprite_accessory/tail/husky
 		)
 
@@ -137,6 +151,14 @@
 		/datum/sprite_accessory/tail/large_snake_plain,
 		/datum/sprite_accessory/tail/large_tails/large_shark,
 		//Caustic edit end
+		//OV edit
+		/datum/sprite_accessory/tail/large_tails/small_shadekin,
+		/datum/sprite_accessory/tail/large_tails/large_shadekin,
+		/datum/sprite_accessory/tail/kitsune_two,
+		/datum/sprite_accessory/tail/kitsune_three,
+		/datum/sprite_accessory/tail/kitsune_seven,
+		/datum/sprite_accessory/tail/kitsune_nine,
+		//OV edit end
 		/datum/sprite_accessory/tail/murid,
 		/datum/sprite_accessory/tail/orca,
 		/datum/sprite_accessory/tail/otie,
@@ -220,6 +242,14 @@
 		/datum/sprite_accessory/tail/large_tails/large_shark,
 		/datum/sprite_accessory/tail/lizard/kobold,
 		//Caustic edit end
+		//OV edit
+		/datum/sprite_accessory/tail/large_tails/small_shadekin,
+		/datum/sprite_accessory/tail/large_tails/large_shadekin,
+		/datum/sprite_accessory/tail/kitsune_two,
+		/datum/sprite_accessory/tail/kitsune_three,
+		/datum/sprite_accessory/tail/kitsune_seven,
+		/datum/sprite_accessory/tail/kitsune_nine,
+		//OV edit end
 		/datum/sprite_accessory/tail/murid,
 		/datum/sprite_accessory/tail/orca,
 		/datum/sprite_accessory/tail/otie,

@@ -706,13 +706,11 @@ world
 		((hi3 >= 65 ? hi3-55 : hi3-48)<<4) | (lo3 >= 65 ? lo3-55 : lo3-48),
 		((hi4 >= 65 ? hi4-55 : hi4-48)<<4) | (lo4 >= 65 ? lo4-55 : lo4-48))
 
-/// Create a single [/icon] from a given [/atom] or [/image].
-///
-/// Very low-performance. Should usually only be used for HTML, where BYOND's
-/// appearance system (overlays/underlays, etc.) is not available.
-///
-/// Only the first argument is required.
-/proc/getFlatIcon(image/appearance, defdir, deficon, defstate, defblend, start = TRUE, no_anim = FALSE)
+//OV edit - This needs to be pulled over completely from virgo to make character directory images work
+// Ported from /tg/station
+// Creates a single icon from a given /atom or /image.  Only the first argument is required.
+// appearance_flags indicates whether appearance_flags should be respected (at the cost of about 10-20% perf)
+/proc/getFlatIcon(image/appearance, defdir, deficon, defstate, defblend, start = TRUE, no_anim = FALSE, force_south = FALSE, appearance_flags = FALSE)
 	// Loop through the underlays, then overlays, sorting them into the layers list
 	#define PROCESS_OVERLAYS_OR_UNDERLAYS(flat, process, base_layer) \
 		for (var/i in 1 to process.len) { \
@@ -730,10 +728,6 @@ world
 				} \
 				current_layer = base_layer + appearance.layer + current_layer / 1000; \
 			} \
-			/* If we are using topdown rendering, chop that part off so things layer together as expected */ \
-			if((current_layer >= TOPDOWN_LAYER && current_layer < EFFECTS_LAYER) || current_layer > TOPDOWN_LAYER + EFFECTS_LAYER) { \
-				current_layer -= TOPDOWN_LAYER; \
-			} \
 			for (var/index_to_compare_to in 1 to layers.len) { \
 				var/compare_to = layers[index_to_compare_to]; \
 				if (current_layer < layers[compare_to]) { \
@@ -744,12 +738,10 @@ world
 			layers[current] = current_layer; \
 		}
 
-	var/static/icon/flat_template = icon('icons/blanks/32x32.dmi', "nothing")
-	var/icon/flat = icon(flat_template)
+	var/static/icon/flat_template = icon('icons/effects/effects.dmi', "nothing")
 
 	if(!appearance || appearance.alpha <= 0)
-		return flat
-
+		return icon(flat_template)
 	if(start)
 		if(!defdir)
 			defdir = appearance.dir
@@ -764,6 +756,9 @@ world
 	var/curstate = appearance.icon_state || defstate
 	var/curdir = (!appearance.dir || appearance.dir == SOUTH) ? defdir : appearance.dir
 
+	if(force_south)
+		curdir = SOUTH
+
 	var/render_icon = curicon
 
 	if (render_icon)
@@ -775,20 +770,15 @@ world
 
 	var/base_icon_dir //We'll use this to get the icon state to display if not null BUT NOT pass it to overlays as the dir we have
 
-	if(render_icon)
-		//Try to remove/optimize this section if you can, it's a CPU hog.
-		//Determines if there're directionals.
-		if (curdir != SOUTH)
-			// icon states either have 1, 4 or 8 dirs. We only have to check
-			// one of NORTH, EAST or WEST to know that this isn't a 1-dir icon_state since they just have SOUTH.
-			if(!length(icon_states(icon(curicon, curstate, NORTH))))
-				base_icon_dir = SOUTH
-
-		var/list/icon_dimensions = get_icon_dimensions(curicon)
-		var/icon_width = icon_dimensions["width"]
-		var/icon_height = icon_dimensions["height"]
-		if(icon_width != 32 || icon_height != 32)
-			flat.Scale(icon_width, icon_height)
+	//Try to remove/optimize this section ASAP, CPU hog.
+	//Determines if there's directionals.
+	if(render_icon && curdir != SOUTH)
+		if (
+			!length(icon_states_fast(icon(curicon, curstate, NORTH))) \
+			&& !length(icon_states_fast(icon(curicon, curstate, EAST))) \
+			&& !length(icon_states_fast(icon(curicon, curstate, WEST))) \
+		)
+			base_icon_dir = SOUTH
 
 	if(!base_icon_dir)
 		base_icon_dir = curdir
@@ -796,6 +786,7 @@ world
 	var/curblend = appearance.blend_mode || defblend
 
 	if(appearance.overlays.len || appearance.underlays.len)
+		var/icon/flat = icon(flat_template)
 		// Layers will be a sorted list of icons/overlays, based on the order in which they are displayed
 		var/list/layers = list()
 		var/image/copy
@@ -826,11 +817,21 @@ world
 			if(layer_image.alpha == 0)
 				continue
 
+			// variables only relevant when accounting for appearance_flags:
+			var/apply_color = TRUE
+			var/apply_alpha = TRUE
+
 			if(layer_image == copy) // 'layer_image' is an /image based on the object being flattened.
 				curblend = BLEND_OVERLAY
 				add = icon(layer_image.icon, layer_image.icon_state, base_icon_dir)
 			else // 'I' is an appearance object.
-				add = getFlatIcon(image(layer_image), curdir, curicon, curstate, curblend, FALSE, no_anim)
+				var/image/layer_as_image = image(layer_image)
+				if(appearance_flags)
+					if(layer_as_image.appearance_flags & RESET_COLOR)
+						apply_color = FALSE
+					if(layer_as_image.appearance_flags & RESET_ALPHA)
+						apply_alpha = FALSE
+				add = getFlatIcon(layer_as_image, curdir, curicon, curstate, curblend, FALSE, no_anim, force_south, appearance_flags)
 			if(!add)
 				continue
 
@@ -842,9 +843,9 @@ world
 
 			if (
 				addX1 != flatX1 \
-				&& addX2 != flatX2 \
-				&& addY1 != flatY1 \
-				&& addY2 != flatY2 \
+				|| addX2 != flatX2 \
+				|| addY1 != flatY1 \
+				|| addY2 != flatY2 \
 			)
 				// Resize the flattened icon so the new icon fits
 				flat.Crop(
@@ -855,21 +856,34 @@ world
 				)
 
 				flatX1 = addX1
-				flatX2 = addY1
-				flatY1 = addX2
+				flatX2 = addX2
+				flatY1 = addY1
 				flatY2 = addY2
+
+			if(appearance_flags)
+				// apply parent's color/alpha to the added layers if the layer didn't opt
+				if(apply_color && appearance.color)
+					if(islist(appearance.color))
+						add.MapColors(arglist(appearance.color))
+					else
+						add.Blend(appearance.color, ICON_MULTIPLY)
+
+				if(apply_alpha && appearance.alpha < 255)
+					add.Blend(rgb(255, 255, 255, appearance.alpha), ICON_MULTIPLY)
 
 			// Blend the overlay into the flattened icon
 			flat.Blend(add, blendMode2iconMode(curblend), layer_image.pixel_x + 2 - flatX1, layer_image.pixel_y + 2 - flatY1)
 
-		if(appearance.color)
-			if(islist(appearance.color))
-				flat.MapColors(arglist(appearance.color))
-			else
-				flat.Blend(appearance.color, ICON_MULTIPLY)
+		if(!appearance_flags)
+			// If we didn't apply parent colors individually per layer respecting appearance_flags, then do it just the one time now
+			if(appearance.color)
+				if(islist(appearance.color))
+					flat.MapColors(arglist(appearance.color))
+				else
+					flat.Blend(appearance.color, ICON_MULTIPLY)
 
-		if(appearance.alpha < 255)
-			flat.Blend(rgb(255, 255, 255, appearance.alpha), ICON_MULTIPLY)
+			if(appearance.alpha < 255)
+				flat.Blend(rgb(255, 255, 255, appearance.alpha), ICON_MULTIPLY)
 
 		if(no_anim)
 			//Clean up repeated frames
@@ -893,6 +907,14 @@ world
 		return final_icon
 
 	#undef PROCESS_OVERLAYS_OR_UNDERLAYS
+
+/proc/icon_states_fast(file)
+	if(isnull(file))
+		return null
+	if(isnull(GLOB.icon_states_cache[file]))
+		compile_icon_states_cache(file)
+	return GLOB.icon_states_cache[file]
+//OV edit end
 
 /proc/getIconMask(atom/A)//By yours truly. Creates a dynamic mask for a mob/whatever. /N
 	var/icon/alpha_mask = new(A.icon,A.icon_state)//So we want the default icon and icon state of A.

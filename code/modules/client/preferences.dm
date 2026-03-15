@@ -280,6 +280,17 @@ GLOBAL_LIST_EMPTY(chosen_names)
 			if(check_nameban(C.ckey) || (C.blacklisted() == 1))
 				real_name = pref_species.random_name(gender,1)
 			return
+	
+	//OV edit
+	if(!directory_erptag)
+		directory_erptag = "Unset"
+	if(!directory_tag)
+		directory_tag = "Unset"
+	if(!directory_gendertag)
+		directory_gendertag = "Unset"
+	if(!directory_sexualitytag)
+		directory_sexualitytag = "Unset"
+	//OV edit end
 
 	//Set the race to properly run race setter logic
 	set_new_race(pref_species, null)
@@ -661,9 +672,19 @@ GLOBAL_LIST_EMPTY(chosen_names)
 			dat += "<br><a href='?_src_=prefs;preference=ooc_preview;task=input'><b>Preview Examine</b></a>"
 
 			dat += "<br><b>Loadout:</b> <a href='?_src_=prefs;preference=open_loadout;task=input'>Open Menu</a>"
+			//OV edit
+			//Character directory
+			
+			dat += "<br><br><b>Show In Directory:</b> <a href='?_src_=prefs;preference=show_in_directory;task=input'>[show_in_directory ? "Yes" : "No"]</a>"
+			dat += "<br><b>Vore Pref Tag:</b> <a href='?_src_=prefs;preference=directory_tag;task=input'>[directory_tag || "Unset"]</a>"
+			dat += "<br><b>ERP Pref Tag:</b> <a href='?_src_=prefs;preference=directory_erptag;task=input'>[directory_erptag || "Unset"]</a>"
+			dat += "<br><b>Gender Tag:</b> <a href='?_src_=prefs;preference=directory_gendertag;task=input'>[directory_gendertag || "Unset"]</a>"
+			dat += "<br><b>Sexuality Tag:</b> <a href='?_src_=prefs;preference=directory_sexualitytag;task=input'>[directory_sexualitytag || "Unset"]</a>"
+			dat += "<br><b>Directory Ad:</b> <a href='?_src_=prefs;preference=directory_ad;task=input'>Set</a>"
 			dat += "</td>"
 			dat += "</td>"
 			dat += "</tr></table>"
+			//OV edit end
 //			-----------END OF BODY TABLE-----------
 			dat += "</td>"
 			dat += "</tr>"
@@ -2692,6 +2713,40 @@ Slots: [job.spawn_positions] [job.round_contrib_points ? "RCP: +[job.round_contr
 					var/phobiaType = input(user, "What are you scared of?", "Character Preference", phobia) as null|anything in SStraumas.phobia_types
 					if(phobiaType)
 						phobia = phobiaType
+				
+				//OV edit
+				if("show_in_directory")
+					show_in_directory = !show_in_directory
+					if(!directory_erptag)
+						directory_erptag = "Unset"
+					if(!directory_tag)
+						directory_tag = "Unset"
+					if(!directory_gendertag)
+						directory_gendertag = "Unset"
+					if(!directory_sexualitytag)
+						directory_sexualitytag = "Unset"
+				if("directory_tag")
+					var/new_choice = tgui_input_list(user, "Choose a vore preference:", "Directory Tag", GLOB.char_directory_tags)
+					if(new_choice)
+						directory_tag = new_choice
+				if("directory_erptag")
+					var/new_choice = tgui_input_list(user, "Choose a vore preference:", "Directory Tag", GLOB.char_directory_erptags)
+					if(new_choice)
+						directory_erptag = new_choice
+				if("directory_gendertag")
+					var/new_choice = tgui_input_list(user, "Choose a vore preference:", "Directory Tag", GLOB.char_directory_gendertags)
+					if(new_choice)
+						directory_gendertag = new_choice
+				if("directory_sexualitytag")
+					var/new_choice = tgui_input_list(user, "Choose a vore preference:", "Directory Tag", GLOB.char_directory_sexualitytags)
+					if(new_choice)
+						directory_sexualitytag = new_choice
+				if("directory_ad")
+					var/new_dir_ad = tgui_input_text(user, "Input an ad for your style of ERP to show in the character directory:", "Directory Ad", directory_ad, multiline = TRUE,  encode = FALSE, bigmodal = TRUE)
+					if(new_dir_ad)
+						directory_ad = new_dir_ad
+				
+				//OV edit end
 
 		else
 			switch(href_list["preference"])
@@ -2990,6 +3045,8 @@ Slots: [job.spawn_positions] [job.round_contrib_points ? "RCP: +[job.round_contr
 				if("pickupable")
 					pickupable = !pickupable
 				//Caustic edit end
+
+				
 
 	ShowChoices(user)
 	return 1

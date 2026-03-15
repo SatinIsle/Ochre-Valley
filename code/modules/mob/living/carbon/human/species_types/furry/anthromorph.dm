@@ -10,8 +10,8 @@
 	making them rather predictable. Despite this, the way each wild-kin approaches their bizarre physiology and psychology varies, \
 	creating a diverse race of people who may not even empathise with one another. And whilst Dendor is considered the main culprit for Wild-kin, there are those created through other means, \
 	akin to Noc's stolen knowledge that created lupians and other abstract experimentation or circumstance. \
-	(Wild-kin are not a template race to play your own custom race. If you play a wild-kin, you are expected to roleplay to the setting and the race's lore.)<br>\
-	<span style='color: #6a8cb7;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;'><b>+1 CON | +1 PER </b></span><br>"
+	(Wild-kin is an animal-like species touched by Dendor intended to serve broadly as a more freeform anthropomorphic species.  While you're largely given the tools to be whatever creature you wish, you're still meant to be a wild-kin, and should have something in mind to explain why your character looks the way they do.)<br>\
+	<span style='color: #6a8cb7;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;'><b>+1 CON | +1 PER </b></span><br>" // OV Edit: Removed warning
 	default_color = "444"
 	species_traits = list(
 		MUTCOLORS,

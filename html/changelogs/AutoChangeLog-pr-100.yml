@@ -1,0 +1,4 @@
+author: "ShadowLarkens"
+delete-after: True
+changes:
+  - bugfix: "Wild/half-kin no longer carry an ominous incorrect warning"

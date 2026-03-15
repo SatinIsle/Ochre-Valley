@@ -28,13 +28,13 @@ GLOBAL_LIST_INIT(learnable_spells, (list(/obj/effect/proc_holder/spell/invoked/p
 		/obj/effect/proc_holder/spell/invoked/projectile/arcynestrike,
 		/obj/effect/proc_holder/spell/invoked/gravity,
 		/obj/effect/proc_holder/spell/invoked/projectile/repel,
-
+		/obj/effect/proc_holder/spell/invoked/aerosolize,
 		/obj/effect/proc_holder/spell/targeted/touch/lesserknock,
 		/obj/effect/proc_holder/spell/invoked/counterspell,
 		/obj/effect/proc_holder/spell/invoked/enlarge,
 		/obj/effect/proc_holder/spell/invoked/leap,
 		/obj/effect/proc_holder/spell/invoked/blink,
-		/obj/effect/proc_holder/spell/invoked/mirror_transform,
+		/obj/effect/proc_holder/spell/invoked/mirror_transform_ov,//OV Edit: Use our new version of the spell
 		/obj/effect/proc_holder/spell/invoked/mindlink,
 		/obj/effect/proc_holder/spell/invoked/stoneskin,
 		/obj/effect/proc_holder/spell/invoked/hawks_eyes,
@@ -86,7 +86,7 @@ GLOBAL_LIST_INIT(utility_spells, (list(
 		/obj/effect/proc_holder/spell/invoked/darkvision, // Buff but it is fine to also put it in this list
 		/obj/effect/proc_holder/spell/self/magicians_brick,
 		/obj/effect/proc_holder/spell/invoked/conjure_tool/mage, // OV Add
-		/obj/effect/proc_holder/spell/invoked/mirror_transform 
+		/obj/effect/proc_holder/spell/invoked/mirror_transform_ov 
 		)
 ))
 

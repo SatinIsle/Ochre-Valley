@@ -102,7 +102,7 @@
 	name = "Facial Hair"
 
 /datum/customizer/bodypart_feature/hair/facial/is_allowed(datum/preferences/prefs)
-	return (prefs.gender == MALE)
+	return TRUE //OV Edit: Beards for all!
 
 /datum/customizer_choice/bodypart_feature/hair/facial
 	abstract_type = /datum/customizer_choice/bodypart_feature/hair/facial

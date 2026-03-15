@@ -1609,6 +1609,14 @@
 	reqs = list(/obj/item/natural/fibers = 5)
 	craftdiff = 2
 
+//OV edit
+/datum/crafting_recipe/roguetown/sewing/bindings
+	name = "cloth bindings"
+	result = list (/obj/item/clothing/suit/roguetown/shirt/bindings)
+	reqs = list(/obj/item/natural/cloth = 2)
+	craftdiff = 1
+//OV edit end
+
 /datum/crafting_recipe/roguetown/sewing/anklets
 	name = "exotic silk anklets"
 	category = "Misc"

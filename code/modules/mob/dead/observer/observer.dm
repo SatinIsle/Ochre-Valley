@@ -463,10 +463,10 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	set hidden = 1
 	if(!client)
 		return
-	if(!mind || QDELETED(mind.current))
+	if(!mind || QDELETED(mind.current) || vore_death) //OV EDIT
 		to_chat(src, span_warning("I have no body."))
 		return
-	if(!can_reenter_corpse)
+	if(!can_reenter_corpse || vore_death) //OV Edit
 		to_chat(src, span_warning("I cannot re-enter my body."))
 		return
 	if(mind.current.key && copytext(mind.current.key,1,2)!="@")	//makes sure we don't accidentally kick any clients
@@ -480,6 +480,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	client.change_view(CONFIG_GET(string/default_view))
 	client?.verbs -= GLOB.ghost_verbs
 	SStgui.on_transfer(src, mind.current) // Transfer NanoUIs.
+	mind.current.aghosted = null //OV ADD
 	mind.current.key = key
 	return TRUE
 

@@ -150,6 +150,36 @@
 	color_keys = 2
 	color_key_names = list("Tails", "Tips")
 
+//OV edit
+/datum/sprite_accessory/tail/kitsune_two
+	icon = 'modular_ochrevalley/icons/mob/tails/tails.dmi'
+	name = "Kitsune, Double-Tail"
+	icon_state = "doublekitsune"
+	color_keys = 2
+	color_key_names = list("Tails", "Tips")
+
+/datum/sprite_accessory/tail/kitsune_three
+	icon = 'modular_ochrevalley/icons/mob/tails/tails.dmi'
+	name = "Kitsune, Tri-Tail"
+	icon_state = "triplekitsune"
+	color_keys = 2
+	color_key_names = list("Tails", "Tips")
+
+/datum/sprite_accessory/tail/kitsune_seven
+	icon = 'modular_ochrevalley/icons/mob/tails/tails.dmi'
+	name = "Kitsune, Seven-Tailed"
+	icon_state = "sevenkitsune"
+	color_keys = 2
+	color_key_names = list("Tails", "Tips")
+
+/datum/sprite_accessory/tail/kitsune_nine
+	icon = 'modular_ochrevalley/icons/mob/tails/tails.dmi'
+	name = "Kitsune, Nine-Tailed"
+	icon_state = "ninekitsune"
+	color_keys = 2
+	color_key_names = list("Tails", "Tips")
+//OV edit end
+
 /datum/sprite_accessory/tail/lab
 	name = "Lab"
 	icon_state = "lab"
@@ -166,7 +196,7 @@
 /datum/sprite_accessory/tail/large_snake_plain
 	icon = 'modular_causticcove/icons/mob/tails/large_snake.dmi'
 	name = "Large Snake Plain"
-	icon_state = "large_snake_plain"	
+	icon_state = "large_snake_plain"
 
 
 /datum/sprite_accessory/tail/large_tails
@@ -180,6 +210,20 @@
 	color_key_names = list("Tail", "Underbelly")
 
 //Caustic Edit end
+
+//OV edit
+/datum/sprite_accessory/tail/large_tails/small_shadekin
+	icon = 'modular_ochrevalley/icons/mob/tails/large_tails.dmi'
+	name = "Umbrakin, Short"
+	icon_state = "short_shadekin"
+	color_keys = 2
+	color_key_names = list("Tail", "Tailtip")
+
+/datum/sprite_accessory/tail/large_tails/large_shadekin
+	icon = 'modular_ochrevalley/icons/mob/tails/large_tails.dmi'
+	name = "Umbrakin, Long"
+	icon_state = "long_shadekin"
+//OV edit end
 
 /datum/sprite_accessory/tail/murid
 	name = "Murid"
@@ -451,7 +495,7 @@
 /datum/sprite_accessory/tail/large_snake_plain
 	icon = 'icons/mob/tails/large_snake.dmi'
 	name = "Large Snake Plain"
-	icon_state = "large_snake_plain"	
+	icon_state = "large_snake_plain"
 
 /datum/sprite_accessory/tail/large_snake_plain/is_visible(obj/item/organ/organ, obj/item/bodypart/bodypart, mob/living/carbon/owner)
 	return TRUE	//Always visible.

@@ -4,12 +4,12 @@
 	clothes_req = FALSE
 	overlay_state = "mindlink"
 	associated_skill = /datum/skill/magic/arcane
-	cost = 2
+	cost = 3 //OV EDIT
 	xp_gain = TRUE
 	recharge_time = 3 MINUTES
-	spell_tier = 2
+	spell_tier = 3 //OV EDIT
 	invocations = list("Mens Nexu")
-	invocation_type = "none" //OV EDIT
+	invocation_type = "whisper"
 
 	// Charged spell variables
 	chargedloop = /datum/looping_sound/invokegen

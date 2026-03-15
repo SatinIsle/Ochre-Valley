@@ -234,3 +234,23 @@
 	if(window)
 		window.on_message(type, payload, href_list)
 	return TRUE
+
+//OV edit
+/**
+ * public
+ *
+ * Forces an update on static data. Should be done manually whenever something
+ * happens to change static data.
+ *
+ * required user the mob currently interacting with the ui
+ * optional ui ui to be updated
+ */
+
+/datum/proc/update_ui_static_data(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	// If there was no ui to update, there's no static data to update either.
+	if(!ui)
+		ui = SStgui.get_open_ui(user, src)
+	if(ui)
+		ui.send_full_update()
+//OV edit end

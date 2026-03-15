@@ -102,6 +102,17 @@
 /datum/outfit/job/roguetown/adventurer/thief/pre_equip(mob/living/carbon/human/H)
 	..()
 	to_chat(H, span_warning("You are a scoundrel and a thief. A master in getting into places you shouldn't be and taking things that aren't rightfully yours."))
+	// OV Edit start
+	var/trades = list("Normal arrows","Arrows with a glass ampule full of water")
+	var/trade_choice = input(H, "Choose your quiver.", "WHICH ARROWS?") as anything in trades
+	switch(trade_choice)
+		if("Normal arrows")
+			beltl = /obj/item/quiver/arrows
+		if("Arrows with a glass ampule full of water")
+			beltl = /obj/item/quiver/Warrows
+		else // Fallback just in case something breaks from anyone meddling with it later.
+			beltl = /obj/item/quiver/Warrows
+	// OV Edit end
 	armor = /obj/item/clothing/suit/roguetown/armor/leather
 	shirt = /obj/item/clothing/suit/roguetown/armor/gambeson
 	backl = /obj/item/storage/backpack/rogue/backpack
@@ -113,7 +124,7 @@
 	gloves = /obj/item/clothing/gloves/roguetown/fingerless
 	belt = /obj/item/storage/belt/rogue/leather/knifebelt/iron
 	cloak = /obj/item/clothing/cloak/raincloak/mortus
-	beltl = /obj/item/quiver/Warrows
+	// beltl = /obj/item/quiver/Warrows // OV Edit
 	beltr = /obj/item/rogueweapon/mace/cudgel
 	backpack_contents = list(
 		/obj/item/flashlight/flare/torch = 1,

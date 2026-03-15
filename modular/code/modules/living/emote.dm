@@ -80,6 +80,13 @@
 	for(var/mob/living/L in mobsinview)
 		if(!isliving(L) || QDELETED(L)) // mob has since been deleted/destroyed, skip
 			continue
+		//OV edit
+		if(L.aghosted)
+			if(!isclient(L.aghosted))
+				return
+			to_chat(L.aghosted, span_green("(BODY) ")+"[message]")
+			return
+		//OV edit end
 		if(get_dist(get_turf(L), user_loc) <= distance)
 			to_chat(L, "<i>[message]</i>")
 			L.playsound_local(L, 'sound/misc/subtle_emote.ogg', 100)

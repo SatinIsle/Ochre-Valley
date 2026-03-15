@@ -1,0 +1,4 @@
+author: "Ryumi"
+delete-after: True
+changes:
+  - rscadd: "Restored the old Spellblade adventurer class as an alternate option to its reworked counterpart Azurcaephan."

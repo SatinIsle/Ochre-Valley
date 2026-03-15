@@ -101,6 +101,7 @@
 				player.playsound_local(get_turf(player), 'sound/items/horn/signalhorn.ogg', 35, FALSE, pressure_affected = FALSE)
 		to_chat(player, span_warning("I hear the horn of the Wardens somewhere [dirtext]"))
 
+	var/mobs_spawned = 0 // OV Add
 	var/random_ambushes = 4 + rand(0,2) // 4 - 6 ambushes
 	var/did_ambush = FALSE
 	for(var/i = 0, i < random_ambushes, i++)
@@ -108,6 +109,13 @@
 		var/success = user.consider_ambush(TRUE, TRUE, min_dist = WARDEN_AMBUSH_MIN, max_dist = WARDEN_AMBUSH_MAX, silent = silent)
 		if(success)
 			did_ambush = TRUE
+			mobs_spawned++ // OV Add
+	// OV Edit Start
+	if(did_ambush)
+		user.log_message("blew \the [src], spawning [mobs_spawned] ambush mobs around [user.p_them()].", LOG_ATTACK, color="red")
+	else
+		user.log_message("blew \the [src], but failed to spawn any ambush mobs.", LOG_ATTACK, color="red")
+	// OV Edit End
 	return did_ambush
 
 #undef WARDEN_AMBUSH_MIN

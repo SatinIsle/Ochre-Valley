@@ -632,6 +632,15 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	S["preset_bounty_severity_b_key"] >> preset_bounty_severity_b_key
 	S["preset_bounty_crime"] >> preset_bounty_crime
 
+	//OV edit
+	S["show_in_directory"] >> show_in_directory
+	S["directory_tag"] >> directory_tag
+	S["directory_erptag"] >> directory_erptag
+	S["directory_gendertag"] >> directory_gendertag
+	S["directory_sexualitytag"] >> directory_sexualitytag
+	S["directory_ad"] >> directory_ad
+	//OV edit end
+
 	S["img_gallery"]	>> img_gallery
 	img_gallery = SANITIZE_LIST(img_gallery)
 
@@ -857,6 +866,15 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	WRITE_FILE(S["nsfwflavortext"] , html_decode(nsfwflavortext))
 	WRITE_FILE(S["erpprefs"] , html_decode(erpprefs))
 	WRITE_FILE(S["img_gallery"] , img_gallery)
+
+	//OV edit
+	WRITE_FILE(S["show_in_directory"] , show_in_directory)
+	WRITE_FILE(S["directory_tag"] , directory_tag)
+	WRITE_FILE(S["directory_erptag"] , directory_erptag)
+	WRITE_FILE(S["directory_gendertag"] , directory_gendertag)
+	WRITE_FILE(S["directory_sexualitytag"] , directory_sexualitytag)
+	WRITE_FILE(S["directory_ad"] , directory_ad)
+	//OV edit end
 
 	WRITE_FILE(S["gear_list"], gear_list)
 

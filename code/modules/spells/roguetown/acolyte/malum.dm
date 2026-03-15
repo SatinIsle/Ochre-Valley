@@ -624,7 +624,8 @@ var/global/list/anvil_recipe_prices[][]
 		if(cost != 0)
 			to_chat(user, "<font color='purple'>I lose [cost] devotion!</font>")
 		if(I.max_integrity <= I.obj_integrity)
-			I.obj_fix()
+			if(I.obj_broken)//OV add: Without this check, Order: Repair breaks armor
+				I.obj_fix()
 			if(I.peel_count)
 				I.peel_count--
 				I.visible_message(span_info("[I]'s shorn layers mend together. ([I.peel_count])."))
