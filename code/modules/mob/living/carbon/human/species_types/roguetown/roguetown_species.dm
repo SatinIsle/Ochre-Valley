@@ -56,7 +56,7 @@
 /datum/species/proc/handle_speech(datum/source, mob/speech_args)
 	var/message = speech_args[SPEECH_MESSAGE]
 
-	message = treat_message_accent(message, strings("accent_universal.json", "universal"), REGEX_FULLWORD)
+	message = treat_message_accent(message, strings("accent_universal_ov.json", "universal"), REGEX_FULLWORD) // OV Edit: use our own word list
 
 	message = autopunct_bare(message)
 
