@@ -105,4 +105,4 @@
 /datum/magic_item/mundane/revealing/on_apply(var/obj/item/i)
 	.=..()
 	var/obj/item/flashlight/flare/light = i
-	light.light_outer_range = light.light_outer_range * 2
+	light.set_light_range(light.light_inner_range, light.light_outer_range * 2) //OV Edit: Shadow Fix for Bug 118
