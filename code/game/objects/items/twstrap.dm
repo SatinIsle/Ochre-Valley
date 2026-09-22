@@ -28,6 +28,7 @@
 		/obj/item/throwing_star,
 		/obj/item/rogueweapon/huntingknife
 	)
+	var/armor_class = ARMOR_CLASS_NONE //OV EDIT
 
 /obj/item/twstrap/attackby(obj/A, mob/living/carbon/user, params)
 	var/obj/item/I = A

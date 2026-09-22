@@ -259,17 +259,12 @@ SUBSYSTEM_DEF(vote)
 					choices[GLOB.master_mode] += non_voters.len
 					if(choices[GLOB.master_mode] >= greatest_votes)
 						greatest_votes = choices[GLOB.master_mode]
-			else if(mode == "map")
+			/*else if(mode == "map") //OV EDIT START - Removes Default Vote Weight for Map
 				for (var/non_voter_ckey in non_voters)
-					var/client/C = non_voters[non_voter_ckey]
-					if(C.prefs.preferred_map)
-						var/preferred_map = C.prefs.preferred_map
-						choices[preferred_map] += 1
-						greatest_votes = max(greatest_votes, choices[preferred_map])
-					else if(global.config.defaultmap)
+					if(global.config.defaultmap)
 						var/default_map = global.config.defaultmap.map_name
 						choices[default_map] += 1
-						greatest_votes = max(greatest_votes, choices[default_map])
+						greatest_votes = max(greatest_votes, choices[default_map])*/ //OV EDIT END
 	//get all options with that many votes and return them in a list
 	. = list()
 	if(greatest_votes)
@@ -339,7 +334,6 @@ SUBSYSTEM_DEF(vote)
 						GLOB.master_mode = .
 			if("map")
 				SSmapping.changemap(global.config.maplist[.])
-				SSmapping.map_voted = TRUE
 			if("endround")
 				if(. == "Continue Playing")
 					log_game("LOG VOTE: CONTINUE PLAYING AT [REALTIMEOFDAY]")
@@ -389,6 +383,7 @@ SUBSYSTEM_DEF(vote)
 
 /datum/controller/subsystem/vote/proc/get_vote_power(mob/voter)
 	var/vote_power = 1
+	/* //OV EDIT START - KILLS VOTE POWER DEAD
 	if(ishuman(voter))
 		var/mob/living/carbon/H = voter
 		if(H.stat != DEAD)
@@ -402,6 +397,7 @@ SUBSYSTEM_DEF(vote)
 					for(var/datum/antagonist/D in H.mind.antag_datums)
 						if(D.increase_votepwr)
 							vote_power += 3
+	*/ //OV EDIT END
 	if(mode in everyone_is_equal)
 		vote_power = 1
 	return vote_power
@@ -460,7 +456,7 @@ SUBSYSTEM_DEF(vote)
 		)
 	return TRUE
 
-/datum/controller/subsystem/vote/proc/save_storyteller_vote_log(winning_choice = null, state = "active")
+/datum/controller/subsystem/vote/proc/save_storyteller_vote_log(winning_choice = null, state = "active", starting_pop = null)
 	var/json_file = file(LAST_STORYTELLER_VOTE_LOG_FILE)
 	var/list/file_data = list()
 	if(!fexists(json_file))
@@ -478,6 +474,8 @@ SUBSYSTEM_DEF(vote)
 		file_data -= "winner"
 	if(winner_type)
 		file_data["storyteller_vote"] = "[winner_type]"
+	if(!isnull(starting_pop))
+		file_data["storyteller_vote_pop"] = starting_pop
 	var/list/votes = list()
 	for(var/voter_ckey in storyteller_vote_log)
 		var/list/vote_data = storyteller_vote_log[voter_ckey]

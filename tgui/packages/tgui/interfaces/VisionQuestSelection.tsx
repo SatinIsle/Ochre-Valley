@@ -30,7 +30,7 @@ type Data = {
   choices: QuestChoice[];
 };
 
-export const VisionQuestSelection = (props) => {
+export const VisionQuestSelection = () => {
   const { act, data } = useBackend<Data>();
   const [selectedQuestId, setSelectedQuestId] = useState<string | null>(null);
   const [selectedReward, setSelectedReward] = useState<string | null>(null);

@@ -29,7 +29,7 @@ type Data = {
   rituals: RitualChoice[];
 };
 
-export const VortexRitualSelection = (props) => {
+export const VortexRitualSelection = () => {
   const { act, data } = useBackend<Data>();
   const [selectedRitualId, setSelectedRitualId] = useState<string | null>(null);
 

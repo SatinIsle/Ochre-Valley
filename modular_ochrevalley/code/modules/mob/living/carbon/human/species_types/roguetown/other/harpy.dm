@@ -208,14 +208,6 @@
 /datum/species/harpy/qualifies_for_rank(rank, list/features)
 	return TRUE
 
-/datum/species/harpy/on_species_gain(mob/living/carbon/C, datum/species/old_species) // one of those auto-appends a dot at the end of player speech
-	..()
-	RegisterSignal(C, COMSIG_MOB_SAY, PROC_REF(handle_speech))
-
-/datum/species/harpy/on_species_loss(mob/living/carbon/C) // one of those auto-appends a dot at the end of player speech
-	. = ..()
-	UnregisterSignal(C, COMSIG_MOB_SAY)
-
 /datum/species/harpy/get_random_features()
 	var/list/returned = MANDATORY_FEATURE_LIST
 	var/main_color

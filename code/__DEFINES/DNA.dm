@@ -150,7 +150,7 @@
 #define G_FEMALE 2
 #define G_PLURAL 3
 
-#define MANDATORY_FEATURE_LIST list("mcolor" = "FFF", "mcolor2" = "FFF", "mcolor3" = "FFF", "ethcolor" = "9c3030", "legs" = "Normal Legs", "body_size" = BODY_SIZE_NORMAL)
+#define MANDATORY_FEATURE_LIST list("mcolor" = "FFF", "mcolor2" = "FFF", "mcolor3" = "FFF", "body_size" = BODY_SIZE_NORMAL, "body_build" = null)
 
 #define BODY_SIZE_NORMAL 1.00
 #define BODY_SIZE_MIN 0.25	//OV ADD
@@ -162,7 +162,7 @@
 
 //Caustic Edit
 #define MIN_PENIS_SIZE 1
-#define MAX_PENIS_SIZE 5
+#define MAX_PENIS_SIZE 7 //OV EDIT - Was 5
 #define DEFAULT_PENIS_SIZE 2
 
 #define PENIS_TYPE_PLAIN 1
@@ -174,21 +174,13 @@
 #define PENIS_TYPE_BARBED 7
 #define PENIS_TYPE_BARBED_KNOTTED 8
 #define PENIS_TYPE_TENTACLE 9
+#define PENIS_TYPE_NONDESCRIPT 10
 
 #define SHEATH_TYPE_NONE 0
 #define SHEATH_TYPE_NORMAL 1
 #define SHEATH_TYPE_SLIT 2
 
-#define ERECT_STATE_NONE 0
-#define ERECT_STATE_PARTIAL 1
-#define ERECT_STATE_STIFF 2
-#define ERECT_STATE_HARD 3
-
-#define MIN_TESTICLES_SIZE 1
-#define MAX_TESTICLES_SIZE 5
-#define DEFAULT_TESTICLES_SIZE 2
-
 #define MIN_BREASTS_SIZE 0
-#define MAX_BREASTS_SIZE 16
+#define MAX_BREASTS_SIZE 19 //OV EDIT - Was 16
 #define DEFAULT_BREASTS_SIZE 3
 //Caustic End

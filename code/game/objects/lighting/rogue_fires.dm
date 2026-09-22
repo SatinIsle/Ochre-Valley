@@ -27,7 +27,7 @@
 	. += span_info("If extinguished, this can be rekindled by left-clicking it with a torch, lamptern, flint, or any other source of ignition. In a pinch, the sparks that're born from sharpening bladed weapons and hitting stones together can suffice.")
 
 /obj/machinery/light/rogue/firebowl/CanPass(atom/movable/mover, turf/target)
-	if(istype(mover) && (mover.pass_flags & PASSTABLE))
+	if(istype(mover) && (mover.pass_flags & PASSTABLE) && !(mover.pass_flags & SIZEPASS)) // OV Edit: prevent micros from going through
 		return 1
 	if(mover.throwing)
 		return 1
@@ -250,6 +250,16 @@
 	color = "#f858b5ff"
 	bulb_colour = "#ff13d8ff"
 
+/obj/machinery/light/rogue/candle/floorcandle/blue
+	color = "#3E43C7"
+	bulb_colour = "#3E43C7"
+
+/obj/machinery/light/rogue/candle/floorcandle/alt/blue
+	icon_state = "floorcandlee1"
+	base_state = "floorcandlee"
+	color = "#3E43C7"
+	bulb_colour = "#3E43C7"
+
 /obj/machinery/light/rogue/torchholder
 	name = "sconce"
 	desc = "A wall-mounted fixture that allows a torch to illuminate the area while freeing the hands for other tasks."
@@ -453,7 +463,7 @@
 		SEND_SIGNAL(attachment, COMSIG_STORAGE_CLOSED)
 
 /obj/machinery/light/rogue/hearth/CanPass(atom/movable/mover, turf/target)
-	if(istype(mover) && (mover.pass_flags & PASSTABLE))
+	if(istype(mover) && (mover.pass_flags & PASSTABLE) && !(mover.pass_flags & SIZEPASS)) // OV Edit: prevent micros from going through
 		return 1
 	if(mover.throwing)
 		return 1
@@ -931,7 +941,7 @@
 	healing_range = 4
 
 /obj/machinery/light/rogue/campfire/densefire/CanPass(atom/movable/mover, turf/target)
-	if(istype(mover) && (mover.pass_flags & PASSTABLE))
+	if(istype(mover) && (mover.pass_flags & PASSTABLE) && !(mover.pass_flags & SIZEPASS)) // OV Edit: prevent micros from going through
 		return 1
 	if(mover.throwing)
 		return 1

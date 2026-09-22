@@ -55,5 +55,5 @@
 /datum/loadout_item/ochre_fluff/blacksteelpatch
 	name = "Donator Kit - Blacksteel Eyepatch"
 	path = /obj/item/clothing/mask/rogue/eyepatch/left/donorblacksteel
-	ckeywhitelist = list("1ceres", "DerBlitzkrieg")
-	
+	ckeywhitelist = list("1ceres", "derblitzkrieg")
+

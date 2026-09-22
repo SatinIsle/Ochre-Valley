@@ -241,6 +241,7 @@
 	resistance_flags = FLAMMABLE
 	special = /datum/special_intent/polearm_backstep
 	twirly = SKILL_LEVEL_EXPERT // safely twirling like, a halberd, is going to be harder than a blunt staff
+	twirl_speed = 6
 
 /obj/item/rogueweapon/spear/short
 	force = 25
@@ -386,12 +387,8 @@
 							to_chat(user, "<span class='notice'>You see something!</span>")
 							playsound(src.loc, 'sound/items/fishing_plouf.ogg', 100, TRUE)
 							if(!do_after(user,ow, target = target))
-								if(ismob(A))
-									var/mob/M = A
-									if(M.type in subtypesof(/mob/living/simple_animal/hostile))
-										new M(target)
-									else
-										new M(user.loc)
+								if(ispath(A, /mob/living))
+									new /obj/effect/temp_visual/hunting_phantom(target, A, /datum/component/rot/simple/hunt, 2 SECONDS)
 									user.mind.add_sleep_experience(/datum/skill/labor/fishing, fisherman.STAINT*2)
 								else
 									new A(user.loc)
@@ -412,7 +409,7 @@
 
 /obj/item/rogueweapon/spear/aalloy
 	name = "decrepit spear"
-	desc = "A rotting staff, tipped with frayed bronze. After the stone, but before the sword; an interlude for the violence that would soon \
+	desc = "A rotting staff, tipped with rotted metal. After the stone, but before the sword; an interlude for the violence that would soon \
 	engulf His world."
 	icon_state = "ancient_spear"
 	force = 13
@@ -794,6 +791,8 @@
 	walking_stick = TRUE
 	wdefense = 6
 	special = /datum/special_intent/polearm_backstep
+	twirly = SKILL_LEVEL_EXPERT // safely twirling like, a halberd, is going to be harder than a blunt staff //OV ADD
+	twirl_speed = 6 //OV ADD
 
 /obj/item/rogueweapon/halberd/getonmobprop(tag)
 	. = ..()
@@ -842,7 +841,7 @@
 
 /obj/item/rogueweapon/halberd/bardiche/aalloy
 	name = "decrepit bardiche"
-	desc = "An imposing poleaxe, wrought from frayed bronze. Whatever noble purpose this weapon held has long since decayed; for \
+	desc = "An imposing poleaxe, wrought from rotted metal. Whatever noble purpose this weapon held has long since decayed; for \
 	it now persists to sunder the chaff that clings to this dying world."
 	max_integrity = 180
 	force = 12
@@ -1348,7 +1347,7 @@
 
 /obj/item/rogueweapon/spear/partizan/baotha
 	name = "saccharine swordspear"
-	desc = "Keep the rest at arm's length, lest you're burdened with the pain of rememberance."
+	desc = "Keep her at arm's length, lest you're burdened with the pain of her earnestness and her joy. That would be a final, unbearable cut."
 	force = 25
 	force_wielded = 35
 	possible_item_intents = list(/datum/intent/sword/thrust/long, /datum/intent/sword/cut/long, /datum/intent/sword/strike, /datum/intent/sword/thrust/heavy)

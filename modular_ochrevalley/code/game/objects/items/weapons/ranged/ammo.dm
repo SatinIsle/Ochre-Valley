@@ -1,4 +1,7 @@
 // Overrides files in code/game/objects/items/rogueweapons/ranged so we can balance these how we want to.
+#define MIN_OVBULLET_RANGE		2
+#define MAX_OVBULLET_RANGE		12 //Siegebow Range
+#define DAM_FALLOFF_OVBULLET	0.75
 
 // ------------------
 // PROJECTILE OBJECTS
@@ -21,6 +24,9 @@
 	npc_simple_damage_mult = 4 // Allows it to keep it's old busted damage vs simple mobs
 	wall_impact_break_probability = 100 // Same as heavy crossbow. Bullets will shatter if they hit a wall. With a range of 30, this will almost ALWAYS happen if you miss, so don't miss!
 	damages_turf_walls = FALSE // Bullets lack the mass to meaningfully damage walls.
+	min_range = MIN_OVBULLET_RANGE
+	max_range = MAX_OVBULLET_RANGE
+	dam_falloff_factor = DAM_FALLOFF_OVBULLET
 
 /obj/projectile/bullet/reusable/bullet/on_hit(atom/target) // EXP for shooting live targets only.
     ..()

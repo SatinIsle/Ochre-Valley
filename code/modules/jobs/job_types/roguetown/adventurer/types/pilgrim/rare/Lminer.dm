@@ -4,7 +4,7 @@
 	name = "Master Miner"
 	tutorial = "A master miner, you are capable of cutting stone like butter, and forging rocks into anything you can think of"
 	allowed_sexes = list(MALE, FEMALE)
-	forbidden_races = list(RACES_DESPISED)
+	//forbidden_races = list(RACES_DESPISED) //OV EDIT - Races allowed
 
 	outfit = /datum/outfit/job/roguetown/adventurer/minermaster
 

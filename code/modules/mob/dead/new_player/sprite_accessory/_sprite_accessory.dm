@@ -6,6 +6,8 @@
 	var/icon
 	/// Icon state of the accessory
 	var/icon_state
+	/// States to be stacked on top of each other to generate the character creator icon
+	var/list/preview_states
 	/// Whether the states for this accessory have an extra state that will get overlayed ontop of the resulting state. Per layer, suffix "_extra"
 	var/extra_state = FALSE
 	/// Pixel x offset
@@ -41,7 +43,38 @@
 			stack_trace("Sprite accessory of [type] has more than 1 color key but doesn't have a color key name list")
 		else if (color_key_names.len < color_keys)
 			stack_trace("Sprite accessory of [type] has missing color key names")
+	// best effort default
+	if(!preview_states)
+		preview_states = generate_preview_states()
 	return ..()
+
+/datum/sprite_accessory/proc/generate_preview_states()
+	. = list()
+
+	if(relevant_layers)
+		for(var/iterated_layer in relevant_layers)
+			if(color_keys > 1)
+				for(var/color_index in 1 to color_keys)
+					. += "[icon_state]_[get_layer_suffix(iterated_layer)]_[color_index]"
+			else
+				. += "[icon_state]_[get_layer_suffix(iterated_layer)]"
+	else
+		if(color_keys > 1)
+			for(var/color_index in 1 to color_keys)
+				. += "[icon_state]_[color_index]"
+		else
+			. += icon_state
+
+	if(extra_state)
+		. += "[icon_state]_extra"
+
+/datum/sprite_accessory/proc/constant_ui_data()
+	return list(
+		"name" = name,
+		"icon" = REF(icon),
+		"pixel_x" = pixel_x,
+		"preview_states" = preview_states,
+	)
 
 /datum/sprite_accessory/proc/is_visible(obj/item/organ/organ, obj/item/bodypart/bodypart, mob/living/carbon/owner)
 	return TRUE
@@ -50,14 +83,9 @@
 	if(!ishuman(owner))
 		return
 	var/mob/living/carbon/human/humie = owner
-	var/datum/species/species = owner.dna.species
-	for(var/mutable_appearance/appearance as anything in appearance_list)
-		var/list/offset_list
-		if(humie.gender == FEMALE)
-			offset_list = species.offset_features[feature_female_key]
-		else
-			offset_list = species.offset_features[feature_male_key]
-		if(offset_list)
+	var/list/offset_list = humie.get_offset_features()[humie.is_bulky_offset() ? feature_male_key : feature_female_key]
+	if(offset_list)
+		for(var/mutable_appearance/appearance as anything in appearance_list)
 			appearance.pixel_x += offset_list[1]
 			appearance.pixel_y += offset_list[2]
 
@@ -181,12 +209,22 @@
 			return "ADJ"
 		if(BODY_FRONT_LAYER)
 			return "FRONT"
-		//Caustic Edit
-		if(BODY_FRONTER_LAYER)
+		//Caustic Edit //OV EDIT - Genital layering adjustments src. Caustic
+		if(ASS_LAYER) //Actually, running with this 'front' for all of them means we can just freely adjust the layers on the fly during runtime... Might be hacky but it might work?
+			return "FRONT" //Okay this might need a different one but, guh. So that it can properly have alternates for the 'always shown' option.
+		if(TESTICLES_LAYER)
 			return "FRONT"
-		if(BODY_FRONTEST_LAYER)
+		if(BELLY_LAYER)
 			return "FRONT"
-		//Caustic End
+		if(BREASTS_LAYER)
+			return "FRONT"
+		if(CROTCH_LAYER)
+			return "FRONT"
+		if(TAURFEATURE_LAYER)
+			return "FRONT"
+		if(GLASSES_LAYER)
+			return "ADJ"
+		//Caustic End //OV EDIT - Genital layering adjustments src. Caustic
 		if(BODY_FRONT_FRONT_LAYER)
 			return "FFRONT"
 		if(BODY_UNDER_LAYER)

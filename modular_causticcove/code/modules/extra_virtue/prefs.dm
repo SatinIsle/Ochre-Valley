@@ -13,7 +13,7 @@
 		var/datum/virtue/V = extravirtue_type
 		extravirtue = new V.type
 		if(length(V.picked_choices))
-			extravirtue.picked_choices = V.picked_choices
+			extravirtue_choices = V.picked_choices.Copy()
 		qdel(V)
 	else if(ispath(extravirtue_type, /datum/virtue))
 		extravirtue = new extravirtue_type
@@ -21,7 +21,13 @@
 		extravirtue = new /datum/virtue/none
 
 	if(length(extravirtue_choices))
-		extravirtue.picked_choices = extravirtue_choices.Copy()
+		var/error_found = FALSE
+		for(var/choice in extravirtue_choices)
+			if(!(choice in extravirtue.extra_choices))
+				error_found = TRUE
+				break
+		if(!error_found)
+			extravirtue.picked_choices = extravirtue_choices.Copy()
 
 	extravirtue.on_load()
 

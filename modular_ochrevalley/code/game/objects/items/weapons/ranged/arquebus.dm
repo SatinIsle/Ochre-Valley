@@ -3,22 +3,31 @@
 // ----------------
 // Arquebus intents
 // ----------------
+/obj/item/gun/ballistic/revolver/grenadelauncher/arquebus/get_draw_time(mob/living/user, arcing = FALSE)
+	. = ..()
+	if(!. || !onehanded)
+		return
+	if(user.get_num_arms(FALSE) < 2 || user.get_inactive_held_item())
+		. *= arcing ? onehanded_arc_draw_mult : onehanded_draw_mult
 
 /datum/intent/shoot/arquebus
-    chargetime = 1 // Fallback value if something that isn't a mob/living aims this.
     chargedrain = 0
 
-/datum/intent/shoot/prewarning()
+/datum/intent/shoot/arquebus/prewarning()
 	if(masteritem && mastermob)
 		mastermob.visible_message(span_warning("[mastermob] aims [masteritem]!"))
 		playsound(mastermob, pick('sound/foley/equip/rummaging-01.ogg'), 100, FALSE)
 
+/datum/intent/shoot/arquebus/can_charge()
+	return TRUE
+
 /datum/intent/shoot/arquebus/get_chargetime()
-	if(mastermob) // chargetime isn't used here. Returning chargetime if it's falsy doesn't make any sense either.
-		var/newtime = 40
-		newtime -= mastermob.get_skill_level(/datum/skill/combat/firearms) * 4.6 // skill block
-		newtime -= mastermob.STAPER // per block
-		return max(newtime, 1) // Master skill and 16 PER will hit the aim time floor.
+	if(mastermob && chargetime)
+		var/obj/item/gun/ballistic/revolver/grenadelauncher/arquebus/g_bow = masteritem
+		if(istype(g_bow))
+			var/newtime = g_bow.get_draw_time(mastermob, FALSE)
+			if(newtime)
+				return newtime
 	return chargetime
 
 /datum/intent/arc/arquebus
@@ -30,20 +39,23 @@
 		mastermob.visible_message(span_warning("[mastermob] aims [masteritem] for a precise shot!"))
 		playsound(mastermob, pick('sound/foley/equip/rummaging-01.ogg'), 100, FALSE)
 
+/datum/intent/arc/arquebus/can_charge()
+	return TRUE
+
 /datum/intent/arc/arquebus/get_chargetime()
-	if(mastermob)
-		var/newtime = 40
-		newtime -= mastermob.get_skill_level(/datum/skill/combat/firearms) * 4.6
-		newtime -= mastermob.STAPER
-		return max(newtime, 12) // Raise the aim time floor like bow arc, instead of raising the floor and making it much faster to reach it like crossbow arc.
+	if(mastermob && chargetime)
+		var/obj/item/gun/ballistic/revolver/grenadelauncher/arquebus/g_bow = masteritem
+		if(istype(g_bow))
+			var/newtime = g_bow.get_draw_time(mastermob, TRUE)
+			if(newtime)
+				return newtime
 	return chargetime
 
 /obj/item/gun/ballistic/revolver/grenadelauncher/arquebus/get_npc_chargetime(mob/living/user)
-	// Same logic as the normal chargetime proc, but we are given a user in the params.
-	var/newtime = 40
-	newtime -= user.get_skill_level(/datum/skill/combat/firearms) * 4.6
-	newtime -= user.STAPER
-	return max(0, newtime) + ARCHER_NPC_MIN_AIM_TIME + ARCHER_NPC_NOCK_TIME // NPCs shoot slower than players though.
+	var/newtime = max(20, reloadtime - (user.get_skill_level(ranged_skill) * 2))
+	if(chambered)
+		newtime *= chambered.charge_time_mult
+	return (max(0, newtime) + ARCHER_NPC_MIN_AIM_TIME + ARCHER_NPC_NOCK_TIME) * ARCHER_NPC_ROF_PENALTY
 
 /obj/item/gun/ballistic/revolver/grenadelauncher/arquebus/
 	name = "arquebus rifle"
@@ -90,14 +102,20 @@
 	pickup_sound = 'modular_causticcove/sound/sheath_sounds/draw_from_holster.ogg'
 	var/spread_num = 10
 	damfactor = 1.2
+	accfactor = 1.1
 	var/range = 30
 	var/onehanded = FALSE
 	var/reloaded = FALSE
-	var/load_time = 50
+	var/reloadtime = 25
 	var/gunpowder = FALSE
 	var/obj/item/ramrod/myrod = null
 	var/gunchannel
-	var/ranged_skill = /datum/skill/combat/firearms
+	ranged_skill = /datum/skill/combat/firearms
+	draw_base = CROSSBOW_DRAW_BASE
+	draw_floor = CROSSBOW_DRAW_FLOOR
+	draw_per_skill = CROSSBOW_DRAW_PER_SKILL
+	onehanded_draw_mult = CROSSBOW_ONEHANDED_DRAW_MULT
+	onehanded_arc_draw_mult = CROSSBOW_ONEHANDED_ARC_DRAW_MULT
 	wdefense = 0 // Can't parry if it's not held in two hands.
 	wdefense_wbonus = 10 // Parrying with two hands is very effective. This sounds awesome until your gun fucking shatters. :)
 
@@ -162,24 +180,19 @@
 	update_icon()
 
 /obj/item/gun/ballistic/revolver/grenadelauncher/arquebus/process_fire(atom/target, mob/living/user, message = TRUE, params = null, zone_override = "", bonus_spread = 0)
-	var/firearm_skill = (user?.mind ? user.get_skill_level(/datum/skill/combat/firearms) : 1)
-	spread = (spread_num - firearm_skill)
-	if(user.client)
-		if(user.client.chargedprog >= 100)
-			spread = 0
-		else
-			spread = 150 - (150 * (user.client.chargedprog / 100))
-	else
-		spread = 0
+	// Spread calculation
+	spread = get_ranged_spread(user)
+
+	// Projectile stat modification
 	for(var/obj/item/ammo_casing/CB in get_ammo_list(FALSE, TRUE))
 		var/obj/projectile/BB = CB.BB
 		if(!BB)
 			continue
-		BB.accuracy += accfactor * (user.STAPER - 8) * 3 // 8+ PER gives +3 per level. Exponential.
-		BB.bonus_accuracy += (user.STAPER - 8) // 8+ PER gives +1 per level. Does not decrease over range.
-		BB.bonus_accuracy += (user.get_skill_level(ranged_skill) * 5) // +5 per skill level.
-		BB.damage = BB.damage * damfactor
-		BB.range = range
+
+		apply_ranged_accuracy(BB, user)
+		BB.armor_penetration = max(PEN_NONE, BB.armor_penetration + penfactor)
+		BB.damage *= damfactor
+
 	gunpowder = FALSE
 	reloaded = FALSE
 	..()
@@ -193,6 +206,31 @@
 	for(var/mob/M in range(5, user))
 		if(!M.stat)
 			shake_camera(M, 3, 1)
+
+	. = ..()
+	if(!.)
+		return
+	pay_release_drain(user)
+	if(!onehanded)
+		return
+
+	// Safe dual-wield handling
+	var/obj/item/other_hand = user.get_inactive_held_item()
+	if(!istype(other_hand, /obj/item/gun/ballistic/revolver/grenadelauncher/arquebus))
+		return
+
+	var/obj/item/gun/ballistic/revolver/grenadelauncher/arquebus/alt_gbow = other_hand
+	if(!alt_gbow.onehanded)
+		return
+	if(!alt_gbow.chambered)
+		return
+	if(!HAS_TRAIT(user, TRAIT_DUALWIELDER))
+		return
+
+	// Fire off-hand crossbow at reduced accuracy
+	alt_gbow.accfactor /= 2
+	alt_gbow.process_fire(target, user, FALSE)
+	alt_gbow.accfactor = initial(alt_gbow.accfactor)
 
 /obj/item/gun/ballistic/revolver/grenadelauncher/arquebus/attack_self(mob/living/user)
 	if(twohands_required)
@@ -244,7 +282,7 @@
 			to_chat(user, span_notice("I begin to unload the [src]!"))
 			user.visible_message(span_notice("[user] begins rooting [user.get_active_held_item()] around in the barrel of the [src]."))
 			playsound(src, 'modular_causticcove/sound/arquebus/ramrod.ogg',  100)
-			if(do_after(user, load_time, src))
+			if(do_after(user, reloadtime, src))
 				user.visible_message(span_notice("[user] unloads [src]."))
 				unload(user)
 		return
@@ -262,8 +300,7 @@
 /obj/item/gun/ballistic/revolver/grenadelauncher/arquebus/attackby(obj/item/A, mob/living/carbon/user, params) // Reloading code for rifle
 	if (gunchannel) // If you send null, you're going to stop all sound channels!
 		user.stop_sound_channel(gunchannel)
-	var/firearm_skill = (user?.mind ? user.get_skill_level(/datum/skill/combat/firearms) : 1)
-	var/load_time_skill = load_time - (load_time * firearm_skill / 10) // 10% faster for each skill level
+	var/load_time_skill = reloadtime - user.get_skill_level(ranged_skill)
 	gunchannel = SSsounds.random_available_channel()
 
 	if(istype(A, /obj/item/ammo_box) || istype(A, /obj/item/ammo_casing))
@@ -336,43 +373,9 @@
     chargetime = 1
     chargedrain = 0
 
-/datum/intent/shoot/arquebus/pistol/can_charge()
-	return TRUE
-
-/datum/intent/shoot/arquebus/pistol/get_chargetime()
-	if(mastermob)
-		var/newtime = 40
-		newtime -= mastermob.get_skill_level(/datum/skill/combat/firearms) * 4 // skill block
-		newtime -= mastermob.STAPER // per block
-		if(mastermob.get_num_arms(FALSE) < 2 || mastermob.get_inactive_held_item()) // If slurbows don't care if your other arm is disabled, I guess pistols don't either.
-			newtime *= 1.5 // It takes longer to aim one-handed.
-		return max(newtime, 1) // Legendary and 15 PER will hit the aim time floor.
-	return chargetime
-
 /datum/intent/arc/arquebus/pistol
     chargetime = 12
     chargedrain = 0
-
-/datum/intent/arc/arquebus/pistol/can_charge()
-	return TRUE
-
-/datum/intent/arc/arquebus/pistol/get_chargetime()
-	if(mastermob)
-		var/newtime = 40
-		newtime -= mastermob.get_skill_level(/datum/skill/combat/firearms) * 4
-		newtime -= mastermob.STAPER
-		if(mastermob.get_num_arms(FALSE) < 2 || mastermob.get_inactive_held_item())
-			newtime *= 1.5
-		return max(newtime, 12)
-	return chargetime
-
-/obj/item/gun/ballistic/revolver/grenadelauncher/arquebus/pistol/get_npc_chargetime(mob/living/user)
-	var/newtime = 40
-	newtime -= user.get_skill_level(/datum/skill/combat/firearms) * 4
-	newtime -= user.STAPER
-	if(user.get_num_arms(FALSE) < 2 || user.get_inactive_held_item())
-		newtime *= 1.5
-	return max(0, newtime) + ARCHER_NPC_MIN_AIM_TIME + ARCHER_NPC_NOCK_TIME
 
 /obj/item/gun/ballistic/revolver/grenadelauncher/arquebus/pistol
 	name = "arquebus pistol"

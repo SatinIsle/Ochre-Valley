@@ -208,7 +208,7 @@ export class Changelog extends Component {
           </a>
           .
         </p>
-        {/* {dateDropdown} */}
+        {dateDropdown}
       </Section>
     );
 
@@ -357,12 +357,12 @@ export class Changelog extends Component {
         ));
 
     return (
-      <Window title="Welcome!" width={675} height={350}>
+      <Window title="Changelog" width={675} height={650}>
         <Window.Content scrollable>
           {header}
-          {/* {changes} */}
-          {/* {typeof data === 'string' && <p>{data}</p>} */}
-          {/* {footer} */}
+          {changes}
+          {typeof data === 'string' && <p>{data}</p>}
+          {footer}
         </Window.Content>
       </Window>
     );

@@ -10,14 +10,14 @@ import {
   Table,
 } from 'tgui-core/components';
 import { SortButton } from '../CharacterDirectory/CharacterDirectorySortButton';
-import type { playerEntry } from './types';
+import type { playerEntry, playerEntrySortableKey } from './types';
 
 const STATE_DICT = ['Conscious', 'Soft-Crit', 'Unconscious', 'Dead'];
 
 export const AdminManifestList = (props: { directory: playerEntry[] }) => {
   const { act } = useBackend();
   const [selectedCat, setSelectedCat] = useState<string>('None');
-  const [sortId, setSortId] = useState<string>('ckey');
+  const [sortId, setSortId] = useState<playerEntrySortableKey>('ckey');
   const [sortOrder, setSortOrder] = useState<boolean>(true);
   const { directory } = props;
   return (
@@ -74,7 +74,7 @@ export const AdminManifestList = (props: { directory: playerEntry[] }) => {
             Name
           </SortButton>
           <SortButton
-            ourId="job"
+            ourId={'job' as any}
             sortId={sortId}
             sortOrder={sortOrder}
             onSortId={setSortId}
@@ -83,7 +83,7 @@ export const AdminManifestList = (props: { directory: playerEntry[] }) => {
             Job
           </SortButton>
           <SortButton
-            ourId="category"
+            ourId={'category' as any}
             sortId={sortId}
             sortOrder={sortOrder}
             onSortId={setSortId}
@@ -92,7 +92,7 @@ export const AdminManifestList = (props: { directory: playerEntry[] }) => {
             Category
           </SortButton>
           <SortButton
-            ourId="afk"
+            ourId={'afk' as any}
             sortId={sortId}
             sortOrder={sortOrder}
             onSortId={setSortId}
@@ -101,7 +101,7 @@ export const AdminManifestList = (props: { directory: playerEntry[] }) => {
             AFK
           </SortButton>
           <SortButton
-            ourId="state"
+            ourId={'state' as any}
             sortId={sortId}
             sortOrder={sortOrder}
             onSortId={setSortId}
@@ -110,7 +110,7 @@ export const AdminManifestList = (props: { directory: playerEntry[] }) => {
             State
           </SortButton>
           <SortButton
-            ourId="antag"
+            ourId={'antag' as any}
             sortId={sortId}
             sortOrder={sortOrder}
             onSortId={setSortId}

@@ -18,7 +18,11 @@ endmap
 map dun_manor
 endmap
 
-map cove_world
+map jagged_jaw
+	votable
+endmap
+
+map ovdun_world
 	default
 	votable
 endmap

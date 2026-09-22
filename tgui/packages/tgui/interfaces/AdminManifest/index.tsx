@@ -7,7 +7,7 @@ import type { Data } from './types';
 const MANIFEST_WINDOW_WIDTH = Math.round(816 * 1.15);
 const MANIFEST_WINDOW_HEIGHT = Math.round(722 * 1.15);
 
-export const AdminManifest = (props) => {
+export const AdminManifest = (props: any) => {
   const { data } = useBackend<Data>();
   const { directory } = data;
 

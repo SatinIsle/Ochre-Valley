@@ -85,7 +85,7 @@
 			SEND_SOUND(C, sound('modular_ochrevalley/sounds/misc/gm_prayer.ogg'))
 	// OV Edit End
 
-	follower.whisper(prayer)
+	follower.whisper(prayer, sanitize=FALSE) // we already sanitized this above
 
 	if(SEND_SIGNAL(follower, COMSIG_CARBON_PRAY, prayer) & CARBON_PRAY_CANCEL)
 		return
@@ -517,6 +517,13 @@
 		if(do_change)
 			if(H.zone_selected == BODY_ZONE_PRECISE_MOUTH)
 				message_param = "kisses %t deeply."
+				var/obj/item/clothing/mask/cigarette/user_cig = H.get_item_by_slot(SLOT_MOUTH)
+				var/obj/item/clothing/mask/cigarette/target_cig = target.get_item_by_slot(SLOT_MOUTH)
+				if(istype(user_cig) && istype(target_cig))
+					if(user_cig.lit && !target_cig.lit)
+						target_cig.light(span_notice("[H] smoothly lights [target]'s [target_cig.name] with [H.p_their()] own during the kiss."))
+					else if(!user_cig.lit && target_cig.lit)
+						user_cig.light(span_notice("[H] smoothly lights [H.p_their()] [user_cig.name] from [target]'s own during the kiss."))
 			else if(H.zone_selected == BODY_ZONE_PRECISE_EARS)
 				message_param = "kisses %t on the ear."
 				if(!HAS_TRAIT(target, TRAIT_DECEIVING_MEEKNESS) && !HAS_TRAIT(target, TRAIT_NOMOOD))
@@ -529,6 +536,12 @@
 				message_param = "kisses %t on the brow."
 			else if(H.zone_selected == BODY_ZONE_PRECISE_SKULL)
 				message_param = "kisses %t on the forehead."
+			else if(H.zone_selected == BODY_ZONE_HEAD)
+				message_param = "kisses %t on the cheek."
+			//OV EDIT
+			else if(H.zone_selected == BODY_ZONE_PRECISE_STOMACH)
+				message_param = "kisses %t on their belly."
+			//OV EDIT END
 			else
 				message_param = "kisses %t on \the [parse_zone(H.zone_selected)]."
 	playsound(target.loc, pick('sound/vo/kiss (1).ogg','sound/vo/kiss (2).ogg'), 100, FALSE, -1)
@@ -544,7 +557,7 @@
 /datum/emote/living/lick
 	key = "lick"
 	key_third_person = "licks"
-	message = "licking."
+	message = "licks their lips."
 	message_param = "licks %t."
 	emote_type = EMOTE_VISIBLE
 	use_params_for_runechat = TRUE
@@ -582,9 +595,9 @@
 				message_param = "licks %t between the legs."
 				to_chat(target, span_love("That feels nice..."))
 			else if(J.zone_selected == BODY_ZONE_HEAD)
-				message_param = "licks %t cheek"
+				message_param = "licks %t on the cheek."
 			else
-				message_param = "licks %t [parse_zone(J.zone_selected)]."
+				message_param = "licks %t on the [parse_zone(J.zone_selected)]."
 	playsound(target.loc, pick("sound/vo/lick.ogg"), 100, FALSE, -1)
 
 /datum/emote/living/spit
@@ -1767,15 +1780,9 @@
 			var/color_to_use = human.voice_color
 			if(human.voicecolor_override)
 				color_to_use = human.voicecolor_override
-			msg = "<span style='color:#[color_to_use];text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;'><b>[emote_display_name]</b></span> " + msg //OV Edit
+			msg = "<span style='color:[color_to_use];text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;'><b>[emote_display_name]</b></span> " + msg //OV Edit
 		else
 			msg = "<b>[emote_display_name]</b> " + msg //OV Edit
-		for(var/mob/M in GLOB.dead_mob_list)
-			if(!M.client || isnewplayer(M))
-				continue
-			var/T = get_turf(emotelocation)
-			if(M.stat == DEAD && M.client && (M.client.prefs?.chat_toggles & CHAT_GHOSTSIGHT) && !(M in viewers(T, null)))
-				M.show_message(msg)
 		var/runechat_msg_to_use = null
 		if(show_runechat)
 			runechat_msg_to_use = runechat_msg ? runechat_msg : pre_color_msg

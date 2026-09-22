@@ -10,7 +10,7 @@ import type { Data } from './types';
 const CHARACTER_DIRECTORY_WINDOW_WIDTH = Math.round(816 * 1.15);
 const CHARACTER_DIRECTORY_WINDOW_HEIGHT = Math.round(722 * 1.15);
 
-export const CharacterDirectory = (props) => {
+export const CharacterDirectory = (props: any) => {
   const { act, data } = useBackend<Data>();
 
   const {

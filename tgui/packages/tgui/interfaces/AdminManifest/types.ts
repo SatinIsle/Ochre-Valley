@@ -12,3 +12,7 @@ export type playerEntry = {
   state: number;
   antag: string;
 };
+
+export type playerEntrySortableKey = keyof {
+  [K in keyof playerEntry as playerEntry[K] extends string ? K : never]: string;
+};

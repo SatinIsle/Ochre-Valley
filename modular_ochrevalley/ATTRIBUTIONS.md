@@ -9,6 +9,12 @@ Creator / Copyright: VelSlime, Created for Ochre Valley
 License: CC BY-SA 3.0
 
 Folder: modular_ochrevalley\icons\mob\sprite_accessory\ears\
+Title: ears.dmi
+Icon: shadekin
+Creator / Copyright: Casey, Created for Virgo
+License: CC BY-SA 3.0
+
+Folder: modular_ochrevalley\icons\mob\sprite_accessory\ears\
 Title: ears_32x64.dmi
 Icon: shadekin_round
 Creator / Copyright: VerySoft, Created for Virgo
@@ -60,3 +66,7 @@ Folder: modular_ochrevalley\icons\roguetown\clothing\onmob\taur_clothing.dmi
 Title: taur_clothing.dmi
 Creator / Copyright: Toriate, Created for Ratwood, Ported Per Original Commissioner Roguenoob
 License: CC BY-SA 3.0
+
+Folder: modular_ochrevalley\icons\roguetown\clothing\onmob\taur_clothing.dmi
+Title: taur_clothing.dmi
+added more assets to taur clothing made by dongwaiver! Commissioner ButteryToast Even more wonderful assets added in by the amazing dongwaiver

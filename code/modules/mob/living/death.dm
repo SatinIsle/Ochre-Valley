@@ -1,6 +1,6 @@
 GLOBAL_LIST_EMPTY(last_words)
 
-/mob/living/gib(no_brain, no_organs, no_bodyparts)
+/mob/living/gib(no_brain, no_organs, no_bodyparts, drop_items = FALSE)
 	var/prev_lying = lying
 	if(stat != DEAD)
 		death(TRUE)
@@ -12,6 +12,9 @@ GLOBAL_LIST_EMPTY(last_words)
 		gib_animation()
 
 	spill_embedded_objects()
+
+	if(drop_items)
+		unequip_everything()
 
 	spill_organs(no_brain, no_organs, no_bodyparts)
 
@@ -184,11 +187,7 @@ GLOBAL_LIST_EMPTY(last_words)
 		explosion(get_turf(src), heavy_impact_range = 0, light_impact_range = 1, flash_range = 2, smoke = FALSE, soundin = 'sound/misc/explode/incendiary (2).ogg')
 		playsound(src, 'sound/magic/soulshot.ogg', 60, FALSE)
 		src.gib()
-
-	// AZURE EDIT BEGIN: necra acolyte/priest deathsight trait
-	// this was a player that just died, so do the honors
-	// Vheslynites/second life people don't show up for this.
-	if (client)
+	if (client && !contract_spawned)
 		//OV ADD START - Belly Death messages
 		if(istype(src.loc, /obj/belly))
 			var/mob/living/belly_owner = src.loc.loc //The loc of the belly is the one who has it in them.blockscharging

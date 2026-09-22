@@ -1,4 +1,0 @@
-author: "Voidastra"
-delete-after: True
-changes:
-  - bugfix: "fixed a line of code that looked for a string that did not exist"
